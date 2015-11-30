@@ -13,11 +13,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - search elements by an attribute
 - ESRI raster layer added to the catalog.
-
+### Fixed
+- Several bugs
 ## [0.0.96-Alpha] - 2015-11-23
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Geocoding
-
 ### Fixed
 - Several bugs

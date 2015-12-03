@@ -9,6 +9,10 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Upload files to import layer (KML, GML, GeoJson, WKT).
 - Download files to export layer (KML, GML, GeoJson, WKT).
 
+## [0.1.4] - 2015-12-01
+### Changed
+- Download GML File
+
 ## [0.1.3] - 2015-11-29
 ### Added
 - search elements by an attribute

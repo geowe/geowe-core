@@ -6,8 +6,16 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 - Search elements by a filter (set of attibutes).
+- Tools for filtering elements.
 - Upload files to import layer (KML, GML, GeoJson, WKT).
+
+## [0.1.6] - 2015-12-03
+### Added
 - Download files to export layer (KML, GML, GeoJson, WKT).
+
+### Fixed
+- bug union
+- bug geolocate
 
 ## [0.1.4] - 2015-12-01
 ### Changed

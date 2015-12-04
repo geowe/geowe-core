@@ -14,8 +14,8 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Download files to export layer (KML, GML, GeoJson, WKT).
 
 ### Fixed
-- bug union
-- bug geolocate
+- bug union #7
+- bug geolocate #9
 
 ## [0.1.4] - 2015-12-01
 ### Changed

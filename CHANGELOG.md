@@ -8,7 +8,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).
 
-## [0.1.7] - 2015-12-05
+## [0.1.7-Alpha2] - 2015-12-07
 ### Added
 - Tools for filtering elements: zoom, select, info, create layer from elements.
 

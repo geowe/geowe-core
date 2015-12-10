@@ -11,7 +11,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [0.1.9-Alpha] - 2015-12-10
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Fixed
-- Download files to export layer (KML, GML, GeoJson, WKT)
+- Download files to export layer (KML, GML, GeoJson, WKT). bug #10
 
 ## [0.1.7-Alpha2] - 2015-12-07
 version deployed for testing [map.geowe.org](http://map.geowe.org)

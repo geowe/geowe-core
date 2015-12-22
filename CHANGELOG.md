@@ -8,6 +8,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).
 
+## [0.1.12] - 2015-12-22
+### Added
+- Incluidas en el catalogo las capas de recintos y arboles SIGPAC 2015.
+
+### Fixed
+- aplicar estilos a una nueva capa creada a través de una consulta. bug #11
+
 ## [0.1.10] - 2015-12-11
 ### Added
 - i18n. Partial Spanish translation

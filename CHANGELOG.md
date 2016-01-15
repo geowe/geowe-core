@@ -8,6 +8,15 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).
 
+## [0.1.18-Alpha] - 2016-01-15
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+###Added
+- IDE Andalucía ortofoto 2010 layer available in catalog.
+- Spanish and english language.
+
+### Fixed
+- several issues.
+
 ## [0.1.15] - 2016-01-09
 
 ### Fixed
@@ -41,7 +50,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [0.1.9-Alpha] - 2015-12-10
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Fixed
 - Download files to export layer (KML, GML, GeoJson, WKT). bug #10
 

@@ -12,7 +12,6 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Se habilita el proxy para la carga de datos desde URL externa.
 - Se añaden pestañas a la ventana de importación, permitiendo carga de datos por URL y por texto. En esta versión, la carga desde URL solo admite ficheros con formatos KML.
-### Fixed
 - Se soluciona el problema de los valores de los atributos en las cargas de datos desde formato KML. Ya permite la visualización en texto en lugar de Object.
 - Se elimina la ventana con botones para importación de datos.
 

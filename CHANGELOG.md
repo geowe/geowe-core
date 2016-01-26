@@ -8,6 +8,10 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).
 
+## [0.1.25] - 2016-01-25
+### Added
+- Se añade la funcionalidad de tooltips en el mapa. Ahora cuando se desplaza el puntero de ratón sobre una feature concreta de una capa, al resaltarse aparece un pop-up con los valores de los atributos alfanumericos de la feature y su ID.
+
 ## [0.1.22] - 2016-01-21
 ### Added
 - Se habilita el proxy para la carga de datos desde URL externa.

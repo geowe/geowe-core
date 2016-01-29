@@ -6,7 +6,18 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 - Search elements by a filter (set of attibutes).
+- Load layer from URL (GeoJson, GML, WKT).
+
+## [0.1.32-Alpha] - 2016-01-29
+version deployed for testing [map.geowe.org](http://map.geowe.org)  no longer available.
+### Added
+- Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).
+- Load layer from URL (KML).
+- ToolTip in maps.
+
+### Removed
+- Print tool no longer available.
 
 ## [0.1.25] - 2016-01-25
 ### Added

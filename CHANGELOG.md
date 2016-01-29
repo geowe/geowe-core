@@ -9,7 +9,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Load layer from URL (GeoJson, GML, WKT).
 
 ## [0.1.32-Alpha] - 2016-01-29
-version deployed for testing [map.geowe.org](http://map.geowe.org)  no longer available.
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).
@@ -34,7 +34,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)  no longer av
 
 
 ## [0.1.18-Alpha] - 2016-01-15
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ###Added
 - IDE Andalucía ortofoto 2010 layer available in catalog.
 - Spanish and english language.

@@ -13,7 +13,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - 
 
 ### Fixed
-- issues 24 and 25.
+- issues 24, 25 and 26.
 
 
 ## [0.1.32-Alpha] - 2016-01-29

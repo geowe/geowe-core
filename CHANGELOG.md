@@ -8,6 +8,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Load layer from URL (GeoJson, GML, WKT).
 
+## [0.1.33] - 2016-01-02
+### Added
+- 
+
+### Fixed
+- issues 24 and 25.
+
+
 ## [0.1.32-Alpha] - 2016-01-29
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

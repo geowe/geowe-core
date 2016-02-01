@@ -10,10 +10,10 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [0.1.33] - 2016-01-02
 ### Added
-- 
+- Default Projection EPSG 3857
 
 ### Fixed
-- issues 24, 25 and 26.
+- issues 6, 22, 24, 25 and 26.
 
 
 ## [0.1.32-Alpha] - 2016-01-29

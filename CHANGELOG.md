@@ -8,7 +8,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Load layer from URL (GeoJson, GML, WKT).
 
-## [0.1.33] - 2016-01-02
+## [0.1.34] - 2016-02-02
+### Added
+- You can use links as an attribute value in an element of the vector layer
+- Redesign of the status bar
+- The toolbar is positioned bottom
+
+## [0.1.33] - 2016-02-02
 ### Added
 - Default Projection EPSG 3857
 

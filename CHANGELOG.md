@@ -6,7 +6,15 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 - Search elements by a filter (set of attibutes).
-- Load layer from URL (GeoJson, GML, WKT).
+- Load layer from url parameter
+
+## [0.1.35] - 2016-02-03
+### Added
+- You can use images (miniature) as an attribute value in an element of the vector layer
+- Export csv from search dialog
+
+### Fixed
+- issues 28 and 18
 
 ## [0.1.34] - 2016-02-02
 ### Added

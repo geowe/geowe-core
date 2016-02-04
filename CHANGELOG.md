@@ -8,6 +8,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Load layer from url parameter
 
+## [0.1.36] - 2016-02-04
+### Added
+- Tooltip maps show images and links.
+- Export layer's elements to csv (without Geometry).
+
 ## [0.1.35] - 2016-02-03
 ### Added
 - You can use images (miniature) as an attribute value in an element of the vector layer

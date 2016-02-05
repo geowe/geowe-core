@@ -5,8 +5,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
-- Search elements by a filter (set of attibutes).
-- Load layer from url parameter
+
 
 ## [0.1.37] - 2016-02-05
 version deployed for testing [map.geowe.org](http://map.geowe.org)

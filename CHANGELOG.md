@@ -8,6 +8,21 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Search elements by a filter (set of attibutes).
 - Load layer from url parameter
 
+## [0.1.37] - 2016-02-05
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Export layer's elements to csv (without Geometry).
+- Export csv from search dialog
+- Redesign of the status bar
+- The toolbar is positioned bottom
+- Default Projection EPSG 3857
+- You can use images (miniature) as an attribute value in an element of the vector layer
+- links can be used in the attributes of a layer.
+
+### Fixed
+- Tool division is improved when there is a large number of elements.
+- Correct reprojection for GML formats.
+
 ## [0.1.36] - 2016-02-04
 ### Added
 - Tooltip maps show images and links.

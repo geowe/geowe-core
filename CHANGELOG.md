@@ -50,7 +50,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 
 
 ## [0.1.32-Alpha] - 2016-01-29
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Search elements by a filter (set of attibutes).
 - Upload files to import layer (KML, GML, GeoJson, WKT).

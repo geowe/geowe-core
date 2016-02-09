@@ -11,7 +11,8 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Layer summary in html (Layer info Dialog)
 
 ### Fixed
-- issue 27 (zoom to imported layer from url or file)
+- issue 27 (zoom to imported layer from url or file).
+- issue 33 (links in attribute).
 
 ## [0.1.37] - 2016-02-05
 version deployed for testing [map.geowe.org](http://map.geowe.org)

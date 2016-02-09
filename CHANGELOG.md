@@ -6,6 +6,12 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 
+## [0.1.40] - 2016-02-09
+### Added
+- Layer summary in html (Layer info Dialog)
+
+### Fixed
+- issue 27 (zoom to imported layer from url or file)
 
 ## [0.1.37] - 2016-02-05
 version deployed for testing [map.geowe.org](http://map.geowe.org)

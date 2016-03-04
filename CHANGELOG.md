@@ -6,6 +6,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 
+## [0.1.60] - 2016-03-04
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Layer Spatial operations: intersect, union, buffer, difference, intersection
+- Copy elements between layers
+- What3words integration
+- Load vector layer from file limited to 15MB
+
 ## [0.1.40] - 2016-02-09
 ### Added
 - Layer summary in html (Layer info Dialog)
@@ -15,7 +23,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue 33 (links in attribute).
 
 ## [0.1.37] - 2016-02-05
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Export layer's elements to csv (without Geometry).
 - Export csv from search dialog

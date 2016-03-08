@@ -5,6 +5,17 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
+- Support for GeoJson-css
+
+## [0.1.62] - 2016-03-08
+### Added
+- Redesign Basic Tool Bar
+- Redesign what3words info
+- show/hide basic tool bar Tool.
+- Active/deactive what3words click on map
+
+### Fixed
+- StatusBar view on IE and Chrome
 
 ## [0.1.60] - 2016-03-04
 version deployed for testing [map.geowe.org](http://map.geowe.org)

@@ -7,6 +7,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.63] - 2016-03-09
+### Added
+
+### Fixed
+- issue 12 (Delete multiple vector).
+
+
 ## [0.1.62] - 2016-03-08
 ### Added
 - Redesign Basic Tool Bar

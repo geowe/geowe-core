@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.66] - 2016-03-11
+### Added
+- Calculte selected elements envelope
+- Export selected elements to: KML, WKT, GML, GeoJson, CSV
+
+### Fixed
+- Improve performance.
+
 ## [0.1.63] - 2016-03-09
 ### Added
 

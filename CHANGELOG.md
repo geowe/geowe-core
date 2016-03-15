@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.70] - 2016-03-15
+### Added
+- Delete multiple elements from DeteteTool
+- Added Create layer Tool in main panel
+
+##Fixed
+- load layer from url (pending test).
+
 ## [0.1.66] - 2016-03-11
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

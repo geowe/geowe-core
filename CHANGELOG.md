@@ -7,6 +7,12 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.75] - 2016-03-22
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+##Fixed
+- improve performance.
+- several issues.
+
 ## [0.1.73] - 2016-03-18
 ##Fixed
 - improve performance.
@@ -21,7 +27,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - load layer from url (pending test).
 
 ## [0.1.66] - 2016-03-11
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Calculte selected elements envelope
 - Export selected elements to: KML, WKT, GML, GeoJson, CSV

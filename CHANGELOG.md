@@ -7,8 +7,17 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
-## [0.1.75] - 2016-03-22
+## [0.1.80] - 2016-04-01
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Screenshot tool
+
+### Fixed
+- improve performance.
+- several issues.
+
+## [0.1.75] - 2016-03-22
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ##Fixed
 - improve performance.
 - several issues.

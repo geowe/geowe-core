@@ -11,6 +11,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Label Style (issue 44)
 - Load layer from url with attributes (KML, GML, GeoJson, WKT)
+- IGN Base Todo Layer to the catalog.
 
 ### Fixed
 - issue 61 (search filter) and 59 (OSM Layer)

@@ -7,6 +7,18 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.86] - 2016-04-07
+### Added
+- Style on selected linestring
+- Reorganize tools in view tab
+
+### Fixed
+- issue 70 (cancel draw)
+
+### Removed
+- Screenshot tool due to browser incompatilibity
+- Show/hide status panel button. The button is now up in the LinkBar
+
 ## [0.1.84] - 2016-04-05
 ### Added
 - Label Style (issue 44)

@@ -8,7 +8,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Support for GeoJson-css
 
 ## [0.1.87] - 2016-04-08
-
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - CentroidTool calculates centroids for each element in the layer.  
 
@@ -41,7 +41,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [0.1.80] - 2016-04-01
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Screenshot tool
 

@@ -7,6 +7,17 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.87] - 2016-04-08
+
+### Added
+- CentroidTool calculates centroids for each element in the layer.  
+
+### Fixed
+- issue 64 
+- issue 69
+- improve performance
+
+
 ## [0.1.86] - 2016-04-07
 ### Added
 - Style on selected linestring

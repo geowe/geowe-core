@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.88] - 2016-04-11
+### Added
+- Apply Buffer to multiple geometries
+
+### Fixed
+- issue 50 (unselect elements)
+- issue 72 (cancel draw on Chrome)
+
 ## [0.1.87] - 2016-04-08
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

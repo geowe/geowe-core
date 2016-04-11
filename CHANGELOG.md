@@ -14,6 +14,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Fixed
 - issue 50 (unselect elements)
 - issue 72 (cancel draw on Chrome)
+- issue 55 (draw near status panel)
 
 ## [0.1.87] - 2016-04-08
 version deployed for testing [map.geowe.org](http://map.geowe.org)

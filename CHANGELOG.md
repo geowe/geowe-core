@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.89] - 2016-04-12
+### Added
+- what3words tool create a layer to records the points clicked. (issue 65)
+
+### Fixed
+- issue 74
+- Measure messages.
+
 ## [0.1.88] - 2016-04-11
 ### Added
 - Apply Buffer to multiple geometries

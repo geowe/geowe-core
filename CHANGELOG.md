@@ -7,6 +7,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.90] - 2016-04-13
+### Added
+- what3words icon for the elements in what3words layers.
+- WFS support (pending to test)
+
 ## [0.1.89] - 2016-04-12
 ### Added
 - what3words tool create a layer to records the points clicked. (issue 65)

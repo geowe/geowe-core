@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.91] - 2016-04-14
+### Added
+- what3words. Geolocating draws an element in the what3words layer. (issue 76 pending to test)
+
+### Fixed
+- issue 73 (zoon to selected elements)
+- issue 75
+
 ## [0.1.90] - 2016-04-13
 ### Added
 - what3words icon for the elements in what3words layers.

@@ -13,7 +13,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ### Fixed
 - issue 73 (zoon to selected elements)
-- issue 75
+- issue 75 (remove elenments when a leyer is deleted)
 
 ## [0.1.90] - 2016-04-13
 ### Added

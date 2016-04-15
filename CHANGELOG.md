@@ -7,6 +7,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Support for GeoJson-css
 
+## [0.1.92] - 2016-04-15
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Fixed
+- Geolocating draws an element in the what3words layer. (issue 76 pending to test)
+
 ## [0.1.91] - 2016-04-14
 ### Added
 - what3words. Geolocating draws an element in the what3words layer. (issue 76 pending to test)
@@ -38,7 +43,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue 55 (draw near status panel)
 
 ## [0.1.87] - 2016-04-08
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - CentroidTool calculates centroids for each element in the layer.  
 

@@ -5,10 +5,19 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
-- Support for GeoJson-css
+- More spatial tools
+
+## [0.1.97] - 2016-04-22
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- WMS info tool
+
+### Fixed
+- Several issues
+- improve performance
 
 ## [0.1.92] - 2016-04-15
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Fixed
 - Geolocating draws an element in the what3words layer. (issue 76 pending to test)
 

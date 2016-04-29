@@ -7,8 +7,23 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
-## [0.1.97] - 2016-04-22
+## [0.2.2] - 2016-04-29
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Tooltip tool enables selection automatically
+- Basic tool bar visible by default
+- Spatial Operation Merge
+
+### Fixed
+- spanish messages
+
+## [0.2.1] - 2016-04-27
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
+### Fixed
+- what3words connecting issue
+
+## [0.1.97] - 2016-04-22
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - WMS info tool
 

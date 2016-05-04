@@ -7,6 +7,16 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [0.2.5] - 2016-05-04
+### Added
+- Export CSV with geometry (WKT)
+- Redo & Undo for draw polygon and line tools.
+
+### Fixed
+- several messages
+- issues: 90, 92, 98, 99, 101
+
+
 ## [0.2.2] - 2016-04-29
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

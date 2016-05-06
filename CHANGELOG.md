@@ -11,6 +11,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Spatial operation: symDifference
+- Case sensitive search
 
 ### Fixed
 - issue 91

@@ -7,6 +7,16 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [0.2.8] - 2016-05-06
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Spatial operation: symDifference
+
+### Fixed
+- issue 91
+- several bugs in spatial operations
+- improve performance
+
 ## [0.2.5] - 2016-05-04
 ### Added
 - Export CSV with geometry (WKT)
@@ -18,7 +28,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [0.2.2] - 2016-04-29
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Tooltip tool enables selection automatically
 - Basic tool bar visible by default

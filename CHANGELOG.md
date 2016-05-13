@@ -12,6 +12,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Tooltips
 - BufferTool implemented to work as EnvelopeTool and CentroidTool
+- New Splash
 
 ### Fixed
 - several issues

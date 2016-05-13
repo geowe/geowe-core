@@ -7,8 +7,19 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
-## [0.2.8] - 2016-05-06
+## [0.2.13] - 2016-05-13
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Tooltips
+- BufferTool implemented to work as EnvelopeTool and CentroidTool
+
+### Fixed
+- several issues
+- messages
+- improve performance
+
+## [0.2.8] - 2016-05-06
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Spatial operation: symDifference
 - Case sensitive search

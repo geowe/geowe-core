@@ -7,8 +7,19 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
-## [0.2.13] - 2016-05-13
+## [0.2.19] - 2016-05-20
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Demo Layers in Catalog: the gastronomic routes of Cordoba. Enjoy!!
+- Share a catalog's layer direct from url, using params.
+ Example: http://map.geowe.org/App.html?layerCatalog=Gastronomic%20routes%20C%C3%B3rdoba
+- WMS Info dialog shows warning: "Links open in this browser window"
+
+### Fixed
+- several issues
+
+## [0.2.13] - 2016-05-13
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Tooltips
 - BufferTool implemented to work as EnvelopeTool and CentroidTool

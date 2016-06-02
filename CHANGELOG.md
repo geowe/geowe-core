@@ -7,6 +7,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [0.2.25] - 2016-06-01
+### Added
+- WKTEditor. View or change WKT
+
+### Fixed
+- several issues
+
 ## [0.2.19] - 2016-05-20
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

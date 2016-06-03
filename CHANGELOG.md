@@ -7,6 +7,16 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+
+## [0.2.26] - 2016-06-03
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Raster Layer info dialog.
+- Rename vector layer.
+
+### Fixed
+- several issues
+
 ## [0.2.25] - 2016-06-01
 ### Added
 - WKTEditor. View or change WKT
@@ -15,7 +25,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - several issues
 
 ## [0.2.19] - 2016-05-20
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Demo Layers in Catalog: the gastronomic routes of Cordoba. Enjoy!!
 - Share a catalog's layer direct from url, using params.

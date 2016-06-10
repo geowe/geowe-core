@@ -7,9 +7,18 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [0.2.35] - 2016-06-010
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Higher zoom level for more precise editing.
+- Validation geometry tool.
+
+### Fixed
+- several issues
+- improve performance
 
 ## [0.2.26] - 2016-06-03
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Raster Layer info dialog.
 - Rename vector layer.

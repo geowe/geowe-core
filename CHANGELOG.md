@@ -7,8 +7,18 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
-## [0.2.35] - 2016-06-010
+## [0.2.40] - 2016-06-17
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- show attributes layer dialog after create an empty layer.
+- GeoWE attribution at the bottom
+
+### Fixed
+- Issues: 130, 129, 128, 124.
+- several messages.
+
+## [0.2.35] - 2016-06-10
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Higher zoom level for more precise editing.
 - Validation geometry tool.

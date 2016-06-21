@@ -13,4 +13,6 @@ More information available on [GeoWE Web site](http://geowe.org/)
 
 ##License
 
-The **geowe-core** is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you can use it free of charge, without strings attached in commercial and non-commercial projects.
+~~The **geowe-core** is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you can use it free of charge, without strings attached in commercial and non-commercial projects.~~
+
+We are currently studying the license on which the code will be released.

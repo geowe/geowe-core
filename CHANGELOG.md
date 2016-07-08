@@ -7,8 +7,27 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
-## [0.2.40] - 2016-06-17
+## [1.0.0]Beta - 2016-07-8
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- improve performance
+
+### Fixed
+- several issues
+
+## [0.2.48] - 2016-07-1
+version deployed for testing [map.geowe.org](http://map.geowe.org)no longer available
+### Added
+- New desing for Geoprocessing dialog.
+- improve performance in geoprocess
+
+### Fixed
+- several issues
+- several messages.
+
+
+## [0.2.40] - 2016-06-17
+version deployed for testing [map.geowe.org](http://map.geowe.org)no longer available
 ### Added
 - show attributes layer dialog after create an empty layer.
 - GeoWE attribution at the bottom

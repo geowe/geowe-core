@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.5"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<servlet-name>ErraiServlet</servlet-name>
+		<servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+		<init-param>
+			<param-name>auto-discover-services</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ErraiServlet</servlet-name>
+		<url-pattern>*.erraiBus</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>jtsServlet</servlet-name>
+		<servlet-class>org.geowe.server.JTSServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>jtsServlet</servlet-name>
+		<url-pattern>/app/jtsService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>w3wServlet</servlet-name>
+		<servlet-class>org.geowe.server.W3WServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>w3wServlet</servlet-name>
+		<url-pattern>/app/w3wService</url-pattern>
+	</servlet-mapping>
+
+ <!-- REST service -->  
+<!--     <context-param>   -->
+<!--         <param-name>resteasy.scan</param-name>   -->
+<!--         <param-value>true</param-value>   -->
+<!--     </context-param>   -->
+  
+  
+<!--     <listener>   -->
+<!--         <listener-class>   -->
+<!--             org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap   -->
+<!--         </listener-class>   -->
+<!--     </listener>   -->
+  
+  
+<!--     <servlet>   -->
+<!--         <servlet-name>resteasy-servlet</servlet-name>   -->
+<!--         <servlet-class>   -->
+<!--             org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher   -->
+<!--         </servlet-class>   -->
+<!--     </servlet>   -->
+  
+  
+<!--     <servlet-mapping>   -->
+<!--         <servlet-name>resteasy-servlet</servlet-name>   -->
+<!--         <url-pattern>/service/*</url-pattern>   -->
+<!--     </servlet-mapping>   -->
+<!-- end Rest REST service -->
+
+    <servlet>
+		<servlet-name>GwtOpenlayersProxy</servlet-name>
+		<servlet-class>
+			org.gwtopenmaps.openlayers.server.GwtOpenLayersProxyServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GwtOpenlayersProxy</servlet-name>
+		<url-pattern>/gwtOpenLayersProxy/*</url-pattern>
+	</servlet-mapping>
+	
+	  
+      
+     <servlet>  
+       <servlet-name>FileUpload</servlet-name>  
+       <servlet-class>org.geowe.server.upload.FileUploadServlet</servlet-class>  
+     </servlet> 
+     <servlet-mapping>  
+       <servlet-name>FileUpload</servlet-name>  
+       <url-pattern>/fileupload.do</url-pattern>  
+     </servlet-mapping> 
+
+</web-app>

@@ -1,0 +1,34 @@
+body {
+	background-color: #ffffff;
+	color: black;
+	font-family: Arial, sans-serif;
+	font-size: small;
+	margin: 8px;
+}
+
+div.olLayerGoogleCopyright, div.olLayerGooglePoweredBy {
+	display: none !important;
+}
+
+.btn_in_detail .x-btn-tl, .btn_in_detail .x-btn-tr, .btn_in_detail .x-btn-tc,
+	.btn_in_detail .x-btn-ml, .btn_in_detail .x-btn-mr, .btn_in_detail .x-btn-mc,
+	.btn_in_detail .x-btn-bl, .btn_in_detail .x-btn-br, .btn_in_detail .x-btn-bc
+	{
+	font-size: 11px;
+	padding: 2px;
+	background-color: #e6e6e6;
+}
+
+div.olControlAttribution {
+	left: 100px;
+	bottom: 1px;
+}
+
+.splash-center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -200px;
+	margin-top: -150px;
+	padding: 5px;
+}

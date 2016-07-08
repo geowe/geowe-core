@@ -1,0 +1,66 @@
+<!--
+  #%L
+  GeoWE Project
+  %%
+  Copyright (C) 2015 - 2016 GeoWE.org
+  %%
+  This file is part of GeoWE.org.
+  
+  GeoWE is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  GeoWE is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
+  #L%
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
+<title>GeoWE Report Engine (Alpha)</title>
+</head>
+<body>
+	<h2 style="text-align: center;">{uimessages.layerReportHeader}</h2>
+	<hr>
+	<p>
+		<span style="font-weight: bold;"></span>
+	</p>
+	<p>
+		<span style="font-weight: bold;">{uimessages.lidLayerNameLabel}</span>
+		{data.getName}
+	</p>
+	<p>
+		<span style="font-weight: bold;">{uimessages.lidProjectionLabel}</span>
+		{data.getProjection.getProjectionCode}
+	</p>
+	<p>
+		<span style="font-weight: bold;">{uimessages.lidElementsCountLabel}</span>
+		{data.getNumberOfFeatures}
+	</p>
+	<p>
+		<span style="font-weight: bold;">{uimessages.asdAttributeLabel}</span>
+		{data.getNumAttributes}
+	</p>
+	<p>
+		<span style="font-weight: bold;">{uimessages.asdAttributeLabel}</span>
+		{data.getSchema.getAttributeNames}
+	</p>
+	<br>
+	<br>
+	<hr>
+	<div style="text-align: center;">
+		GeoWE Report Engine(Alpha) - <a href="http://www.geowe.org"
+			target="_blank">geowe.org</a>
+	</div>
+</body>
+</html>
+
+

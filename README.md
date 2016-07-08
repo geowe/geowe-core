@@ -35,7 +35,7 @@ Put your key in ErraiApp.properties file, located at: src\main\resources
 	w3w.key = YOUR_W3W_API_KEY
 	
 ##Build the software
-In order to compile and build **GeoWE**, the Java 7 platform is necessary. The project uses maven for building and packaging.
+In order to compile and build **GeoWE**, the JDK 7 platform is necessary. The project uses maven for building and packaging.
 	
 	mvn clean package
 

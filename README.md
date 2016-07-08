@@ -35,9 +35,8 @@ Put your key in ErraiApp.properties file, located at: src\main\resources
 	w3w.key = YOUR_W3W_API_KEY
 	
 ##Build the software
-To build the war file you can do with maven:
-
-	For example:
+In order to compile and build geowe the Java 7 platform is necessary. The project uses maven to build and package.
+	
 	mvn clean package
 
 ##Deploy

@@ -13,6 +13,32 @@ More information available on [GeoWE Web site](http://geowe.org/)
 
 ##License
 
-~~The **geowe-core** is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you can use it free of charge, without strings attached in commercial and non-commercial projects.~~
+The **geowe-core** is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html), meaning you can use it free of charge, according with license terms and conditions.
 
-We are currently studying the license on which the code will be released.
+##Configuration
+In order to use geowe full featured you must configure the basic params:
+
+####Bing Maps config:
+In order to use Bing maps, you need specify your own bing maps key [read carefully] (https://www.microsoft.com/maps/create-a-bing-maps-key.aspx).
+
+Put your key in BingConstants.properties file, located at: src\main\java\org\geowe\client\local\main\tool\map\catalog\model
+
+	For example:
+	bingKey = YOUR_BING_MAPS_KEY
+
+####what3words config:
+In order to use what3words feature, you need specify your own what3words api key. You must contact with [what3words](http://what3words.com) to obtain it.
+
+Put your key in ErraiApp.properties file, located at: src\main\resources
+
+	For example:
+	w3w.key = YOUR_W3W_API_KEY
+	
+##Build the software
+To build the war file you can do with maven:
+
+	For example:
+	mvn clean package
+
+##Deploy
+Once you compiled the software, the geowe.war file can be deployed on any server/application container, like tomcat. Our [live demo](http://map.geowe.org) is running on OpenShift, Try it!

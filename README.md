@@ -41,3 +41,9 @@ In order to compile and build **GeoWE**, the JDK 7 platform is necessary. The pr
 
 ##Deploy
 Once you compiled the software, the geowe.war file can be deployed on any server/application container, like Apache Tomcat. Our [live demo](http://map.geowe.org) is running on OpenShift, Try it!
+
+##Javadoc
+You can see the complete javadoc [here](http://www.geowe.org/source/apidocs).
+
+##Dependecies report
+You can see the complete source dependencies [here](http://www.geowe.org/source/dependencies).

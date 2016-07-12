@@ -61,38 +61,39 @@ public class GeometryValidator {
 	private MessageDialogBuilder messageDialogBuilder;
 	private static final WKT wktFormat = new WKT();
 	private static final String VALIDATED_LAYER_NAME = "ValidationResults";
+	private final JTSServiceAsync jtsServiceAsync = GWT.create(JTSService.class);
 
 	public void requestValidate(final VectorLayer layer, final LayerManagerWidget layerManager) {
-		List<String> wktLayer = getWKT(layer);
+		final List<String> wktLayer = getWKT(layer);
 		requestValidate(wktLayer, layer.getName(), layerManager);
 	}
 
-	public void requestValidate(final VectorFeature[] features, String layerName,
-			final LayerManagerWidget layerManager) {
-		List<String> wktLayer = getWKT(features);
+	public void requestValidate(final String layerName,
+			final LayerManagerWidget layerManager, final VectorFeature... features) {
+		final List<String> wktLayer = getWKT(features);
 		requestValidate(wktLayer, layerName, layerManager);
 	}
 
-	public void requestValidate(final String wkt, String layerName, final LayerManagerWidget layerManager) {
-		List<String> wktLayer = new ArrayList<String>();
+	public void requestValidate(final String wkt, final String layerName, final LayerManagerWidget layerManager) {
+		final List<String> wktLayer = new ArrayList<String>();
 		wktLayer.add(wkt);
 		requestValidate(wktLayer, layerName, layerManager);
 	}
 
-	public void requestValidate(List<String> wktLayer, final String layerName, final LayerManagerWidget layerManager) {
+	public void requestValidate(final List<String> wktLayer, final String layerName, final LayerManagerWidget layerManager) {
 
 		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false, UIMessages.INSTANCE.processing());
 		autoMessageBox.show();
-		JTSServiceAsync jtsServiceAsync = GWT.create(JTSService.class);
+		
 		jtsServiceAsync.validate(wktLayer, new AsyncCallback<List<ValidationResult>>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				autoMessageBox.hide();
 				messageDialogBuilder.createWarning(UIMessages.INSTANCE.fail(), "error: invalid geometry").show();
 			}
 
-			public void onSuccess(List<ValidationResult> wktElements) {
+			public void onSuccess(final List<ValidationResult> wktElements) {
 				autoMessageBox.hide();
 				if (wktElements.isEmpty()) {
 					messageDialogBuilder.createWarning(UIMessages.INSTANCE.utAlertMessageBoxTitle(),
@@ -107,22 +108,22 @@ public class GeometryValidator {
 									.show();
 				}
 
-				VectorLayer resultLayer = createLayerResult(layerName, wktElements);
+				final VectorLayer resultLayer = createLayerResult(layerName, wktElements);
 				layerManager.addVector(resultLayer);
 				updateElements(resultLayer, wktElements);
 			}
 		});
 	}
 
-	private VectorLayer createLayerResult(String layerName, List<ValidationResult> wktElements) {
+	private VectorLayer createLayerResult(final String layerName, final List<ValidationResult> wktElements) {
 		String normalColor = StyleFactory.stringToColour("result" + (int) (Math.random() * 0x1000000));
 		final StyleMap style = StyleFactory.createStyleMap(normalColor, StyleFactory.DEFAULT_SELECTED_COLOR,
 				StyleFactory.DEFAULT_HIGHLIGHTED_COLOR, null, null);
 
-		List<String> names = new ArrayList<String>();
+		final List<String> names = new ArrayList<String>();
 
 		int numMaxMessages = 1;
-		for (ValidationResult result : wktElements) {
+		for (final ValidationResult result : wktElements) {
 			if (result.getMessages().size() > numMaxMessages) {
 				numMaxMessages = result.getMessages().size();
 			}
@@ -132,19 +133,19 @@ public class GeometryValidator {
 			names.add("message" + (i + 1));
 		}
 
-		FeatureSchema schema = new FeatureSchema(names);
-		VectorLayer resultLayer = new VectorLayer(VALIDATED_LAYER_NAME + "_" + layerName, schema);
+		final FeatureSchema schema = new FeatureSchema(names);
+		final VectorLayer resultLayer = new VectorLayer(VALIDATED_LAYER_NAME + "_" + layerName, schema);
 		resultLayer.setStyleMap(style);
-		JSObject defaultStyle = getDefaultStyle(resultLayer);
+		final JSObject defaultStyle = getDefaultStyle(resultLayer);
 		defaultStyle.setProperty("fillColor", "#FFFF00");
 		defaultStyle.setProperty("strokeColor", "#FFFF00");
 		defaultStyle.setProperty("strokeWidth", 8);
 		return resultLayer;
 	}
 
-	private void updateElements(VectorLayer resultLayer, List<ValidationResult> wktElements) {
+	private void updateElements(final VectorLayer resultLayer, final List<ValidationResult> wktElements) {
 		for (ValidationResult result : wktElements) {
-			VectorFeature newVectorFeature = new VectorFeature(Geometry.fromWKT(result.getWkt()));
+			final VectorFeature newVectorFeature = getVectorFeature(result);
 			for (int i = 0; i < result.getMessages().size(); i++) {
 				newVectorFeature.getAttributes().setAttribute("message" + (i + 1), result.getMessages().get(i));
 			}
@@ -152,19 +153,23 @@ public class GeometryValidator {
 		}
 		resultLayer.redraw();
 	}
+	
+	private VectorFeature getVectorFeature(final ValidationResult result) {
+		return new VectorFeature(Geometry.fromWKT(result.getWkt()));
+	}
 
-	private JSObject getDefaultStyle(VectorLayer layer) {
+	private JSObject getDefaultStyle(final VectorLayer layer) {
 		return layer.getStyleMap().getJSObject().getProperty("styles").getProperty("default")
 				.getProperty("defaultStyle");
 	}
 
-	private List<String> getWKT(VectorLayer layer) {
+	private List<String> getWKT(final VectorLayer layer) {
 		return getWKT(layer.getFeatures());
 	}
 
-	private List<String> getWKT(VectorFeature... features) {
-		List<String> wktLayer = new ArrayList<String>();
-		for (VectorFeature feature : features) {
+	private List<String> getWKT(final VectorFeature... features) {
+		final List<String> wktLayer = new ArrayList<String>();
+		for (final VectorFeature feature : features) {
 			String wkt = wktFormat.write(feature);
 			wktLayer.add(wkt);
 		}

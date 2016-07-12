@@ -28,6 +28,7 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
+import org.geowe.client.local.main.tool.spatial.geoprocess.GeoprocessValidator;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
@@ -50,9 +51,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class GeometryValidationTool extends ButtonTool {
 	private final LayerManagerWidget layerManager;
 	@Inject
-	private GeometryValidator geometryValidator;
+	private GeometryValidator geometryValidator;	
 	@Inject
-	public GeometryValidationTool(GeoMap geoMap, LayerManagerWidget layerManager) {
+	private GeoprocessValidator geoprocessValidator;
+	@Inject
+	public GeometryValidationTool(final GeoMap geoMap, final LayerManagerWidget layerManager) {
 		super(UIMessages.INSTANCE.validationToolText(), ImageProvider.INSTANCE
 				.validation24(), layerManager);
 		this.layerManager = layerManager;
@@ -64,15 +67,16 @@ public class GeometryValidationTool extends ButtonTool {
 
 	@Override
 	protected void onRelease() {
-		VectorLayer layer = (VectorLayer) layerManager
+		final VectorLayer layer = (VectorLayer) layerManager
 				.getSelectedLayer(LayerManagerWidget.VECTOR_TAB);
-
-		VectorFeature[] elements = layer.getSelectedFeatures();
-		if (elements != null && elements.length > 0) {			
-			geometryValidator.requestValidate(elements, layer.getName(), layerManager);
-		} else {
-			confirm(layer);
-		}
+		if(geoprocessValidator.isValid(layer)) {
+			final VectorFeature[] elements = layer.getSelectedFeatures();
+			if (elements != null && elements.length > 0) {			
+				geometryValidator.requestValidate(layer.getName(), layerManager, elements);
+			} else {
+				confirm(layer);
+			}		
+		}		
 	}
 	
 	private void confirm(final VectorLayer layer) {

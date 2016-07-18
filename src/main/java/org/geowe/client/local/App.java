@@ -79,7 +79,7 @@ public class App {
 		RootPanel.get().add(actionBar);
 		RootPanel.get().add(linksWidget);
 
-		logger.info("Map init...");
+		logger.info("Map initialize...");
 		geoMapInitializer.initialize();
 		rasterLayerInitializer.initialize();
 		vectorLayerInitializer.initialize();

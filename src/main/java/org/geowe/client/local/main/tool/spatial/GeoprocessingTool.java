@@ -70,7 +70,7 @@ public class GeoprocessingTool extends ButtonTool {
 	private static final int LAYER_2 = 2;
 
 	@Inject
-	public GeoprocessingTool(GeoMap geoMap, LayerManagerWidget layerManager) {
+	public GeoprocessingTool(final GeoMap geoMap, final LayerManagerWidget layerManager) {
 		super(UIMessages.INSTANCE.analysisToolText(), ImageProvider.INSTANCE
 				.analysis32(), layerManager);
 		setToolTipConfig(createTooltipConfig(
@@ -89,7 +89,7 @@ public class GeoprocessingTool extends ButtonTool {
 		spatialOperationDialog.getButton(PredefinedButton.OK).addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {
+					public void onSelect(final SelectEvent event) {
 
 						taskManager.execute(new Runnable() {
 
@@ -99,12 +99,12 @@ public class GeoprocessingTool extends ButtonTool {
 										.hasGeoprocessSelected()) {
 									messageDialogBuilder.createWarning(
 											UIMessages.INSTANCE.fail(),
-											"No se ha especificado geoproceso")
+											UIMessages.INSTANCE.noGeoprocessSpecify())
 											.show();
 									return;
 								}
 
-								IGeoprocess geoprocess = spatialOperationDialog
+								final IGeoprocess geoprocess = spatialOperationDialog
 										.getGeoProcess();
 								if (geoprocessValidator.validate(geoprocess)) {
 									spatialOperationDialog.hide();
@@ -120,7 +120,7 @@ public class GeoprocessingTool extends ButtonTool {
 		return new SelectHandler() {
 
 			@Override
-			public void onSelect(SelectEvent event) {
+			public void onSelect(final SelectEvent event) {
 
 				taskManager.execute(new Runnable() {
 
@@ -131,14 +131,9 @@ public class GeoprocessingTool extends ButtonTool {
 							layerToValidate = spatialOperationDialog.getLayer2();
 						}
 						
-						if(layerToValidate == null) {
-							messageDialogBuilder.createWarning(
-									UIMessages.INSTANCE.fail(),
-									"No se ha especificado una capa")
-									.show();
-							return;
-						}
-						geometryValidator.requestValidate(layerToValidate, layerManager);
+						if(geoprocessValidator.isValid(layerToValidate)) {
+							geometryValidator.requestValidate(layerToValidate, layerManager);
+						}																							
 					}
 				});
 			}
@@ -147,7 +142,7 @@ public class GeoprocessingTool extends ButtonTool {
 
 	@Override
 	protected void onRelease() {
-		List<Layer> vectorLayers = layerManager.getLayerTree(
+		final List<Layer> vectorLayers = layerManager.getLayerTree(
 				LayerManagerWidget.VECTOR_TAB).getLayers();
 		spatialOperationDialog.setLayers(vectorLayers);
 		spatialOperationDialog.clearFields();

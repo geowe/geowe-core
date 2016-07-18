@@ -682,4 +682,12 @@ public interface UIMessages extends Messages {
 	String greater();
 
 	String smaller();
+	
+	String noGeoprocessSpecify();
+	
+	String noVectorLayerSpecify();
+	
+	String emptyVectorLayer();
+	
+	String noInputDataSpecified();
 }

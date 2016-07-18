@@ -45,7 +45,7 @@
 
 	<inherits name="com.google.gwt.i18n.I18N" />
 	<!--Spanish language, independent of country -->
- 	<extend-property name="locale" values="es" /> 
+  	<extend-property name="locale" values="es" />  
 	<set-configuration-property name="locale.useragent"
 		value="Y" />
 	<set-configuration-property name="locale.searchorder"

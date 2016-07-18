@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 import com.google.inject.Inject;
 
@@ -45,7 +46,7 @@ public class GeoprocessValidator {
 	private MessageDialogBuilder messageDialogBuilder;
 	private IInputGeoprocess inputGeoprocess;
 
-	public boolean validate(IGeoprocess geoprocess) {
+	public boolean validate(final IGeoprocess geoprocess) {
 		this.inputGeoprocess = geoprocess.getInputGeoprocess();
 		boolean isValid = true;
 		if (geoprocess.isBufferGeoprocess()) {			
@@ -61,11 +62,10 @@ public class GeoprocessValidator {
 		boolean valid = true;
 		if (inputGeoprocess == null) {
 			messageDialogBuilder.createWarning(UIMessages.INSTANCE.fail(),
-					"No se han definido datos de entrada").show();
+					UIMessages.INSTANCE.noInputDataSpecified()).show();
 			valid = false;
-		} else {
-			VectorLayer inputLayer = inputGeoprocess.getInputLayer();			
-			valid = isValid(inputLayer);
+		} else {				
+			valid = isValid(inputGeoprocess.getInputLayer());
 		}
 
 		return valid;
@@ -74,26 +74,35 @@ public class GeoprocessValidator {
 	private boolean isCompletelyValid() {
 
 		boolean valid = false;
-		if (isPartiallyValid()) {
-			VectorLayer overlayLayer = inputGeoprocess.getOverlayLayer();
-			valid = isValid(overlayLayer);
+		if (isPartiallyValid()) {			
+			valid = isValid(inputGeoprocess.getOverlayLayer());
 		} 
 		return valid;
 	}
 
-	private boolean isValid(VectorLayer layer) {
+	public boolean isValid(final VectorLayer layer) {
 		boolean valid = true;
 
 		if (layer == null) {
 			messageDialogBuilder.createWarning(UIMessages.INSTANCE.fail(),
-					"No se ha especificado capa").show();
+					UIMessages.INSTANCE.noVectorLayerSpecify()).show();
 			valid = false;
-		} else if (layer.getFeatures().length == 0) {
+		} else if (isEmptyLayer(layer)) {
 			messageDialogBuilder.createWarning(UIMessages.INSTANCE.fail(),
-					"No existen elementos en la capa").show();
+					UIMessages.INSTANCE.emptyVectorLayer()).show();
 			valid = false;
 		}
 
 		return valid;
+	}
+	
+	private boolean isEmptyLayer(final VectorLayer layer) {
+		boolean empty = false;
+		final VectorFeature[] features = layer.getFeatures();
+		if(features == null || features != null && features.length == 0) {
+			 empty = true;			
+		}
+		
+		return empty;
 	}
 }

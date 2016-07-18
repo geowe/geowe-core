@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.0.1]Beta - 2016-07-14
+### Added
+- Added Canary islands pojections: EPSG:32626, EPSG:32627.
+- Added South Africa projection: EPSG:32733, EPSG:32734, EPSG:32735, EPSG:32736
+
+### Fixed
+- issue [#126](https://github.com/geowe/geowe-core/issues/126)
+
 ## [1.0.0]Beta - 2016-07-8
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

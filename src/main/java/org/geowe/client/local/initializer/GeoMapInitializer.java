@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.geowe.client.local.main.StatusPanelWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.W3wTool;
-import org.geowe.client.local.main.tool.map.catalog.AppLayerCatalog;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.shared.rest.w3w.W3WService;
@@ -42,8 +41,6 @@ import org.gwtopenmaps.openlayers.client.control.ScaleLine;
 import org.gwtopenmaps.openlayers.client.control.ScaleLineOptions;
 import org.gwtopenmaps.openlayers.client.event.EventHandler;
 import org.gwtopenmaps.openlayers.client.event.EventObject;
-import org.gwtopenmaps.openlayers.client.event.MapZoomListener;
-import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.core.client.GWT;
@@ -77,6 +74,8 @@ public class GeoMapInitializer {
 	private final W3WServiceAsync w3wServiceAsync = GWT
 			.create(W3WService.class);
 
+	@Inject
+	private GeoMapZoomListener geoMapZoomListener;
 
 	public void initialize() {
 
@@ -110,7 +109,7 @@ public class GeoMapInitializer {
 				.register("touchstart", geoMap.getMap(),
 						getMouseClickEventHandler());
 
-		geoMap.getMap().addMapZoomListener(getMapZoomListener());
+		geoMap.getMap().addMapZoomListener(geoMapZoomListener);
 	}
 
 	private EventHandler getMouseMoverEventHandler() {
@@ -221,26 +220,10 @@ public class GeoMapInitializer {
 		});
 	}
 
-
 	private void showException(final String msg) {
 		final AlertMessageBox messageBox = new AlertMessageBox(
 				UIMessages.INSTANCE.warning(), msg);
 		messageBox.show();
 	}
 
-	private MapZoomListener getMapZoomListener() {
-		return new MapZoomListener() {
-			@Override
-			public void onMapZoom(final MapZoomEvent eventObject) {
-				final Layer googleSatelliteLayer = geoMap.getMap().getLayerByName(
-						AppLayerCatalog.GOOGLE_SATELLITE);
-
-				if (geoMap.getMap().getZoom() > 17) {
-					googleSatelliteLayer.setIsVisible(false);
-				} else {
-					googleSatelliteLayer.setIsVisible(true);
-				}
-			}
-		};
-	}
 }

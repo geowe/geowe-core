@@ -34,8 +34,6 @@ import org.geowe.client.local.main.tool.draw.DrawTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.ModifyFeature;
-import org.gwtopenmaps.openlayers.client.control.ModifyFeature.OnModificationStartListener;
-import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
@@ -45,7 +43,7 @@ import com.sencha.gxt.core.client.Style.Side;
 /**
  * Reshape tool
  * 
- * @author rltorres
+ * @author rafa@geowe.org
  *
  */
 @ApplicationScoped
@@ -72,18 +70,8 @@ public class ReshapeTool extends ToggleTool implements DrawTool {
 	
 	@Override
 	public Control createDrawTool(Layer layer) {
-		return  mapControlFactory.createEditingControl( ModifyFeature.RESHAPE, layer, getOnModificationStartListener()); 
-		
+		return mapControlFactory.createEditingControl(ModifyFeature.RESHAPE,
+				layer);
 	}
 	
-	private OnModificationStartListener getOnModificationStartListener() {
-		return new OnModificationStartListener() {
-
-			@Override
-			public void onModificationStart(VectorFeature vectorFeature) {
-				getGeoMap().getMap().zoomToExtent(
-						vectorFeature.getGeometry().getBounds());				
-			}
-		};
-	}	
 }

@@ -251,11 +251,9 @@ public class MapControlFactory {
 		return new Graticule(grtOptions);
 	}
 
-	public ModifyFeature createEditingControl(int mode, Layer layer,
-			OnModificationStartListener onModificationStartListener) {
+	public ModifyFeature createEditingControl(int mode, Layer layer) {
 		ModifyFeatureOptions modifyFeatureOptions = new ModifyFeatureOptions();
 
-		modifyFeatureOptions.onModificationStart(onModificationStartListener);
 		ModifyFeature modifyFeature = new ModifyFeature((Vector) layer,
 				modifyFeatureOptions);
 		modifyFeature.setVirtualStyle(getEditionStyle());

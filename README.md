@@ -7,8 +7,8 @@ GeoWE. GeoData Web Editing [core SIG Web]
 The **geowe-core** is being developed using the following technologies:
 - GWT (Google Web Toolkit)
 - JBoss ERRAI Framework
-- GXT
-- OpenLayers
+- Sencha GXT
+- GWT-OpenLayers
 
 More information available on the [GeoWE Web site](http://geowe.org/).
 

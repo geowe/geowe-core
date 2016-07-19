@@ -14,17 +14,17 @@ More information available on the [GeoWE Web site](http://geowe.org/).
 
 ##Features
 
-    - Advanced geodata editing
-    - Geolocation and geocoding support
-    - Geoprocessing support
-    - Geodata layer sharing via URL
-    - Supported geodata open formats: KML, GML, WKT and GeoJSON
-    - WMS and WFS support
-    - Base raster layer catalog: Google Maps, OSM, Bing, etc.
-    - Multiple input and output options with projection transformation
-    - Multi-device support
-    - Style and customization support
-    - Geometry validation features
+- Advanced geodata editing
+- Geolocation and geocoding support
+- Geoprocessing support
+- Geodata layer sharing via URL
+- Supported geodata open formats: KML, GML, WKT and GeoJSON
+- WMS and WFS support
+- Base raster layer catalog: Google Maps, OSM, Bing, etc.
+- Multiple input and output options with projection transformation
+- Multi-device support
+- Style and customization support
+- Geometry validation features
 
 ##License
 

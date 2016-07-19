@@ -12,6 +12,20 @@ The **geowe-core** is being developed using the following technologies:
 
 More information available on the [GeoWE Web site](http://geowe.org/).
 
+##Features
+
+    - Advanced geodata editing
+    - Geolocation and geocoding support
+    - Geoprocessing support
+    - Geodata layer sharing via URL
+    - Supported geodata open formats: KML, GML, WKT and GeoJSON
+    - WMS and WFS support
+    - Base raster layer catalog: Google Maps, OSM, Bing, etc.
+    - Multiple input and output options with projection transformation
+    - Multi-device support
+    - Style and customization support
+    - Geometry validation features
+
 ##License
 
 The **geowe-core** is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html), meaning you can use it free of charge, according with license terms and conditions.

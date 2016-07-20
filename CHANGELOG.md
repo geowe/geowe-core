@@ -7,6 +7,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.0.3]Beta - 2016-07-20
+
+### Fixed
+- issue [#100](https://github.com/geowe/geowe-core/issues/100) - Cargar por url
+
 ## [1.0.2]Beta - 2016-07-18
 
 ### Fixed

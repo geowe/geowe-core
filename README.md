@@ -17,7 +17,7 @@ More information available on the [GeoWE Web site](http://geowe.org/).
 - Advanced geodata editing
 - Geolocation and geocoding support
 - Geoprocessing support
-- Geodata layer sharing via URL
+- Geodata layer sharing via URL - [Example](http://demo-geowe.rhcloud.com/App.html?layerUrl=http://repository.geowe.org/rutasgastronomicas/calles.kml&layerName=calles&layerProj=EPSG:23030&layerFormat=KML)
 - Supported geodata open formats: KML, GML, WKT and GeoJSON
 - WMS and WFS support
 - Base raster layer catalog: Google Maps, OSM, Bing, etc.
@@ -25,6 +25,7 @@ More information available on the [GeoWE Web site](http://geowe.org/).
 - Multi-device support
 - Style and customization support
 - Geometry validation features
+- Live version: [map.geowe.org](http://map.geowe.org/)
 
 ##License
 

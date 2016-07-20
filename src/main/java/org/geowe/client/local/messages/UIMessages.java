@@ -690,4 +690,6 @@ public interface UIMessages extends Messages {
 	String emptyVectorLayer();
 	
 	String noInputDataSpecified();
+	
+	String zoomWarning(int zoomLevel, String googleSatellite);
 }

@@ -140,7 +140,7 @@ public class GeocodingPanelWidget implements IsWidget {
 			panel.setWidget(horizontalGroup);
 
 			panel.setVisible(false);			
-			geolocate();
+			
 		}
 		return panel;
 	}
@@ -148,13 +148,13 @@ public class GeocodingPanelWidget implements IsWidget {
 	@PostConstruct
 	private void publishJS() {
 		bridge(this);
-
+		geolocate();
 		coordinateGeolocationDialog.getButton(PredefinedButton.OK)
 				.addSelectHandler(new SelectHandler() {
 					@Override
 					public void onSelect(final SelectEvent event) {
 						if (coordinateGeolocationDialog.isCorrectFilled()) {
-
+							startProgressBar();
 							final Double latitud = Double
 									.parseDouble(coordinateGeolocationDialog
 											.getLatitud());

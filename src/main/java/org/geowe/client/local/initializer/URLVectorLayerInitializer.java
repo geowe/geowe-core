@@ -104,8 +104,8 @@ public class URLVectorLayerInitializer {
 			final URLVectorLayerDef urlLayerDef = new URLVectorLayerDef();		
 			urlLayerDef.setEpsg(getLayerinfo("layerProj") == null ? GeoMap.INTERNAL_EPSG
 					: getLayerinfo("layerProj"));
-			urlLayerDef.setFormat(getLayerinfo("layeFormat") == null ? VectorLayerDef.KML
-					: getLayerinfo("layeFormat"));
+			urlLayerDef.setFormat(getLayerinfo("layerFormat") == null ? VectorLayerDef.KML
+					: getLayerinfo("layerFormat"));
 			urlLayerDef.setName(getLayerinfo("layerName") == null ? "url-layer"
 					: getLayerinfo("layerName"));
 			urlLayerDef.setUrl(layerUri);

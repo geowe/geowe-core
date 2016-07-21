@@ -1,15 +1,31 @@
 #geowe-core
 GeoWE. GeoData Web Editing [core SIG Web]
 
-**GeoWE** is a Geographic Information System (GIS) developed in Java, whose main aim is the editing of spatial data (geometric and alphanumeric).
+**GeoWE** is an open free GIS platform oriented to advanced geodata editing on The Web. The main aim of this initiative is to move the strenghts usually linked to desktop GIS to a web environment, by leveraging open source technologies. This is a free software project that is part of the open source GIS world, and it is developed in Java using the Google Web Toolkit framework.
+
 
 The **geowe-core** is being developed using the following technologies:
 - GWT (Google Web Toolkit)
 - JBoss ERRAI Framework
-- GXT
-- OpenLayers
+- Sencha GXT
+- GWT-OpenLayers
 
 More information available on the [GeoWE Web site](http://geowe.org/).
+
+##Features
+
+- Advanced geodata editing
+- Geolocation and geocoding support
+- Geoprocessing support
+- Geodata layer sharing via URL - [Example](http://demo-geowe.rhcloud.com/App.html?layerUrl=http://repository.geowe.org/rutasgastronomicas/calles.kml&layerName=calles&layerProj=EPSG:23030&layerFormat=KML)
+- Supported geodata open formats: KML, GML, WKT and GeoJSON
+- WMS and WFS support
+- Base raster layer catalog: Google Maps, OSM, Bing, etc.
+- Multiple input and output options with projection transformation
+- Multi-device support
+- Style and customization support
+- Geometry validation features
+- Live version: [map.geowe.org](http://map.geowe.org/)
 
 ##License
 

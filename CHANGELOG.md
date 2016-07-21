@@ -7,6 +7,17 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.0.3]Beta - 2016-07-20
+
+### Fixed
+- issue [#100](https://github.com/geowe/geowe-core/issues/100) - Cargar por url
+
+## [1.0.2]Beta - 2016-07-18
+
+### Fixed
+- issue [#139](https://github.com/geowe/geowe-core/issues/139)
+- issue [#142](https://github.com/geowe/geowe-core/issues/142)
+
 ## [1.0.1]Beta - 2016-07-14
 ### Added
 - Added Canary islands pojections: EPSG:32626, EPSG:32627.

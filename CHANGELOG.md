@@ -7,6 +7,22 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.0.5]Beta - 2016-08-18
+
+### Fixed
+- issue [#150](https://github.com/geowe/geowe-core/issues/150)
+
+## [1.0.4]Beta - 2016-07-22
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Fixed
+- issue [#147](https://github.com/geowe/geowe-core/issues/147)
+- issue [#148](https://github.com/geowe/geowe-core/issues/147)
+
+## [1.0.3]Beta - 2016-07-20
+
+### Fixed
+- issue [#100](https://github.com/geowe/geowe-core/issues/100) - Cargar por url
+
 ## [1.0.2]Beta - 2016-07-18
 
 ### Fixed
@@ -22,7 +38,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#126](https://github.com/geowe/geowe-core/issues/126)
 
 ## [1.0.0]Beta - 2016-07-8
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org)no longer available
 ### Added
 - improve performance
 

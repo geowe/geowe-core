@@ -60,10 +60,13 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * GeoprocessDialog representa al diálogo de análisis espacial encargado de realizar las operaciones geoprocesamiento.
+ * GeoprocessDialog representa al diálogo de análisis espacial encargado de
+ * realizar las operaciones geoprocesamiento.
  * 
  * @author jose@geowe.org
- *
+ * @author rafa@geowe.org
+ * @since 19-08-2016 fixed issue #127:
+ *        https://github.com/geowe/geowe-core/issues/127
  */
 @ApplicationScoped
 public class GeoprocessDialog extends Dialog {
@@ -76,7 +79,7 @@ public class GeoprocessDialog extends Dialog {
 	private static final ListStore<VectorLayerInfo> LAYER_STORE_2 = new ListStore<VectorLayerInfo>(
 			LAYER_PROPERTIES.key());
 	private static final ComboBox<VectorLayerInfo> LAYER_COMBO_2 = new ComboBox<VectorLayerInfo>(
-			LAYER_STORE_1, LAYER_PROPERTIES.name());	
+			LAYER_STORE_2, LAYER_PROPERTIES.name());
 	private static final TextButton VALIDATE_LAYER_1_BUTTON = new TextButton(
 			UIMessages.INSTANCE.validationToolText(),
 			ImageProvider.INSTANCE.validation16());
@@ -85,14 +88,36 @@ public class GeoprocessDialog extends Dialog {
 			ImageProvider.INSTANCE.validation16());
 	private static final String WIDTH_COMBO_LAYER = "250px";
 	private static final String WIDTH_DISTANCE_FIELD = "120px";
-	private static final String WIDTH_SPATIAL_OPERATION_COMBO = "140px";	
+	private static final String WIDTH_SPATIAL_OPERATION_COMBO = "140px";
+	private static final String COMBO1_ID = "1";
+	private static final String COMBO2_ID = "2";
 	private VerticalLayoutContainer panel;
 	private GeoprocessComboBox spatialOperationComboBox;
 	private TextField distanceTextField;
+	private List<VectorLayerInfo> layers;
 	@Inject
 	private LayerManagerWidget layerManagerWidget;
 	@Inject
 	private IInputGeoprocess inputGeoprocess;
+
+	@Inject
+	public GeoprocessDialog(final Geoprocesses spatialOperation) {
+		super();
+		this.setHeadingText(UIMessages.INSTANCE.sodHeadingText());
+		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
+		this.setPixelSize(500, 350);
+		this.setModal(true);
+		this.setResizable(false);
+		add(createPanel(spatialOperation));
+		this.spatialOperationComboBox.setValue(null);
+		getButton(PredefinedButton.CANCEL).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						GeoprocessDialog.this.hide();
+					}
+				});
+	}
 
 	public VectorLayer getLayer1() {
 		VectorLayer layer = null;
@@ -145,33 +170,14 @@ public class GeoprocessDialog extends Dialog {
 		}
 	}
 
-	@Inject
-	public GeoprocessDialog(final Geoprocesses spatialOperation) {
-		super();
-		this.setHeadingText(UIMessages.INSTANCE.sodHeadingText());
-		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(500, 350);
-		this.setModal(true);
-		this.setResizable(false);
-		add(createPanel(spatialOperation));
-		this.spatialOperationComboBox.setValue(null);
-		getButton(PredefinedButton.CANCEL).addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						GeoprocessDialog.this.hide();
-					}
-				});
-	}
-
 	private Widget createPanel(final Geoprocesses spatialOperation) {
 		panel = new VerticalLayoutContainer();
 		panel.add(new Label(UIMessages.INSTANCE.descAnalysisText()));
 		panel.add(new HTML("<HR>"));
 		panel.add(new HTML("<BR>"));
 		createGeoprocessAndDistanceField(spatialOperation);
-		createComboLayer(LAYER_COMBO_1, "1", VALIDATE_LAYER_1_BUTTON);
-		createComboLayer(LAYER_COMBO_2, "2", VALIDATE_LAYER_2_BUTTON);
+		createComboLayer(LAYER_COMBO_1, COMBO1_ID, VALIDATE_LAYER_1_BUTTON);
+		createComboLayer(LAYER_COMBO_2, COMBO2_ID, VALIDATE_LAYER_2_BUTTON);
 		panel.add(new HTML("<BR>"));
 		panel.add(new HTML("<HR>"));
 		panel.add(new Label(UIMessages.INSTANCE.sodInfoText()));
@@ -202,11 +208,19 @@ public class GeoprocessDialog extends Dialog {
 		combo.setEditable(false);
 		combo.enableEvents();
 		combo.setWidth(WIDTH_COMBO_LAYER);
+		combo.setId(numCombo);
 
 		combo.addSelectionHandler(new SelectionHandler<VectorLayerInfo>() {
 			@Override
 			public void onSelection(SelectionEvent<VectorLayerInfo> event) {
 				combo.setValue(event.getSelectedItem(), true);
+				List<VectorLayerInfo> updatedLayers = removeLayer(event
+						.getSelectedItem());
+				if (COMBO1_ID.equals(combo.getId())) {
+					updateCombo(LAYER_COMBO_2, LAYER_STORE_2, updatedLayers);
+				} else {
+					updateCombo(LAYER_COMBO_1, LAYER_STORE_1, updatedLayers);
+				}
 			}
 		});
 		
@@ -220,6 +234,25 @@ public class GeoprocessDialog extends Dialog {
 		panel.add(new Label(UIMessages.INSTANCE.layerLabelText(numCombo)));
 		panel.add(horizontalGroup);
 	}
+
+	private List<VectorLayerInfo> removeLayer(VectorLayerInfo vectorLayerInfo) {
+		List<VectorLayerInfo> newLayers = new ArrayList<VectorLayerInfo>();
+		for (VectorLayerInfo layerInfo : layers) {
+			if (!layerInfo.getName().equals(vectorLayerInfo.getName())) {
+				newLayers.add(layerInfo);
+			}
+		}
+		return newLayers;
+	}
+
+	private void updateCombo(ComboBox<VectorLayerInfo> combo,
+			ListStore<VectorLayerInfo> store,
+			List<VectorLayerInfo> updatedLayers) {
+		store.clear();
+		store.addAll(updatedLayers);
+		combo.redraw();
+	}
+
 
 	private void createGeoprocessAndDistanceField(final Geoprocesses spatialOperation) {
 		spatialOperationComboBox = new GeoprocessComboBox(
@@ -264,7 +297,7 @@ public class GeoprocessDialog extends Dialog {
 	}
 
 	public void setLayers(final List<Layer> vectorLayers) {
-		final List<VectorLayerInfo> layers = new ArrayList<VectorLayerInfo>();
+		layers = new ArrayList<VectorLayerInfo>();
 
 		for (final Layer layer : vectorLayers) {
 			final VectorLayerInfo layerInfo = new VectorLayerInfo((Vector) layer);

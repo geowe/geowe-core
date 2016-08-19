@@ -304,12 +304,8 @@ public class GeoprocessDialog extends Dialog {
 			layers.add(layerInfo);
 		}
 
-		LAYER_STORE_1.clear();
-		LAYER_STORE_1.addAll(layers);
-		LAYER_COMBO_1.redraw();
-		LAYER_STORE_2.clear();
-		LAYER_STORE_2.addAll(layers);
-		LAYER_COMBO_2.redraw();
+		updateCombo(LAYER_COMBO_1, LAYER_STORE_1, layers);
+		updateCombo(LAYER_COMBO_2, LAYER_STORE_2, layers);
 	}
 
 	public void clearFields() {

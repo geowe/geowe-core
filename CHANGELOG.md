@@ -9,6 +9,9 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [1.0.5]Beta - 2016-08-18
 
+### Added
+- Added Africa projections: EPSG:22032, EPSG:22033, EPSG:32732, EPSG:3036, EPSG:3037, EPSG:32737
+ 
 ### Fixed
 - issue [#150](https://github.com/geowe/geowe-core/issues/150)
 

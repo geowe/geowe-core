@@ -14,6 +14,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
  
 ### Fixed
 - issue [#150](https://github.com/geowe/geowe-core/issues/150)
+- issue [#127](https://github.com/geowe/geowe-core/issues/127)
 
 ## [1.0.4]Beta - 2016-07-22
 version deployed for testing [map.geowe.org](http://map.geowe.org)

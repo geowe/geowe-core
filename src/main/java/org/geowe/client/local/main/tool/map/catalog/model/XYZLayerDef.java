@@ -36,7 +36,7 @@ public class XYZLayerDef extends LayerDef{
 	private static final long serialVersionUID = 2520310257932517715L;
 
 	private String url;
-	private String esriLayerName;
+	private String layerName;
 	
 	
 	@Override
@@ -49,7 +49,7 @@ public class XYZLayerDef extends LayerDef{
 		XYZOptions layerOptions = new XYZOptions();		
 		layerOptions.setSphericalMercator(true);
 		
-		XYZ xyzLayer = new XYZ(esriLayerName, url, layerOptions);
+		XYZ xyzLayer = new XYZ(layerName, url, layerOptions);
 		xyzLayer.setIsBaseLayer(false);
 
 		return xyzLayer;	
@@ -63,7 +63,7 @@ public class XYZLayerDef extends LayerDef{
 		 * catalogo y en el layerManager y no siga apareciendo como disponible
 		 * en el catalogo aunque ya haya sido agregada al layerManager
 		 */
-		if(esriLayerName == null || name.equals(esriLayerName)) {
+		if(layerName == null || name.equals(layerName)) {
 			super.setName(name);
 		}
 	}
@@ -76,12 +76,12 @@ public class XYZLayerDef extends LayerDef{
 		this.url = url;
 	}
 
-	public String getESRILayerName() {
-		return esriLayerName;
+	public String getLayerName() {
+		return layerName;
 	}
 
-	public void setESRILayerName(String esriLayerName) {
+	public void setLayerName(String esriLayerName) {
 		this.setName(esriLayerName);
-		this.esriLayerName = esriLayerName;
+		this.layerName = esriLayerName;
 	}
 }

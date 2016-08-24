@@ -45,7 +45,7 @@ public class IgnLayerSet extends AbstractLayerSet {
 				.ignBaseDescription());
 		ignBaseAll
 				.setUrl("http://www.ign.es/wms-inspire/ign-base?SERVICE=WMS&");
-		ignBaseAll.setWmsLayerName("IGNBaseTodo");
+		ignBaseAll.setLayerName("IGNBaseTodo");
 		ignBaseAll.setFormat("image/png");
 		ignBaseAll.setEpsg("EPSG:3857");
 		ignBaseAll.setIcon(ImageProvider.INSTANCE.ign16());	

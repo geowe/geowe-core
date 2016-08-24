@@ -43,7 +43,7 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		catastro.setDescription(UICatalogMessages.INSTANCE
 				.catastroDescription());
 		catastro.setUrl("http://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?");
-		catastro.setWmsLayerName("CATASTRO");
+		catastro.setLayerName("CATASTRO");
 		catastro.setFormat("PNG");
 		catastro.setEpsg("EPSG:3785");
 		catastro.setIcon(ImageProvider.INSTANCE.catastro16());
@@ -54,7 +54,7 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 				.enclosuresSigPacDescription());
 		recintosSp
 				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoservergis/wms");
-		recintosSp.setWmsLayerName("dgpa_spa_sigpac:SPAD_RECINTOS_2015");
+		recintosSp.setLayerName("dgpa_spa_sigpac:SPAD_RECINTOS_2015");
 		recintosSp.setFormat("image/png");
 		recintosSp.setEpsg("EPSG:25830");
 		recintosSp.setIcon(ImageProvider.INSTANCE.sigpac16());
@@ -66,7 +66,7 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		frutalesSp
 				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoservergis/wms");
 		frutalesSp
-				.setWmsLayerName("dgpa_spa_sigpac:SPAD_FRUTALES_CASCARA_2015");
+				.setLayerName("dgpa_spa_sigpac:SPAD_FRUTALES_CASCARA_2015");
 		frutalesSp.setFormat("image/png");
 		frutalesSp.setEpsg("EPSG:25830");
 		frutalesSp.setIcon(ImageProvider.INSTANCE.sigpac16());
@@ -77,7 +77,7 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		ortoAndalucia.setDescription(UICatalogMessages.INSTANCE
 				.ideAndalucia2010Description());
 		ortoAndalucia.setUrl("http://www.ideandalucia.es/wms/ortofoto2010");
-		ortoAndalucia.setWmsLayerName("orto_2010-11");
+		ortoAndalucia.setLayerName("orto_2010-11");
 		ortoAndalucia.setFormat("image/png");
 		ortoAndalucia.setEpsg("EPSG:3857");
 		ortoAndalucia.setIcon(ImageProvider.INSTANCE.ideAndalucia16());

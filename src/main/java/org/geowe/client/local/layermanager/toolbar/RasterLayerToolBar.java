@@ -29,7 +29,7 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.layermanager.tool.DeleteLayerTool;
 import org.geowe.client.local.layermanager.tool.InfoRasterTool;
-import org.geowe.client.local.layermanager.tool.create.AddWMSLayerTool;
+import org.geowe.client.local.layermanager.tool.create.AddRasterLayerTool;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.core.client.resources.ThemeStyles;
@@ -43,7 +43,8 @@ public class RasterLayerToolBar extends ContentPanel {
 	@Inject @New
 	private InfoRasterTool infoRasterTool;
 	@Inject
-	private AddWMSLayerTool addWMSLayerTool;
+	private AddRasterLayerTool addRasterLayerTool;
+	
 	private final HorizontalPanel horizontalGroup;
 	
 	public RasterLayerToolBar(){
@@ -57,7 +58,7 @@ public class RasterLayerToolBar extends ContentPanel {
 	
 	@PostConstruct
 	private void initialize(){
-		horizontalGroup.add(addWMSLayerTool);
+		horizontalGroup.add(addRasterLayerTool);				
 		horizontalGroup.add(deleteLayerTool);
 		horizontalGroup.add(infoRasterTool);
 		setWidget(horizontalGroup);

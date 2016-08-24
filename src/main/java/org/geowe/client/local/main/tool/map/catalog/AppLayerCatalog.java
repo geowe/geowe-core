@@ -27,12 +27,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.main.tool.map.catalog.layerset.BingLayerSet;
-import org.geowe.client.local.main.tool.map.catalog.layerset.SampleLayerSet;
 import org.geowe.client.local.main.tool.map.catalog.layerset.EsriLayerSet;
 import org.geowe.client.local.main.tool.map.catalog.layerset.GoogleLayerSet;
 import org.geowe.client.local.main.tool.map.catalog.layerset.IgnLayerSet;
 import org.geowe.client.local.main.tool.map.catalog.layerset.MiscWmsLayerSet;
 import org.geowe.client.local.main.tool.map.catalog.layerset.OsmLayerSet;
+import org.geowe.client.local.main.tool.map.catalog.layerset.PNOAWMTSLayerSet;
+import org.geowe.client.local.main.tool.map.catalog.layerset.SampleLayerSet;
 
 /**
  * Catalogo de capas oficial de la aplicacion GeoWE que ofrece al usuario las capas
@@ -41,6 +42,9 @@ import org.geowe.client.local.main.tool.map.catalog.layerset.OsmLayerSet;
  * por proveedor en forma de LayerSet.
  * 
  * @author Atanasio Muñoz
+ * @author jmmluna
+ * @since 24/08/2016
+ * Se añade al catálogo la capa WMTS del PNOA
  *
  */
 @ApplicationScoped
@@ -61,6 +65,8 @@ public class AppLayerCatalog extends AbstractLayerCatalog {
 	private MiscWmsLayerSet miscWmsLayerSet;
 	@Inject
 	private SampleLayerSet sampleLayeSet;
+	@Inject
+	private PNOAWMTSLayerSet pnoaWMTSLayerSet;
 
 	@PostConstruct
 	private void initializeCatalog() {
@@ -69,6 +75,7 @@ public class AppLayerCatalog extends AbstractLayerCatalog {
 		addLayers(osmLayerSet);
 		addLayers(esriLayerSet);
 		addLayers(ignLayerSet);
+		addLayers(pnoaWMTSLayerSet);
 		addLayers(miscWmsLayerSet);
 		addLayers(sampleLayeSet);			
 	}

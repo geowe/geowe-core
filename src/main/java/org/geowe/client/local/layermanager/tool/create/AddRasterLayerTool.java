@@ -47,15 +47,15 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  *
  */
 @ApplicationScoped
-public class AddWMSLayerTool extends LayerTool {
+public class AddRasterLayerTool extends LayerTool {
 
 	@Inject
-	private LoadWMSLayerDialog loadWMSLayerDialog;
+	private LoadRasterLayerDialog loadWMSLayerDialog;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 
 	@Inject
-	public AddWMSLayerTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
+	public AddRasterLayerTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
 	}
 
@@ -80,31 +80,31 @@ public class AddWMSLayerTool extends LayerTool {
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						if (loadWMSLayerDialog.isCorrectFilled()) {
+						if (loadWMSLayerDialog.isCorrectFilledWMS()) {
 
-							if (existLayer(loadWMSLayerDialog.getWmsLayerName())) {
-								showAlert(
-										UIMessages.INSTANCE
-												.aWMSltAlertMessageBoxTitle(),
-										UIMessages.INSTANCE
-												.layerAlreadyExist(loadWMSLayerDialog
-														.getWmsLayerName()));
-							} else {
-								WmsLayerDef newLayer = new WmsLayerDef();
-								newLayer.setName(loadWMSLayerDialog
-										.getWmsLayerName());
-								newLayer.setUrl(loadWMSLayerDialog.getUrl());
-								newLayer.setWmsLayerName(loadWMSLayerDialog
-										.getWmsLayerName());
-								newLayer.setFormat(loadWMSLayerDialog
-										.getFormat());
-								newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
-
-								layerManagerWidget.addRaster(newLayer
-										.getLayer());
-
-								loadWMSLayerDialog.initialize();
-							}
+//							if (existLayer(loadWMSLayerDialog.getWmsLayerName())) {
+//								showAlert(
+//										UIMessages.INSTANCE
+//												.aWMSltAlertMessageBoxTitle(),
+//										UIMessages.INSTANCE
+//												.layerAlreadyExist(loadWMSLayerDialog
+//														.getWmsLayerName()));
+//							} else {
+//								WmsLayerDef newLayer = new WmsLayerDef();
+//								newLayer.setName(loadWMSLayerDialog
+//										.getWmsLayerName());
+//								newLayer.setUrl(loadWMSLayerDialog.getUrl());
+//								newLayer.setLayerName(loadWMSLayerDialog
+//										.getWmsLayerName());
+//								newLayer.setFormat(loadWMSLayerDialog
+//										.getFormat());
+//								newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
+//
+//								layerManagerWidget.addRaster(newLayer
+//										.getLayer());
+//
+//								loadWMSLayerDialog.initialize();
+//							}
 						} else {
 							showAlert(UIMessages.INSTANCE
 									.aWMSltAlertMessageBoxTitle(),

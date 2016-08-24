@@ -35,9 +35,7 @@ import org.gwtopenmaps.openlayers.client.protocol.ProtocolType;
  *
  */
 public class BingLayerDef extends LayerDef{
-	private static final long serialVersionUID = -5252615636942381631L;
-	// private static final String KEY =
-	// "AnydWgEpsZNW2AvlZAaGsiRokwGCPBmcTE0wM5U8J7et46Tmh0pvYj9mNkUMGVby";
+	private static final long serialVersionUID = -5252615636942381631L;	
 	private static final String KEY = BingConstants.INSTANCE.bingKey();
 	private BingType mapType;
 	

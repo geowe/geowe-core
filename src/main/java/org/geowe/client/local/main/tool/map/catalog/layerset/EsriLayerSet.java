@@ -39,7 +39,7 @@ public class EsriLayerSet extends AbstractLayerSet {
 	
 	public EsriLayerSet() {
 		final XYZLayerDef esriLayer = new XYZLayerDef();
-		esriLayer.setESRILayerName("ESRI");
+		esriLayer.setLayerName("ESRI");
 		esriLayer.setName("ESRI Cartography");
 		esriLayer.setDescription(UICatalogMessages.INSTANCE
 				.esriBasicDescription());

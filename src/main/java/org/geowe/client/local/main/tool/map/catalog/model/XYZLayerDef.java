@@ -80,8 +80,8 @@ public class XYZLayerDef extends LayerDef{
 		return layerName;
 	}
 
-	public void setLayerName(String esriLayerName) {
-		this.setName(esriLayerName);
-		this.layerName = esriLayerName;
+	public void setLayerName(String layerName) {
+		this.setName(layerName);
+		this.layerName = layerName;
 	}
 }

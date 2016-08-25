@@ -29,9 +29,9 @@ import javax.inject.Inject;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.LayerTool;
-import org.geowe.client.local.layermanager.tool.LoadWMSLayerDialog;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.map.catalog.model.WmsLayerDef;
+import org.geowe.client.local.main.tool.map.catalog.model.WmtsLayerDef;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 
@@ -41,16 +41,17 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
- * Herramienta responsable de mostrar el widget para añadir una capa WMS
+ * Herramienta responsable de mostrar el widget para añadir una capa Raster
  *
- * @author geowe
+ * @author jose@geowe.org
+ * @since 25/08/2016
  *
  */
 @ApplicationScoped
 public class AddRasterLayerTool extends LayerTool {
 
 	@Inject
-	private LoadRasterLayerDialog loadWMSLayerDialog;
+	private LoadRasterLayerDialog loadRasterLayerDialog;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 
@@ -61,7 +62,7 @@ public class AddRasterLayerTool extends LayerTool {
 
 	@Override
 	public String getName() {
-		return UIMessages.INSTANCE.addWMSLayerToolText();
+		return UIMessages.INSTANCE.addRasterLayerToolText();
 	}
 
 	@Override
@@ -71,48 +72,69 @@ public class AddRasterLayerTool extends LayerTool {
 
 	@Override
 	public void onClick() {
-		loadWMSLayerDialog.show();
+		loadRasterLayerDialog.initializeWMSFields();
+		loadRasterLayerDialog.initializeWMTSFields();
+		loadRasterLayerDialog.show();
 	}
 
 	@PostConstruct
 	private void setOKHandler() {
-		loadWMSLayerDialog.getButton(PredefinedButton.OK).addSelectHandler(
+		loadRasterLayerDialog.getButton(PredefinedButton.OK).addSelectHandler(
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						if (loadWMSLayerDialog.isCorrectFilledWMS()) {
+						
+						if ("WMS".equals(loadRasterLayerDialog.getActiveTab())
+								&& loadRasterLayerDialog.isCorrectFilledWMS()) {
 
-//							if (existLayer(loadWMSLayerDialog.getWmsLayerName())) {
-//								showAlert(
-//										UIMessages.INSTANCE
-//												.aWMSltAlertMessageBoxTitle(),
-//										UIMessages.INSTANCE
-//												.layerAlreadyExist(loadWMSLayerDialog
-//														.getWmsLayerName()));
-//							} else {
-//								WmsLayerDef newLayer = new WmsLayerDef();
-//								newLayer.setName(loadWMSLayerDialog
-//										.getWmsLayerName());
-//								newLayer.setUrl(loadWMSLayerDialog.getUrl());
-//								newLayer.setLayerName(loadWMSLayerDialog
-//										.getWmsLayerName());
-//								newLayer.setFormat(loadWMSLayerDialog
-//										.getFormat());
-//								newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
-//
-//								layerManagerWidget.addRaster(newLayer
-//										.getLayer());
-//
-//								loadWMSLayerDialog.initialize();
-//							}
+							loadWMS();
+
+						} else if ("WMTS".equals(loadRasterLayerDialog
+								.getActiveTab())
+								&& loadRasterLayerDialog.isCorrectFilledWMTS()) {
+							loadWMTS();
 						} else {
 							showAlert(UIMessages.INSTANCE
-									.aWMSltAlertMessageBoxTitle(),
+									.aRasterltAlertMessageBoxTitle(),
 									UIMessages.INSTANCE
-											.aWMSltAlertMessageBoxLabel());
+											.aRasterltAlertMessageBoxLabel());
 						}
+
 					}
 				});
+	}
+
+	private void loadWMTS() {
+		if (existLayer(loadRasterLayerDialog.getLayerNameWMS())) {
+			showAlert(UIMessages.INSTANCE.aRasterltAlertMessageBoxTitle(),
+					UIMessages.INSTANCE.layerAlreadyExist(loadRasterLayerDialog
+							.getLayerNameWMTS()));
+		} else {
+			WmtsLayerDef wmtsLayer = new WmtsLayerDef();
+			wmtsLayer.setUrl(loadRasterLayerDialog.getUrlWMTS());
+			wmtsLayer.setLayerName(loadRasterLayerDialog.getLayerNameWMTS());
+			wmtsLayer.setTileMatrixSet(loadRasterLayerDialog.getTileMatrixSet());
+			wmtsLayer.setName(loadRasterLayerDialog.getLayerNameWMTS());
+			wmtsLayer.setFormat(loadRasterLayerDialog.getFormatWMTS());
+			layerManagerWidget.addRaster(wmtsLayer.getLayer());
+		}		
+	}
+
+	private void loadWMS() {
+		if (existLayer(loadRasterLayerDialog.getLayerNameWMS())) {
+			showAlert(UIMessages.INSTANCE.aRasterltAlertMessageBoxTitle(),
+					UIMessages.INSTANCE.layerAlreadyExist(loadRasterLayerDialog
+							.getLayerNameWMS()));
+		} else {
+			WmsLayerDef newLayer = new WmsLayerDef();
+			newLayer.setName(loadRasterLayerDialog.getLayerNameWMS());
+			newLayer.setUrl(loadRasterLayerDialog.getUrl());
+			newLayer.setLayerName(loadRasterLayerDialog.getLayerNameWMS());
+			newLayer.setFormat(loadRasterLayerDialog.getFormatWMS());
+			newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
+
+			layerManagerWidget.addRaster(newLayer.getLayer());
+		}
 	}
 
 	private boolean existLayer(String layerName) {

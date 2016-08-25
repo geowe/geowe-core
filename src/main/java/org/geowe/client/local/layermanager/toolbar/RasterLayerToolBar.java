@@ -35,6 +35,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.core.client.resources.ThemeStyles;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 
+/**
+ * Barra de herramientas para capas raster en el Administrador de capas
+ * 
+ * @author jose@geowe.org
+ * 
+ * Se añade crea la herramienta AddRasterLayer que contempla WMS y WMTS 
+ * @author jose@geowe.org
+ * @since 25/08/2016
+ */
 @ApplicationScoped
 public class RasterLayerToolBar extends ContentPanel {
 	
@@ -52,8 +61,7 @@ public class RasterLayerToolBar extends ContentPanel {
 		setHeaderVisible(false);
 		addStyleName(ThemeStyles.get().style().borderBottom());
 		horizontalGroup = new HorizontalPanel();
-		horizontalGroup.setSpacing(5);
-	
+		horizontalGroup.setSpacing(5);	
 	}
 	
 	@PostConstruct

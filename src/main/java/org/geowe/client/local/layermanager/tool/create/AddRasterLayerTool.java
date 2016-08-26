@@ -128,7 +128,7 @@ public class AddRasterLayerTool extends LayerTool {
 		} else {
 			WmsLayerDef newLayer = new WmsLayerDef();
 			newLayer.setName(loadRasterLayerDialog.getLayerNameWMS());
-			newLayer.setUrl(loadRasterLayerDialog.getUrl());
+			newLayer.setUrl(loadRasterLayerDialog.getUrlWMS());
 			newLayer.setLayerName(loadRasterLayerDialog.getLayerNameWMS());
 			newLayer.setFormat(loadRasterLayerDialog.getFormatWMS());
 			newLayer.setEpsg(GeoMap.INTERNAL_EPSG);

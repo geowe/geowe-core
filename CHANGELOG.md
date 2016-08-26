@@ -7,6 +7,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.1.0]Beta - 2016-08-26
+
+### Fixed
+- issue [#151](https://github.com/geowe/geowe-core/issues/151) - WMS/WMTS
+
 ## [1.0.5]Beta - 2016-08-18
 
 ### Fixed

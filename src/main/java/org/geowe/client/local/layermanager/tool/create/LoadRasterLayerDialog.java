@@ -95,12 +95,19 @@ public class LoadRasterLayerDialog extends Dialog {
 		tButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(final SelectEvent event) {
-				if (urlWMSField.isValid()) {
-					final String capabilitiesSufix = "?SERVICE=" + getActiveTab() + "&version=1.1.1&request=GetCapabilities";
-					final String url = getUrl() + capabilitiesSufix;
-
-					Window.open(url, "_blank", null);
+				final String capabilitiesSufix = "?SERVICE=" + getActiveTab() + "&version=1.1.1&request=GetCapabilities";
+				String url = "";
+				
+				if ("WMS".equals(getActiveTab()) && urlWMSField.isValid()) {					
+					 url = getUrlWMS() + capabilitiesSufix;
 				}
+				else if ("WMTS".equals(getActiveTab()) && urlWMTSField.isValid()) {					
+					url = getUrlWMTS() + capabilitiesSufix;
+				}
+				
+				if(!url.isEmpty()) {
+					Window.open(url, "_blank", null);
+				}				
 			}
 		});
 	}
@@ -177,11 +184,11 @@ public class LoadRasterLayerDialog extends Dialog {
 		return panel;
 	}
 	
-	public String getUrl() {
+	public String getUrlWMS() {
 		return urlWMSField.getText();
 	}
 
-	public void setUrl(String url) {
+	public void setUrlWMS(String url) {
 		this.urlWMSField.setText(url);
 	}
 

@@ -31,7 +31,7 @@ import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.LayerTool;
 import org.geowe.client.local.layermanager.tool.LoadWMSLayerDialog;
 import org.geowe.client.local.main.map.GeoMap;
-import org.geowe.client.local.main.tool.map.catalog.model.WmsLayerDef;
+import org.geowe.client.local.main.tool.map.catalog.model.TmsLayerDef;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 
@@ -90,7 +90,20 @@ public class AddWMSLayerTool extends LayerTool {
 												.layerAlreadyExist(loadWMSLayerDialog
 														.getWmsLayerName()));
 							} else {
-								WmsLayerDef newLayer = new WmsLayerDef();
+								// WmsLayerDef newLayer = new WmsLayerDef();
+								// newLayer.setName(loadWMSLayerDialog
+								// .getWmsLayerName());
+								// newLayer.setUrl(loadWMSLayerDialog.getUrl());
+								// newLayer.setWmsLayerName(loadWMSLayerDialog
+								// .getWmsLayerName());
+								// newLayer.setFormat(loadWMSLayerDialog
+								// .getFormat());
+								// newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
+								//
+								// layerManagerWidget.addRaster(newLayer
+								// .getLayer());
+
+								TmsLayerDef newLayer = new TmsLayerDef();
 								newLayer.setName(loadWMSLayerDialog
 										.getWmsLayerName());
 								newLayer.setUrl(loadWMSLayerDialog.getUrl());
@@ -98,10 +111,14 @@ public class AddWMSLayerTool extends LayerTool {
 										.getWmsLayerName());
 								newLayer.setFormat(loadWMSLayerDialog
 										.getFormat());
-								newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
+
+
+
 
 								layerManagerWidget.addRaster(newLayer
 										.getLayer());
+
+
 
 								loadWMSLayerDialog.initialize();
 							}

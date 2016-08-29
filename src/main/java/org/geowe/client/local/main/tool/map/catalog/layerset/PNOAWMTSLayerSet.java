@@ -25,31 +25,28 @@ package org.geowe.client.local.main.tool.map.catalog.layerset;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.main.tool.map.catalog.model.WmsLayerDef;
-import org.geowe.client.local.messages.UICatalogMessages;
+import org.geowe.client.local.main.tool.map.catalog.model.WmtsLayerDef;
 
 /**
- * Conjunto de definiciones de las capas del proveedor IGN (Instituto
- * Geografico Nacional de España).
+ * Imágenes de satélite Spot y ortofotos PNOA
  * 
- * @author Atanasio Muñoz
+ * @author jose@geowe.org
  *
  */
 @ApplicationScoped
-public class IgnLayerSet extends AbstractLayerSet {
+public class PNOAWMTSLayerSet extends AbstractLayerSet {
 	
-	public IgnLayerSet() {
-		final WmsLayerDef ignBaseAll = new WmsLayerDef();
-		ignBaseAll.setName(UICatalogMessages.INSTANCE.ignBaseName());
-		ignBaseAll.setDescription(UICatalogMessages.INSTANCE
-				.ignBaseDescription());
-		ignBaseAll
-				.setUrl("http://www.ign.es/wms-inspire/ign-base?SERVICE=WMS&");
-		ignBaseAll.setLayerName("IGNBaseTodo");
-		ignBaseAll.setFormat("image/png");
-		ignBaseAll.setEpsg("EPSG:3857");
-		ignBaseAll.setIcon(ImageProvider.INSTANCE.ign16());	
+	public PNOAWMTSLayerSet() {
 		
-		layers.add(ignBaseAll);
+		WmtsLayerDef wmtsLayer = new WmtsLayerDef();
+		wmtsLayer.setUrl("http://www.ign.es/wmts/pnoa-ma?");
+		wmtsLayer.setLayerName("OI.OrthoimageCoverage");
+		wmtsLayer.setTileMatrixSet("GoogleMapsCompatible");
+		wmtsLayer.setName("WMTS Spot y ortofotos PNOA");
+		wmtsLayer.setFormat("image/png");
+		wmtsLayer.setIcon(ImageProvider.INSTANCE.ign16());	
+		wmtsLayer.setDescription("Imagen de satélite Spot5 a escalas menores de 1:70 000 y las ortofotografías PNOA de máxima actualidad para escalas mayores, para toda España");
+		wmtsLayer.setAttribution("«PNOA cedido por © Instituto Geográfico Nacional de España»");
+		layers.add(wmtsLayer);
 	}
 }

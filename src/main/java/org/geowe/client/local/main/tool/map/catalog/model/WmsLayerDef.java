@@ -33,15 +33,18 @@ import org.gwtopenmaps.openlayers.client.layer.WMSParams;
  * Definicion de una capa raster WMS
  * 
  * @author Atanasio Muñoz
- *
+ * @author jose@geowe.org
+ * @since  24/08/2016
+ * Se añade el campo atribución a las capas raster
  */
 public class WmsLayerDef extends LayerDef{
 	private static final long serialVersionUID = 2520310257932517715L;
 
 	private String url;
-	private String wmsLayerName;
+	private String layerName;
 	private String epsg;
-	private String format;	
+	private String format;
+	private String attribution;
 	
 	@Override
 	public String getType() {
@@ -52,7 +55,7 @@ public class WmsLayerDef extends LayerDef{
 	public Layer getLayer() {
 		WMSParams wmsParams = new WMSParams();
 		wmsParams.setFormat(format);
-		wmsParams.setLayers(wmsLayerName);
+		wmsParams.setLayers(layerName);
 		wmsParams.setTransparent(true);		
 		
 		WMSOptions wmsLayerParams = new WMSOptions();
@@ -61,6 +64,10 @@ public class WmsLayerDef extends LayerDef{
 		wmsLayerParams.setDisplayOutsideMaxExtent(true);			
 		wmsLayerParams.setNumZoomLevels(GeoMapInitializer.MAX_NUM_ZOOM_LEVEL);
 		wmsLayerParams.setIsBaseLayer(true);
+		String attribution = getAttribution();
+		if(attribution != null) {
+			wmsLayerParams.setAttribution(attribution);
+		}
 		
 		WMS wmsLayer = new WMS(getName(), url, wmsParams, wmsLayerParams);
 		wmsLayer.setIsBaseLayer(false);
@@ -76,12 +83,12 @@ public class WmsLayerDef extends LayerDef{
 		this.url = url;
 	}
 
-	public String getWmsLayerName() {
-		return wmsLayerName;
+	public String getLayerName() {
+		return layerName;
 	}
 
-	public void setWmsLayerName(String wmsLayerName) {
-		this.wmsLayerName = wmsLayerName;
+	public void setLayerName(String layerName) {
+		this.layerName = layerName;
 	}
 
 	public String getEpsg() {
@@ -98,5 +105,13 @@ public class WmsLayerDef extends LayerDef{
 
 	public void setFormat(String format) {
 		this.format = format;
+	}
+
+	public String getAttribution() {
+		return attribution;
+	}
+
+	public void setAttribution(String attribution) {
+		this.attribution = attribution;
 	}
 }

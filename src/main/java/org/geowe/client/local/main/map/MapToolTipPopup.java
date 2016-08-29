@@ -109,7 +109,8 @@ public class MapToolTipPopup extends FramedCloud {
 	}
 	
 	private void addPlainAttribute(final StringBuffer htmlString, final String attributeValue) {
-		htmlString.append(getShortenedValue(attributeValue));
+//		htmlString.append(getShortenedValue(attributeValue));
+		htmlString.append(attributeValue);
 	}
 	
 	private void addHyperlinkAttribute(final StringBuffer htmlString, final String attributeValue) {

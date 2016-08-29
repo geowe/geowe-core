@@ -12,13 +12,19 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Fixed
 - issue [#151](https://github.com/geowe/geowe-core/issues/151) - WMS/WMTS
 
-## [1.0.5]Beta - 2016-08-18
+## [1.0.5]Beta - 2016-08-19
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+
+### Added
+- Added Africa projections: EPSG:22032, EPSG:22033, EPSG:32732, EPSG:3036, EPSG:3037, EPSG:32737
 
 ### Fixed
 - issue [#150](https://github.com/geowe/geowe-core/issues/150)
+- issue [#127](https://github.com/geowe/geowe-core/issues/127)
 
 ## [1.0.4]Beta - 2016-07-22
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+
 ### Fixed
 - issue [#147](https://github.com/geowe/geowe-core/issues/147)
 - issue [#148](https://github.com/geowe/geowe-core/issues/147)

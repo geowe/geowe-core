@@ -22,37 +22,46 @@
  */
 package org.geowe.client.local.main.tool.map.catalog.model;
 
+import org.geowe.client.local.initializer.GeoMapInitializer;
+import org.geowe.client.local.main.map.GeoMap;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.TMS;
 import org.gwtopenmaps.openlayers.client.layer.TMSOptions;
+import org.gwtopenmaps.openlayers.client.layer.TransitionEffect;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 /**
  * Definicion de una capa raster TMS
  * 
  * @author rafa@geowe.org
- *
+ * 
+ * Se modifica la creación de la capa TMS. Se añade proyección, niveles de zoom, se cambia la función nativa para obtener la url, se especifica de
+ * manera dinámica el formato, etc...La url del servicio TMS y el nombre de la capa se indican en el constructor de la capa TMS.
+ * @since 30/08/2016
+ * @author jose@geowe.org
  */
 public class TmsLayerDef extends WmsLayerDef {
 	private static final long serialVersionUID = 2520310257932517715L;
 
 	@Override
 	public Layer getLayer() {
-		// Create TMS layer
 
 		TMSOptions tmsOptions = new TMSOptions();
-		tmsOptions.setDisplayOutsideMaxExtent(false);
-		tmsOptions.setIsBaseLayer(true);
-		tmsOptions.setType("jpg");
-		tmsOptions.setGetURL(getMyUrl(getUrl()));
+		tmsOptions.setDisplayOutsideMaxExtent(true);
+		tmsOptions.setNumZoomLevels(GeoMapInitializer.MAX_NUM_ZOOM_LEVEL);
+		tmsOptions.setProjection(GeoMap.INTERNAL_EPSG);
+		tmsOptions.setTransitionEffect(TransitionEffect.RESIZE);
+		tmsOptions.setIsBaseLayer(false);
+		tmsOptions.setType(getFormat());
+		tmsOptions.setGetURL(getMyUrl());
 
-		TMS tms = new TMS(getName(), "", tmsOptions);
+		TMS tms = new TMS(getName(), getUrl(), tmsOptions);
 
 		return tms;
 
 	}
 
-	private static native JSObject getMyUrl(String urlBase) /*-{
+	private static native JSObject getMyUrl() /*-{
 		function get_my_url(bounds) {
 			var res = this.map.getResolution();
 			var x = Math.round((bounds.left - this.maxExtent.left)
@@ -60,28 +69,20 @@ public class TmsLayerDef extends WmsLayerDef {
 			var y = Math.round((this.maxExtent.top - bounds.top)
 					/ (res * this.tileSize.h));
 			var z = this.map.getZoom();
-			var limit = 100000000;
-			var i = 0;
-			var dir_x = x;
-			var dir_y = y;
-			for (i = z; i > 9; i--) {
-				dir_x = (Math.floor(dir_x / 2.0));
-				dir_y = (Math.floor(dir_y / 2.0));
-			}
-			var path = "9_" + dir_x + "_" + dir_y + "/jpg";
+			var limit = Math.pow(2, z);
 			if (y < 0 || y >= limit) {
-				return "http://imageatlas.digitalglobe.com/ia-webapp/img/noImage.gif"
+				return null;
 			} else {
-				limit = Math.pow(2, z);
 				x = ((x % limit) + limit) % limit;
-				y = ((y % limit) + limit) % limit;
-//				var url = "http://a.tile.opencyclemap.org/cycle/" + z + "/" + x
-//						+ "/" + y + ".png";
-				var url = urlbase + z + "/" + x + "/" + y + "." + getFormat();
-				return url;
+				url = this.url;
+				path = z + "/" + x + "/" + y + "." + this.type;
+				if (url instanceof Array) {
+					url = this.selectUrl(path, url);
+				}
+				return url + path;
 			}
 		}
+
 		return get_my_url;
 	}-*/;
-
 }

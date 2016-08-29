@@ -136,7 +136,7 @@ public class AddRasterLayerTool extends LayerTool {
 		} else {
 			TmsLayerDef tmsLayer = new TmsLayerDef();
 			tmsLayer.setUrl(loadRasterLayerDialog.getUrlTMS());
-			tmsLayer.setLayerName(loadRasterLayerDialog.getNameTMS());			
+//			tmsLayer.setLayerName(loadRasterLayerDialog.getNameTMS());			
 			tmsLayer.setName(loadRasterLayerDialog.getNameTMS());
 			tmsLayer.setFormat(loadRasterLayerDialog.getFormatTMS());
 			layerManagerWidget.addRaster(tmsLayer.getLayer());

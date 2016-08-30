@@ -78,6 +78,8 @@ public class LayerManagerWidget implements IsWidget {
 	private final Map<String, LayerTree> layerTrees = new HashMap<String, LayerTree>();
 	private PlainTabPanel tabPanel;
 	private final List<ChangeSelectedLayerListener> events = new ArrayList<ChangeSelectedLayerListener>();
+	private final List<ChangeSelectedWMSLayerListener> wmsEvents = new ArrayList<ChangeSelectedWMSLayerListener>();
+	
 	private final List<AddLayerListener> addLayerListeners = new ArrayList<AddLayerListener>();
 	private final List<RemoveLayerListener> removeLayerListeners = new ArrayList<RemoveLayerListener>();
 	private final Label statusBar = new Label(
@@ -223,8 +225,8 @@ public class LayerManagerWidget implements IsWidget {
 			
 			if (layer instanceof WMS
 					&& !layer.equals(getRoot(LayerManagerWidget.RASTER_TAB))) {
-				for (final ChangeSelectedLayerListener changeEvent : events) {
-					changeEvent.onChange((Vector) layer);
+				for (final ChangeSelectedWMSLayerListener changeEvent : wmsEvents) {
+					changeEvent.onChange((WMS) layer);
 				}
 			}
 		}				
@@ -298,8 +300,8 @@ public class LayerManagerWidget implements IsWidget {
 					if (layer instanceof WMS
 							&& !layer
 									.equals(getRoot(LayerManagerWidget.RASTER_TAB))) {
-						for (final ChangeSelectedLayerListener changeEvent : events) {
-							//changeEvent.onChange((WMS) layer);
+						for (final ChangeSelectedWMSLayerListener changeEvent : wmsEvents) {
+							changeEvent.onChange((WMS) layer);
 						}
 					}
 
@@ -317,6 +319,10 @@ public class LayerManagerWidget implements IsWidget {
 
 	public void addChangeLayerListener(final ChangeSelectedLayerListener event) {
 		events.add(event);
+	}
+	
+	public void addChangeWMSLayerListener(final ChangeSelectedWMSLayerListener event) {
+		wmsEvents.add(event);
 	}
 
 	public void addAddLayerListener(final AddLayerListener listener) {

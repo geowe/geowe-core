@@ -29,6 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.layermanager.ChangeSelectedWMSLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ToggleTool;
@@ -38,6 +39,7 @@ import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.WMSGetFeatureInfo;
 import org.gwtopenmaps.openlayers.client.control.WMSGetFeatureInfoOptions;
 import org.gwtopenmaps.openlayers.client.event.GetFeatureInfoListener;
+import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.WMS;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -56,7 +58,7 @@ import com.sencha.gxt.widget.core.client.info.Info;
  *
  */
 @ApplicationScoped
-public class WmsGetInfoTool extends ToggleTool {
+public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayerListener{
 	
 	@Inject
 	public WmsGetInfoTool(GeoMap geoMap, LayerManagerWidget layerManager) {
@@ -97,8 +99,7 @@ public class WmsGetInfoTool extends ToggleTool {
 			List<WMS> layers = new ArrayList<WMS>();
 			layers.add(layer);
 			wmsGetFeatureInfoOptions.setTitle(layer.getName());			
-			wmsGetFeatureInfoOptions.setLayers(layers.toArray(new WMS[]{}));
-			Info.display("create WMS", "capa " + layer.getName());			
+			wmsGetFeatureInfoOptions.setLayers(layers.toArray(new WMS[]{}));					
 		}
 		
 		
@@ -132,5 +133,16 @@ public class WmsGetInfoTool extends ToggleTool {
 
 	private HTML replaceHref(HTML html) {
 		return new HTML(html.getHTML().replace("<a", "<a target=\"_blank\" "));
+	}
+	
+	@Override
+	public void setLayer(final Layer layer) {
+		//Se anula para esta herramienta
+	}
+	
+
+	@Override
+	public void onChange(WMS layer) {
+		setWMSLayer(layer);		
 	}
 }

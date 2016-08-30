@@ -250,12 +250,7 @@ public abstract class ToggleTool extends ToggleButton implements
 			} else if (control instanceof Snapping) {
 				((Snapping) control).setLayer((Vector) layer);
 				((Snapping) control).setTargetLayer((Vector) layer);
-			} 
-			else if (control instanceof WMSGetFeatureInfo && layer instanceof WMS) {
-				toDelete.add(control);
-				final Control newControl =((WmsGetInfoTool) this).WMSGetFeatureInfo((WMS)layer);
-				toInsert.add(newControl);
-			}
+			} 			
 			else {
 				Info.display(UIMessages.INSTANCE.warning(),
 						"No implemented yet!!! " + control.getClassName());
@@ -269,6 +264,35 @@ public abstract class ToggleTool extends ToggleButton implements
 
 		// Si el boton estuviera habilitado, automaticamente se actualizan los
 		// controles para la nueva capa
+		if (getValue()) {
+			activeControls(toInsert);
+		}
+	}
+	
+	public void setWMSLayer(final WMS layer) {
+		this.layer = layer;
+		setEnabled(true);
+
+		final List<Control> toDelete = new ArrayList<Control>();
+		final List<Control> toInsert = new ArrayList<Control>();
+
+		for (final Control control : controls) {
+			
+			if (control instanceof WMSGetFeatureInfo) {
+				toDelete.add(control);
+				final Control newControl =((WmsGetInfoTool) this).WMSGetFeatureInfo(layer);
+				toInsert.add(newControl);
+			}
+			else {
+				Info.display(UIMessages.INSTANCE.warning(),
+						"No implemented yet!!! " + control.getClassName());
+			}
+		}
+		
+		deactiveControls(toDelete);
+		controls.removeAll(toDelete);
+		controls.addAll(toInsert);
+		
 		if (getValue()) {
 			activeControls(toInsert);
 		}

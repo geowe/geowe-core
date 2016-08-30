@@ -92,6 +92,8 @@ public class EventListenerInitializer {
 		addRemoveLayerListener();
 
 		addAddLayerListener();
+		
+		addChangeSelectedWMSLayerListener();
 
 		Window.addWindowClosingHandler(new Window.ClosingHandler() {
 			@Override
@@ -116,8 +118,11 @@ public class EventListenerInitializer {
 		layerManagerWidget.addChangeLayerListener(envelopeTool);
 		layerManagerWidget.addChangeLayerListener(centroidTool);
 		layerManagerWidget.addChangeLayerListener(bufferTool);
-		layerManagerWidget.addChangeLayerListener(geometricValidationTool);		
-		layerManagerWidget.addChangeLayerListener(wmsGetInfoTool);		
+		layerManagerWidget.addChangeLayerListener(geometricValidationTool);						
+	}
+	
+	private void addChangeSelectedWMSLayerListener() {
+		layerManagerWidget.addChangeWMSLayerListener(wmsGetInfoTool);
 	}
 
 	private void addRemoveLayerListener() {

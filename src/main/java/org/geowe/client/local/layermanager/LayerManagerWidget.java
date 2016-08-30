@@ -35,6 +35,7 @@ import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.layer.GoogleV3;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
+import org.gwtopenmaps.openlayers.client.layer.WMS;
 import org.jboss.errai.ioc.client.container.IOC;
 
 import com.google.gwt.cell.client.ValueUpdater;
@@ -214,8 +215,19 @@ public class LayerManagerWidget implements IsWidget {
 				for (final ChangeSelectedLayerListener changeEvent : events) {
 					changeEvent.onChange((Vector) layer);
 				}
-			}
+			}			
 		}
+				
+		if (tabName.equals(LayerManagerWidget.RASTER_TAB)) {
+			final Layer layer = getSelectedLayer(tabName);
+			
+			if (layer instanceof WMS
+					&& !layer.equals(getRoot(LayerManagerWidget.RASTER_TAB))) {
+				for (final ChangeSelectedLayerListener changeEvent : events) {
+					changeEvent.onChange((Vector) layer);
+				}
+			}
+		}				
 	}
 
 	public void removeLayer(final String tabName, final Layer layer) {
@@ -280,6 +292,14 @@ public class LayerManagerWidget implements IsWidget {
 									.equals(getRoot(LayerManagerWidget.VECTOR_TAB))) {
 						for (final ChangeSelectedLayerListener changeEvent : events) {
 							changeEvent.onChange((Vector) layer);
+						}
+					}
+					
+					if (layer instanceof WMS
+							&& !layer
+									.equals(getRoot(LayerManagerWidget.RASTER_TAB))) {
+						for (final ChangeSelectedLayerListener changeEvent : events) {
+							//changeEvent.onChange((WMS) layer);
 						}
 					}
 

@@ -65,7 +65,15 @@ import com.sencha.gxt.widget.core.client.grid.editing.GridEditing;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
 import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
-
+/**
+* Diálogo de edición de atributos alfanuméricos
+* 
+* @since 30/08/2016
+* @author rafa@geowe.org
+* 
+* Se resuelve el bug #153
+* 
+* **/
 @ApplicationScoped
 public class FeatureInfoDialog extends Dialog {
 	
@@ -211,7 +219,7 @@ public class FeatureInfoDialog extends Dialog {
 
 		for (final String name : names) {
 			if (name != null && !name.isEmpty()) {
-				final String value = vectorFeature.getAttributes()
+				final String value = "" + vectorFeature.getAttributes()
 						.getAttributeAsString(name);
 				info.add(createFeatureAttributeBean(name, value));
 			}

@@ -32,6 +32,7 @@ import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.draw.DrawTool;
+import org.geowe.client.local.main.tool.info.WmsGetInfoTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.DragFeature;
@@ -40,8 +41,10 @@ import org.gwtopenmaps.openlayers.client.control.ModifyFeature;
 import org.gwtopenmaps.openlayers.client.control.SelectFeature;
 import org.gwtopenmaps.openlayers.client.control.Snapping;
 import org.gwtopenmaps.openlayers.client.control.TransformFeature;
+import org.gwtopenmaps.openlayers.client.control.WMSGetFeatureInfo;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
+import org.gwtopenmaps.openlayers.client.layer.WMS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -208,7 +211,7 @@ public abstract class ToggleTool extends ToggleButton implements
 	@Override
 	public void onChange(final Vector layer) {
 		setLayer(layer);
-	}
+	}			
 
 	/**
 	 * Se establece la nueva capa a la herramienta en cuestión. Esto implica
@@ -247,7 +250,13 @@ public abstract class ToggleTool extends ToggleButton implements
 			} else if (control instanceof Snapping) {
 				((Snapping) control).setLayer((Vector) layer);
 				((Snapping) control).setTargetLayer((Vector) layer);
-			} else {
+			} 
+			else if (control instanceof WMSGetFeatureInfo && layer instanceof WMS) {
+				toDelete.add(control);
+				final Control newControl =((WmsGetInfoTool) this).WMSGetFeatureInfo((WMS)layer);
+				toInsert.add(newControl);
+			}
+			else {
 				Info.display(UIMessages.INSTANCE.warning(),
 						"No implemented yet!!! " + control.getClassName());
 			}

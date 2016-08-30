@@ -25,5 +25,5 @@ package org.geowe.client.local.layermanager;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
 public interface ChangeSelectedLayerListener {
-	public void onChange(Vector layer);
+	public void onChange(Vector layer);	
 }

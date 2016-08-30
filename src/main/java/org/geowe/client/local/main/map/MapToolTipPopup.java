@@ -40,10 +40,14 @@ import com.google.gwt.user.client.ui.Image;
  * la propiedad showInTooltip = true.
  * 
  * @author Atanasio Muñoz
- *
+ * 
+ * 
+ * @since 30/08/2016
+ * @author rafa@geowe.org
+ * Se elimina recortar cadenas largas y se resuelve el bug #153
+ * 
  */
 public class MapToolTipPopup extends FramedCloud {
-	private static final int MAX_VALUE_LENGHT = 35;
 
 	private VectorLayer layer;
 	private VectorFeature feature;
@@ -92,7 +96,7 @@ public class MapToolTipPopup extends FramedCloud {
 	
 	private void addAttribute(final StringBuffer htmlString, final FeatureAttributeDef attribute) {
 		htmlString.append("<b>" + attribute.getName() + ":</b>&nbsp");
-		final String attributeValue = feature.getAttributes()
+		final String attributeValue = "" + feature.getAttributes()
 				.getAttributeAsString(attribute.getName());
 	
 		if (attributeValue != null) {
@@ -109,13 +113,12 @@ public class MapToolTipPopup extends FramedCloud {
 	}
 	
 	private void addPlainAttribute(final StringBuffer htmlString, final String attributeValue) {
-//		htmlString.append(getShortenedValue(attributeValue));
 		htmlString.append(attributeValue);
 	}
 	
 	private void addHyperlinkAttribute(final StringBuffer htmlString, final String attributeValue) {
 		final Anchor anchor = new AnchorBuilder()
-				.setText(getShortenedValue(attributeValue))
+				.setText(attributeValue)
 				.setHref(attributeValue)
 				.setTitle(UIMessages.INSTANCE.openInNewWindow()).build();
 
@@ -132,13 +135,5 @@ public class MapToolTipPopup extends FramedCloud {
 				.setImage(image).build();
 
 		htmlString.append(anchor.getElement().getString());
-	}
-	
-	private String getShortenedValue(final String attributeValue) {
-		if(attributeValue.length() > MAX_VALUE_LENGHT) {
-			return attributeValue.substring(0, (MAX_VALUE_LENGHT - 1)) + "...";
-		} else {
-			return attributeValue;
-		}		
 	}
 }

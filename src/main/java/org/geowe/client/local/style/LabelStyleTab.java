@@ -43,11 +43,13 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * Pestaña de configuracion de etiquetado de features, 
- * perteneciente al dialogo de gestion de estilos.
+ * Pestaña de configuracion de etiquetado de features, perteneciente al dialogo
+ * de gestion de estilos.
  * 
  * @author Atanasio Muñoz
- *
+ * @since 31/08/2016
+ * @author rafa@geowe.org 
+ * Se corrige error al quitar etiquetado issue #158
  */
 public class LabelStyleTab extends StyleTab implements 
 	ColorPicker.SelectedColorChangedListener{
@@ -64,12 +66,17 @@ public class LabelStyleTab extends StyleTab implements
 		String fieldWidth = "125px";
 
 		attributeLabel = new FeatureAttributeComboBox(fieldWidth);
+		attributeLabel.setEnabled(false);
+
 		fontSize = new FontSizeComboBox(fieldWidth);		
+		fontSize.setEnabled(false);
 		
 		boldFont = new CheckBox();		
 		boldFont.setValue(false);		
+		boldFont.setEnabled(false);
 		
 		labelBackColor = new TextField();
+		labelBackColor.setEnabled(false);
 		labelBackColor.setWidth(fieldWidth);
 		labelBackColor.addFocusHandler(new FocusHandler() {
 			@Override
@@ -80,10 +87,11 @@ public class LabelStyleTab extends StyleTab implements
 		
 		colorPicker = new ColorPicker();
 		colorPicker.addSelectedColorChangedListener(this);
+		colorPicker.setEnabled(false);
 
 		enableLabeling = new CheckBox();
 		enableLabeling.setBoxLabel(UIMessages.INSTANCE.enableLabelStyle());
-		enableLabeling.setValue(true);
+		enableLabeling.setValue(false);
 		enableLabeling.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -92,10 +100,13 @@ public class LabelStyleTab extends StyleTab implements
 				boldFont.setEnabled(event.getValue());
 				labelBackColor.setEnabled(event.getValue());
 				colorPicker.slide(event.getValue());
+				colorPicker.setEnabled(event.getValue());
+				if (!event.getValue()) {
+					selectedLayer.setStyleMap(StyleFactory
+							.createDefaultStyleMap());
+				}
 			}
 		});
-		enableLabeling.setValue(false);
-						
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.setSpacing(8);
 		

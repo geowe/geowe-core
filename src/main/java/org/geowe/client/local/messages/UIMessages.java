@@ -694,4 +694,8 @@ public interface UIMessages extends Messages {
 	String noInputDataSpecified();
 	
 	String zoomWarning(int zoomLevel, String googleSatellite);
+	
+	String zoomLevelText(int zoomLevel);
+	
+	String currentZoomLevelText();
 }

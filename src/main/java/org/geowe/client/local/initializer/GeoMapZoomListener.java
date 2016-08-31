@@ -62,7 +62,7 @@ public class GeoMapZoomListener implements MapZoomListener {
 					.zoomWarning(geoMap.getMap().getZoom(),
 							AppLayerCatalog.GOOGLE_SATELLITE));
 		} else {
-			zoomStatusWidget.updateTitle(BLACK, "Nivel de zoom actual");
+			zoomStatusWidget.updateTitle(BLACK, UIMessages.INSTANCE.currentZoomLevelText());
 		}
 	}
 

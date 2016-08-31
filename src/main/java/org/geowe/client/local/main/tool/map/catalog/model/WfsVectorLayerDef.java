@@ -49,6 +49,7 @@ public class WfsVectorLayerDef extends VectorLayerDef {
 	
 	@Override
 	public Layer getLayer() {
+				
 		WFSProtocolOptions wfsProtocolOptions = new WFSProtocolOptions();
 		wfsProtocolOptions.setUrl(url);
 		wfsProtocolOptions.setFeatureType(featureType);

@@ -23,6 +23,10 @@
 package org.geowe.client.local.main;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.messages.UIMessages;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -39,18 +43,17 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
  *
  */
 @ApplicationScoped
-public class ZoomStatusWidget implements IsWidget {
-
-	private static final String ZOOM_LEVEL = "Zoom level: ";
+public class ZoomStatusWidget implements IsWidget {	
 	private HorizontalLayoutContainer widget;
 	private HorizontalPanel hp;
 	private Label label;
-
+	@Inject 
+	private GeoMap geoMap;
 	@Override
 	public Widget asWidget() {
 		if (widget == null) {
-			String width = "70px";
-			String height = "10px";
+			final String width = "60px";
+			final String height = "10px";
 			widget = new HorizontalLayoutContainer();
 			widget.getElement().getStyle().setPosition(Position.ABSOLUTE);
 			widget.getElement().getStyle().setLeft(10, Unit.PX);
@@ -70,13 +73,13 @@ public class ZoomStatusWidget implements IsWidget {
 	}
 
 	private Label getZoomLabel() {
-		label = new Label(ZOOM_LEVEL);
+		label = new Label(UIMessages.INSTANCE.zoomLevelText(geoMap.getMap().getZoom()));
 		label.getElement().getStyle().setFontSize(9, Unit.PX);
 		return label;
 	}
 
 	public void updateZoomLevel(int zoomLevel) {
-		label.setText(ZOOM_LEVEL + Integer.toString(zoomLevel));
+		label.setText(UIMessages.INSTANCE.zoomLevelText(zoomLevel));
 	}
 
 	public void updateTitle(String htmlColor, String title) {

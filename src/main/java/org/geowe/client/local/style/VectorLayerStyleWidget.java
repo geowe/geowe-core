@@ -52,7 +52,10 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * capa vectorial. 
  * 
  * @author Atanasio Muñoz
- *
+ * 
+ * @since 31/08/2016
+ * @author rafa@geowe.org 
+ * Se cambia altura del panel issue #158
  */
 @ApplicationScoped
 public class VectorLayerStyleWidget implements IsWidget,
@@ -87,6 +90,7 @@ public class VectorLayerStyleWidget implements IsWidget,
 
 			panel = new FramedPanel();
 			panel.setWidth(500);
+			panel.setHeight(265);
 			panel.setLayoutData(new MarginData(10));
 
 			mainPanel.add(vlc);

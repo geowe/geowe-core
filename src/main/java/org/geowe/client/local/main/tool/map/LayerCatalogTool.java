@@ -168,6 +168,8 @@ public class LayerCatalogTool extends ButtonTool {
 		else {
 			if (layerDef.getType().equals(LayerDef.RASTER_TYPE)) {
 				layerManagerWidget.addRaster(newLayer);
+				layerManagerWidget.setSelectedLayer(
+						LayerManagerWidget.RASTER_TAB, newLayer);
 			} else {
 				layerManagerWidget.addVector(newLayer);
 				layerManagerWidget.setSelectedLayer(

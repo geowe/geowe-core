@@ -55,6 +55,8 @@ public final class LayerLoader {
 						LayerManagerWidget.VECTOR_TAB, layer);
 			} else {
 				layerManagerWidget.addRaster(layer);
+				layerManagerWidget.setSelectedLayer(
+						LayerManagerWidget.RASTER_TAB, layer);
 			}
 		}
 	}

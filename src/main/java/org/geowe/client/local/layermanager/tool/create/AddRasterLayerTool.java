@@ -30,6 +30,7 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.LayerTool;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.tool.map.catalog.model.TmsLayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.WmsLayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.WmtsLayerDef;
 import org.geowe.client.local.messages.UIMessages;
@@ -74,6 +75,7 @@ public class AddRasterLayerTool extends LayerTool {
 	public void onClick() {
 		loadRasterLayerDialog.initializeWMSFields();
 		loadRasterLayerDialog.initializeWMTSFields();
+		loadRasterLayerDialog.initializeTMSFields();
 		loadRasterLayerDialog.show();
 	}
 
@@ -93,7 +95,13 @@ public class AddRasterLayerTool extends LayerTool {
 								.getActiveTab())
 								&& loadRasterLayerDialog.isCorrectFilledWMTS()) {
 							loadWMTS();
-						} else {
+						} 
+						else if ("TMS".equals(loadRasterLayerDialog
+								.getActiveTab())
+								&& loadRasterLayerDialog.isCorrectFilledTMS()) {
+							loadTMS();
+						}
+						else {
 							showAlert(UIMessages.INSTANCE
 									.aRasterltAlertMessageBoxTitle(),
 									UIMessages.INSTANCE
@@ -117,6 +125,21 @@ public class AddRasterLayerTool extends LayerTool {
 			wmtsLayer.setName(loadRasterLayerDialog.getLayerNameWMTS());
 			wmtsLayer.setFormat(loadRasterLayerDialog.getFormatWMTS());
 			layerManagerWidget.addRaster(wmtsLayer.getLayer());
+		}		
+	}
+	
+	private void loadTMS() {
+		if (existLayer(loadRasterLayerDialog.getNameTMS())) {
+			showAlert(UIMessages.INSTANCE.aRasterltAlertMessageBoxTitle(),
+					UIMessages.INSTANCE.layerAlreadyExist(loadRasterLayerDialog
+							.getNameTMS()));
+		} else {
+			TmsLayerDef tmsLayer = new TmsLayerDef();
+			tmsLayer.setUrl(loadRasterLayerDialog.getUrlTMS());
+//			tmsLayer.setLayerName(loadRasterLayerDialog.getNameTMS());			
+			tmsLayer.setName(loadRasterLayerDialog.getNameTMS());
+			tmsLayer.setFormat(loadRasterLayerDialog.getFormatTMS());
+			layerManagerWidget.addRaster(tmsLayer.getLayer());
 		}		
 	}
 

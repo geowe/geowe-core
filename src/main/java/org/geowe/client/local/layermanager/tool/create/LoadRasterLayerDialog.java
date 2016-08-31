@@ -55,7 +55,34 @@ public class LoadRasterLayerDialog extends Dialog {
 	
 	private TextField urlWMSField;
 	private TextField nameWMSField;
-	private TextField formatWMSField;	
+	private TextField formatWMSField;
+	private TextField urlTMSField;
+	private TextField nameTMSField;
+	private TextField formatTMSField;	
+	public String getUrlTMS() {
+		return urlTMSField.getText();
+	}
+
+	public void setUrlTMS(String urlTMS) {
+		this.urlTMSField.setText(urlTMS);
+	}
+
+	public String getNameTMS() {
+		return nameTMSField.getText();
+	}
+
+	public void setNameTMS(String nameTMS) {
+		this.nameTMSField.setText(nameTMS);
+	}
+
+	public String getFormatTMS() {
+		return formatTMSField.getText();
+	}
+
+	public void setFormatTMS(String formatTMS) {
+		this.formatTMSField.setText(formatTMS);
+	}
+
 	private TextField urlWMTSField;	
 	private TextField nameWMTSField;
 	private TextField formatWMTSField;
@@ -118,9 +145,40 @@ public class LoadRasterLayerDialog extends Dialog {
 		tabPanel.getElement().setId("tabPanel");
 		tabPanel.add(getWMSPanel(), "WMS");
 		tabPanel.add(getWMTSPanel(), "WMTS");
+		tabPanel.add(getTMSPanel(), "TMS");
 		
 		return tabPanel;
 	}
+	
+	private VerticalPanel getTMSPanel() {
+		final VerticalPanel panel = new VerticalPanel();
+		panel.setWidth("350px");
+		//panel.setHeight("20px");
+		panel.setSpacing(10);
+
+		urlTMSField = new TextField();
+		urlTMSField.setTitle(UIMessages.INSTANCE.lrasterdUrlField());
+		urlTMSField.setWidth(FIELD_WIDTH);
+		urlTMSField.setAllowBlank(false);
+
+		panel.add(urlTMSField);
+
+		nameTMSField = new TextField();
+		nameTMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameTMSField.setAllowBlank(false);
+		nameTMSField.setWidth(FIELD_WIDTH);
+		panel.add(nameTMSField);
+
+		formatTMSField = new TextField();
+		formatTMSField.setTitle(UIMessages.INSTANCE.lrasterdImageFormatField());
+		formatTMSField.setAllowBlank(false);
+		formatTMSField.setWidth(FIELD_WIDTH);
+		panel.add(formatTMSField);
+
+		return panel;
+	}
+	
+	
 	
 	private VerticalPanel getWMSPanel() {
 		final VerticalPanel panel = new VerticalPanel();
@@ -239,6 +297,28 @@ public class LoadRasterLayerDialog extends Dialog {
 	public void setTileMatrixSetField(String tileMatrixSetField) {
 		this.tileMatrixSetField.setText(tileMatrixSetField);
 	}
+	
+	public boolean isCorrectFilledTMS() {
+		boolean isCorrect = true;
+		StringBuffer error = new StringBuffer("");
+		if (!isUrlTMSFieldCorrect()) {
+			error.append(" URL, ");
+			isCorrect = false;
+		}
+		if (nameTMSField.getText() == null || nameTMSField.getText().isEmpty()) {
+			error.append(" Layer Name, ");
+			isCorrect = false;
+		}
+		if (formatTMSField.getText() == null || formatTMSField.getText().isEmpty()) {
+			error.append(" Image format. ");
+			isCorrect = false;
+		}
+
+		if (!"".equals(error.toString())) {
+			showAlert(error.toString());
+		}
+		return isCorrect;
+	}
 
 	public boolean isCorrectFilledWMS() {
 		boolean isCorrect = true;
@@ -296,6 +376,10 @@ public class LoadRasterLayerDialog extends Dialog {
 	private boolean isUrlWMSFieldCorrect() {
 		return (urlWMSField.getText() != null && !urlWMSField.getText().isEmpty());
 	}
+	
+	private boolean isUrlTMSFieldCorrect() {
+		return (urlTMSField.getText() != null && !urlTMSField.getText().isEmpty());
+	}
 
 	private void showAlert(String error) {
 		messageDialogBuilder.createError(
@@ -313,6 +397,21 @@ public class LoadRasterLayerDialog extends Dialog {
 		formatWMSField.setEmptyText("image/png, image/jpg...");
 
 		urlWMSField.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				if (!event.getValue().startsWith("http")) {
+					showAlert("URL");
+				}
+			}
+		});
+	}
+	
+	public void initializeTMSFields() {
+		urlTMSField.setEmptyText("http://...");
+		nameTMSField.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		formatTMSField.setEmptyText("png, jpg...");
+
+		urlTMSField.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				if (!event.getValue().startsWith("http")) {

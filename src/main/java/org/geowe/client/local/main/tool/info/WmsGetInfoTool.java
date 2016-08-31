@@ -49,13 +49,16 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * Get WMS layer Info
  * 
  * @author geowe
- *
+ *  
+ * @since 30/08/2016
+ * @author jose@geowe.org
+ * Se crea el control WmsGetInfo en función de capa WMS seleccionada en el árbol de capas
+ * 
  */
 @ApplicationScoped
 public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayerListener{
@@ -82,7 +85,7 @@ public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayer
 				final ProgressBarDialog progressBar = new ProgressBarDialog(
 						false, UIMessages.INSTANCE.processing());
 				progressBar.show();
-				HTML html = new HTML(eventObject.getText());
+				final HTML html = new HTML(eventObject.getText());
 				progressBar.hide();
 				showDialog(html);
 			}
@@ -90,20 +93,20 @@ public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayer
 	}
 	
 	
-	public Control WMSGetFeatureInfo(WMS layer) {
+	public Control WMSGetFeatureInfo(final WMS layer) {
 				
-		WMSGetFeatureInfoOptions wmsGetFeatureInfoOptions = new WMSGetFeatureInfoOptions();
+		final WMSGetFeatureInfoOptions wmsGetFeatureInfoOptions = new WMSGetFeatureInfoOptions();
 		wmsGetFeatureInfoOptions.setMaxFeaturess(50);		
 		wmsGetFeatureInfoOptions.setDrillDown(true);
 		if(layer != null) {
-			List<WMS> layers = new ArrayList<WMS>();
+			final List<WMS> layers = new ArrayList<WMS>();
 			layers.add(layer);
 			wmsGetFeatureInfoOptions.setTitle(layer.getName());			
 			wmsGetFeatureInfoOptions.setLayers(layers.toArray(new WMS[]{}));					
 		}
 		
 		
-		WMSGetFeatureInfo wmsGetFeatureInfo = new WMSGetFeatureInfo(
+		final WMSGetFeatureInfo wmsGetFeatureInfo = new WMSGetFeatureInfo(
 				wmsGetFeatureInfoOptions);
 
 		wmsGetFeatureInfo.addGetFeatureListener(getFeatureInfoListener());
@@ -131,7 +134,7 @@ public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayer
 		simple.show();
 	}
 
-	private HTML replaceHref(HTML html) {
+	private HTML replaceHref(final HTML html) {
 		return new HTML(html.getHTML().replace("<a", "<a target=\"_blank\" "));
 	}
 	
@@ -142,7 +145,7 @@ public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayer
 	
 
 	@Override
-	public void onChange(WMS layer) {
+	public void onChange(final WMS layer) {
 		setWMSLayer(layer);		
 	}
 }

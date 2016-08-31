@@ -24,6 +24,12 @@ package org.geowe.client.local.layermanager;
 
 import org.gwtopenmaps.openlayers.client.layer.WMS;
 
+/**
+ * Representa al responsable de notificar cuando ha cambiado la capa WMS seleccionada en el árbol de capas 
+ *
+ *@autor jose@geowe.org
+ *@since 30/08/2016
+ */
 public interface ChangeSelectedWMSLayerListener {
 	public void onChange(WMS layer);	
 }

@@ -61,6 +61,14 @@ import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
+/**
+ * Gestiona la activación de los controles en el mapa en función del estado del botón de la herramienta
+ * @author jose@geowe.org
+ * 
+ * @since 30/08/2016
+ * @author jose@geowe.org
+ * Se añade gestión para herramientas que trabajan con controles de capas WMS
+ */
 public abstract class ToggleTool extends ToggleButton implements
 		ChangeSelectedLayerListener {
 
@@ -72,15 +80,16 @@ public abstract class ToggleTool extends ToggleButton implements
 	private Layer layer;
 	private GeoMap geoMap;
 
-	public ToggleTool(final String label, final ImageResource icon, final GeoMap geoMap,
-			final LayerManagerWidget layerManager) {
+	public ToggleTool(final String label, final ImageResource icon,
+			final GeoMap geoMap, final LayerManagerWidget layerManager) {
 		super();
 		this.geoMap = geoMap;
 		initialize(label, icon);
 		layerManager.addChangeLayerListener(this);
 	}
 
-	public ToggleTool(final String label, final ImageResource icon, final GeoMap geoMap) {
+	public ToggleTool(final String label, final ImageResource icon,
+			final GeoMap geoMap) {
 		super();
 		this.geoMap = geoMap;
 		initialize(label, icon);
@@ -97,12 +106,12 @@ public abstract class ToggleTool extends ToggleButton implements
 		setSize(WIDTH, HEIGHT);
 		setIcon(icon);
 	}
-	
+
 	@PostConstruct
 	private void registerValueChangeHandler() {
 		addValueChangeHandler(getSelectChangeHandler());
 	}
-	
+
 	protected ValueChangeHandler<Boolean> getSelectChangeHandler() {
 		return new ValueChangeHandler<Boolean>() {
 			@Override
@@ -211,7 +220,7 @@ public abstract class ToggleTool extends ToggleButton implements
 	@Override
 	public void onChange(final Vector layer) {
 		setLayer(layer);
-	}			
+	}
 
 	/**
 	 * Se establece la nueva capa a la herramienta en cuestión. Esto implica
@@ -245,30 +254,21 @@ public abstract class ToggleTool extends ToggleButton implements
 					|| control instanceof DragFeature
 					|| control instanceof TransformFeature) {
 				toDelete.add(control);
-				final Control newControl = ((DrawTool) this).createDrawTool(layer);
+				final Control newControl = ((DrawTool) this)
+						.createDrawTool(layer);
 				toInsert.add(newControl);
 			} else if (control instanceof Snapping) {
 				((Snapping) control).setLayer((Vector) layer);
 				((Snapping) control).setTargetLayer((Vector) layer);
-			} 			
-			else {
+			} else {
 				Info.display(UIMessages.INSTANCE.warning(),
 						"No implemented yet!!! " + control.getClassName());
 			}
 		}
-
-		// Importante solo aplicar a las herramientas que son DrawTool
-		deactiveControls(toDelete);
-		controls.removeAll(toDelete);
-		controls.addAll(toInsert);
-
-		// Si el boton estuviera habilitado, automaticamente se actualizan los
-		// controles para la nueva capa
-		if (getValue()) {
-			activeControls(toInsert);
-		}
+		
+		updateControl(toDelete, toInsert);
 	}
-	
+
 	public void setWMSLayer(final WMS layer) {
 		this.layer = layer;
 		setEnabled(true);
@@ -277,22 +277,29 @@ public abstract class ToggleTool extends ToggleButton implements
 		final List<Control> toInsert = new ArrayList<Control>();
 
 		for (final Control control : controls) {
-			
+
 			if (control instanceof WMSGetFeatureInfo) {
 				toDelete.add(control);
-				final Control newControl =((WmsGetInfoTool) this).WMSGetFeatureInfo(layer);
+				final Control newControl = ((WmsGetInfoTool) this)
+						.WMSGetFeatureInfo(layer);
 				toInsert.add(newControl);
-			}
-			else {
+			} else {
 				Info.display(UIMessages.INSTANCE.warning(),
 						"No implemented yet!!! " + control.getClassName());
 			}
 		}
-		
+
+		updateControl(toDelete, toInsert);
+	}
+
+	private void updateControl(final List<Control> toDelete, final List<Control> toInsert) {
+		// Importante solo aplicar a las herramientas que son DrawTool
 		deactiveControls(toDelete);
 		controls.removeAll(toDelete);
 		controls.addAll(toInsert);
-		
+
+		// Si el boton estuviera habilitado, automaticamente se actualizan los
+		// controles para la nueva capa
 		if (getValue()) {
 			activeControls(toInsert);
 		}
@@ -310,8 +317,8 @@ public abstract class ToggleTool extends ToggleButton implements
 		this.geoMap = geoMap;
 	}
 
-	protected ToolTipConfig createTooltipConfig(final String title, final String body,
-			Side position) {
+	protected ToolTipConfig createTooltipConfig(final String title,
+			final String body, Side position) {
 		final ToolTipConfig toolTipconfig = new ToolTipConfig();
 		toolTipconfig.setTitleHtml(title);
 		toolTipconfig.setBodyHtml(body);

@@ -46,7 +46,14 @@ import org.geowe.client.local.style.VectorLayerStyleWidget;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.inject.Inject;
-
+/**
+ * Responsable de inicializar las herramientas que requieren de notificación al cambiar la capa seleccionada en el árbol de capas
+ * @author jose@geowe.org
+ * 
+ * @since 30/08/2016
+ * @author jose@geowe.org
+ * Se registra notificaciones en herramientas que requieren cambios de selección en capas WMS del árbol de capas
+ */
 @ApplicationScoped
 public class EventListenerInitializer {
 

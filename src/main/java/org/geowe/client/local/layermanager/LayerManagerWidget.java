@@ -68,7 +68,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * Represents the Layer Manager. It is responsible for managing map layers
  * 
  * @author geowe
+ * 
+ *@autor jose@geowe.org
+ *@since 30/08/2016
  *
+ * Se añade notifiación de eventos al seleccionar una capa WMS del árbol de capas
  */
 @ApplicationScoped
 public class LayerManagerWidget implements IsWidget {

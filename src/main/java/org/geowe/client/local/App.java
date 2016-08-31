@@ -33,6 +33,7 @@ import org.geowe.client.local.initializer.VectorLayerInitializer;
 import org.geowe.client.local.initializer.WidgetInitializer;
 import org.geowe.client.local.main.ActionBar;
 import org.geowe.client.local.main.LinksWidget;
+import org.geowe.client.local.main.ZoomStatusWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.gwtopenmaps.openlayers.client.OpenLayers;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
@@ -70,6 +71,8 @@ public class App {
 	private EventListenerInitializer eventListenerInitializer;
 	@Inject
 	private URLVectorLayerInitializer uRLVectorLayerInitializer;
+	@Inject
+	private ZoomStatusWidget zoomStatusWidget;
 	
 	@PostConstruct
 	public void buildUI() {
@@ -78,6 +81,7 @@ public class App {
 		RootLayoutPanel.get().add(geoMap.getMapWidget());
 		RootPanel.get().add(actionBar);
 		RootPanel.get().add(linksWidget);
+		RootPanel.get().add(zoomStatusWidget);
 
 		logger.info("Map initialize...");
 		geoMapInitializer.initialize();

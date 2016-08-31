@@ -32,6 +32,7 @@ import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.draw.DrawTool;
+import org.geowe.client.local.main.tool.info.WmsGetInfoTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.DragFeature;
@@ -40,8 +41,10 @@ import org.gwtopenmaps.openlayers.client.control.ModifyFeature;
 import org.gwtopenmaps.openlayers.client.control.SelectFeature;
 import org.gwtopenmaps.openlayers.client.control.Snapping;
 import org.gwtopenmaps.openlayers.client.control.TransformFeature;
+import org.gwtopenmaps.openlayers.client.control.WMSGetFeatureInfo;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
+import org.gwtopenmaps.openlayers.client.layer.WMS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +61,14 @@ import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
+/**
+ * Gestiona la activación de los controles en el mapa en función del estado del botón de la herramienta
+ * @author jose@geowe.org
+ * 
+ * @since 30/08/2016
+ * @author jose@geowe.org
+ * Se añade gestión para herramientas que trabajan con controles de capas WMS
+ */
 public abstract class ToggleTool extends ToggleButton implements
 		ChangeSelectedLayerListener {
 
@@ -69,15 +80,16 @@ public abstract class ToggleTool extends ToggleButton implements
 	private Layer layer;
 	private GeoMap geoMap;
 
-	public ToggleTool(final String label, final ImageResource icon, final GeoMap geoMap,
-			final LayerManagerWidget layerManager) {
+	public ToggleTool(final String label, final ImageResource icon,
+			final GeoMap geoMap, final LayerManagerWidget layerManager) {
 		super();
 		this.geoMap = geoMap;
 		initialize(label, icon);
 		layerManager.addChangeLayerListener(this);
 	}
 
-	public ToggleTool(final String label, final ImageResource icon, final GeoMap geoMap) {
+	public ToggleTool(final String label, final ImageResource icon,
+			final GeoMap geoMap) {
 		super();
 		this.geoMap = geoMap;
 		initialize(label, icon);
@@ -94,12 +106,12 @@ public abstract class ToggleTool extends ToggleButton implements
 		setSize(WIDTH, HEIGHT);
 		setIcon(icon);
 	}
-	
+
 	@PostConstruct
 	private void registerValueChangeHandler() {
 		addValueChangeHandler(getSelectChangeHandler());
 	}
-	
+
 	protected ValueChangeHandler<Boolean> getSelectChangeHandler() {
 		return new ValueChangeHandler<Boolean>() {
 			@Override
@@ -242,7 +254,8 @@ public abstract class ToggleTool extends ToggleButton implements
 					|| control instanceof DragFeature
 					|| control instanceof TransformFeature) {
 				toDelete.add(control);
-				final Control newControl = ((DrawTool) this).createDrawTool(layer);
+				final Control newControl = ((DrawTool) this)
+						.createDrawTool(layer);
 				toInsert.add(newControl);
 			} else if (control instanceof Snapping) {
 				((Snapping) control).setLayer((Vector) layer);
@@ -252,7 +265,34 @@ public abstract class ToggleTool extends ToggleButton implements
 						"No implemented yet!!! " + control.getClassName());
 			}
 		}
+		
+		updateControl(toDelete, toInsert);
+	}
 
+	public void setWMSLayer(final WMS layer) {
+		this.layer = layer;
+		setEnabled(true);
+
+		final List<Control> toDelete = new ArrayList<Control>();
+		final List<Control> toInsert = new ArrayList<Control>();
+
+		for (final Control control : controls) {
+
+			if (control instanceof WMSGetFeatureInfo) {
+				toDelete.add(control);
+				final Control newControl = ((WmsGetInfoTool) this)
+						.WMSGetFeatureInfo(layer);
+				toInsert.add(newControl);
+			} else {
+				Info.display(UIMessages.INSTANCE.warning(),
+						"No implemented yet!!! " + control.getClassName());
+			}
+		}
+
+		updateControl(toDelete, toInsert);
+	}
+
+	private void updateControl(final List<Control> toDelete, final List<Control> toInsert) {
 		// Importante solo aplicar a las herramientas que son DrawTool
 		deactiveControls(toDelete);
 		controls.removeAll(toDelete);
@@ -277,8 +317,8 @@ public abstract class ToggleTool extends ToggleButton implements
 		this.geoMap = geoMap;
 	}
 
-	protected ToolTipConfig createTooltipConfig(final String title, final String body,
-			Side position) {
+	protected ToolTipConfig createTooltipConfig(final String title,
+			final String body, Side position) {
 		final ToolTipConfig toolTipconfig = new ToolTipConfig();
 		toolTipconfig.setTitleHtml(title);
 		toolTipconfig.setBodyHtml(body);

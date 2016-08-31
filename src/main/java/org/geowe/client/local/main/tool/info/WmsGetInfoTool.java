@@ -22,19 +22,25 @@
  */
 package org.geowe.client.local.main.tool.info;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.layermanager.ChangeSelectedWMSLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ToggleTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.ProgressBarDialog;
+import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.WMSGetFeatureInfo;
 import org.gwtopenmaps.openlayers.client.control.WMSGetFeatureInfoOptions;
 import org.gwtopenmaps.openlayers.client.event.GetFeatureInfoListener;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
+import org.gwtopenmaps.openlayers.client.layer.WMS;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.inject.Inject;
@@ -48,11 +54,15 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
  * Get WMS layer Info
  * 
  * @author geowe
- *
+ *  
+ * @since 30/08/2016
+ * @author jose@geowe.org
+ * Se crea el control WmsGetInfo en función de capa WMS seleccionada en el árbol de capas
+ * 
  */
 @ApplicationScoped
-public class WmsGetInfoTool extends ToggleTool {
-
+public class WmsGetInfoTool extends ToggleTool implements ChangeSelectedWMSLayerListener{
+	
 	@Inject
 	public WmsGetInfoTool(GeoMap geoMap, LayerManagerWidget layerManager) {
 		super(UIMessages.INSTANCE.wmsInfo(),
@@ -62,17 +72,8 @@ public class WmsGetInfoTool extends ToggleTool {
 	}
 
 	@PostConstruct
-	private void initialize() {
-		WMSGetFeatureInfoOptions wmsGetFeatureInfoOptions = new WMSGetFeatureInfoOptions();
-		wmsGetFeatureInfoOptions.setMaxFeaturess(50);
-
-		wmsGetFeatureInfoOptions.setDrillDown(true);
-
-		WMSGetFeatureInfo wmsGetFeatureInfo = new WMSGetFeatureInfo(
-				wmsGetFeatureInfoOptions);
-
-		wmsGetFeatureInfo.addGetFeatureListener(getFeatureInfoListener());
-		add(wmsGetFeatureInfo);
+	private void initialize() {		
+		add(WMSGetFeatureInfo(null));		
 	}
 
 	private GetFeatureInfoListener getFeatureInfoListener() {
@@ -84,17 +85,34 @@ public class WmsGetInfoTool extends ToggleTool {
 				final ProgressBarDialog progressBar = new ProgressBarDialog(
 						false, UIMessages.INSTANCE.processing());
 				progressBar.show();
-				HTML html = new HTML(eventObject.getText());
+				final HTML html = new HTML(eventObject.getText());
 				progressBar.hide();
 				showDialog(html);
 			}
 		};
 	}
+	
+	
+	public Control WMSGetFeatureInfo(final WMS layer) {
+				
+		final WMSGetFeatureInfoOptions wmsGetFeatureInfoOptions = new WMSGetFeatureInfoOptions();
+		wmsGetFeatureInfoOptions.setMaxFeaturess(50);		
+		wmsGetFeatureInfoOptions.setDrillDown(true);
+		if(layer != null) {
+			final List<WMS> layers = new ArrayList<WMS>();
+			layers.add(layer);
+			wmsGetFeatureInfoOptions.setTitle(layer.getName());			
+			wmsGetFeatureInfoOptions.setLayers(layers.toArray(new WMS[]{}));					
+		}
+		
+		
+		final WMSGetFeatureInfo wmsGetFeatureInfo = new WMSGetFeatureInfo(
+				wmsGetFeatureInfoOptions);
 
-	@Override
-	public void setLayer(Layer layer) {
-		// TODO: esta herramienta no trabaja con capas vectoriales
-	}
+		wmsGetFeatureInfo.addGetFeatureListener(getFeatureInfoListener());
+		return wmsGetFeatureInfo;
+		
+	}	
 
 	private void showDialog(final HTML info) {
 		final Dialog simple = new Dialog();
@@ -116,7 +134,18 @@ public class WmsGetInfoTool extends ToggleTool {
 		simple.show();
 	}
 
-	private HTML replaceHref(HTML html) {
+	private HTML replaceHref(final HTML html) {
 		return new HTML(html.getHTML().replace("<a", "<a target=\"_blank\" "));
+	}
+	
+	@Override
+	public void setLayer(final Layer layer) {
+		//Se anula para esta herramienta
+	}
+	
+
+	@Override
+	public void onChange(final WMS layer) {
+		setWMSLayer(layer);		
 	}
 }

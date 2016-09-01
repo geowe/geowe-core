@@ -25,7 +25,25 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta charset="UTF-8">
-<title>GeoWE Report Engine (Alpha)</title>
+<title>GeoWE Report Engine</title>
+<style>
+.features-table {
+    border-collapse: collapse;
+    width: 90%;
+    border: 1px solid #3291d6;
+}
+.features-th {
+    text-align: left;
+    padding: 8px;
+    background-color: #3291d6;
+    color: white;
+}
+.features-td {
+    text-align: left;
+    padding: 8px;
+}
+.tr:hover{background-color:#f5f5f5}
+</style>
 </head>
 <body>
 	<h2 style="text-align: center;">{uimessages.layerReportHeader}</h2>
@@ -53,14 +71,25 @@
 		<span style="font-weight: bold;">{uimessages.asdAttributeLabel}</span>
 		{data.getSchema.getAttributeNames}
 	</p>
+	<div style="overflow-x:auto; overflow-y:auto;">
 	<br>
-	<br>
+	<table align="center" class="features-table">
+		<tr class="tr">
+			<th class="features-th">Num.</th>
+			<th class="features-th">{data.getSchema.getAttributeNames}</th>
+		</tr>
+		<tpl for='attrValues'>
+		<tr class="tr">
+			<td class="features-td">{#}</td>
+			<td class="features-td">{toString}</td>
+		</tr>
+		</tpl>
+	</table>
+	</div>
 	<hr>
 	<div style="text-align: center;">
-		GeoWE Report Engine(Alpha) - <a href="http://www.geowe.org"
+		GeoWE Report Engine- <a href="http://www.geowe.org"
 			target="_blank">geowe.org</a>
 	</div>
 </body>
 </html>
-
-

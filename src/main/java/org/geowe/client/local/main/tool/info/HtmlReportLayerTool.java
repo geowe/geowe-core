@@ -63,7 +63,7 @@ public class HtmlReportLayerTool extends LayerTool {
 	public interface VectorLayerTemplate extends XTemplates {
 		@XTemplate(source = "LayerInfoTemplate.html")
 		public SafeHtml renderTemplate(UIMessages uimessages, VectorLayer data,
-				List<String> attrValues);
+				List<List<String>> attrValues, List<String> attrNames);
 	}
 
 	@Inject
@@ -106,7 +106,6 @@ public class HtmlReportLayerTool extends LayerTool {
 								getSelectedVectorLayer().getName() + ".html");
 					}
 				}));
-
 		simple.show();
 	}
 
@@ -115,7 +114,7 @@ public class HtmlReportLayerTool extends LayerTool {
 		panel.setSize("400px", "400px");
 		panel.add(data);
 		ScrollSupport scrollSupport = panel.getScrollSupport();
-		scrollSupport.setScrollMode(ScrollMode.AUTOY);
+		scrollSupport.setScrollMode(ScrollMode.AUTO);
 		return panel;
 	}
 
@@ -123,16 +122,20 @@ public class HtmlReportLayerTool extends LayerTool {
 		VectorLayerTemplate template = GWT.create(VectorLayerTemplate.class);
 		return new HTML(template.renderTemplate(UIMessages.INSTANCE,
 				getSelectedVectorLayer(),
-				getAttributesValue(getSelectedVectorLayer().getFeatures())));
+				getAttributesValue(getSelectedVectorLayer().getFeatures()),
+				getAttributeNames()));
 	}
 	
-	private List<String> getAttributesValue(VectorFeature[] features) {
-		List<String> attrValues = new ArrayList<String>();
+	private List<List<String>> getAttributesValue(VectorFeature[] features) {
+		List<List<String>> attrValues = new ArrayList<List<String>>();
 		for (VectorFeature feature : features) {
-			attrValues.add(feature.getAttributes().getAttributeValues()
-					.toString());
+			attrValues.add(feature.getAttributes().getAttributeValues());
 		}
 		return attrValues;
 	}
 
+	private List<String> getAttributeNames() {
+		return new ArrayList<String>(getSelectedVectorLayer().getSchema()
+				.getAttributeNames());
+	}
 }

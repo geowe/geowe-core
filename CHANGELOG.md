@@ -20,6 +20,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 - issue [#153](https://github.com/geowe/geowe-core/issues/153)
 - issue [#159](https://github.com/geowe/geowe-core/issues/159)
 - issue [#17](https://github.com/geowe/geowe-core/issues/17)
+- issue [#162](https://github.com/geowe/geowe-core/issues/162)
 
 ## [1.0.5]Beta - 2016-08-19
 version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available

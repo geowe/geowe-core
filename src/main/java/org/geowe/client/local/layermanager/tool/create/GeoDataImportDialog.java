@@ -300,13 +300,15 @@ public class GeoDataImportDialog extends Dialog {
 				urlShared.setVisible(true);
 			}
 
-			private String getHref() {
+		private String getHref() {
 				String baseUrl = GWT.getHostPageBaseURL();
-
-				return baseUrl + "?layerUrl=" + urlTextField.getValue()
+				
+				baseUrl +=  "?layerUrl=" +  URL.encodeQueryString(urlTextField.getValue())
 						+ "&layerName=" + getLayerName() + "&layerProj="
 						+ getProjectionName() + "&layerFormat="
 						+ getDataFormat();
+				
+				return baseUrl;
 			}
 		};
 	}

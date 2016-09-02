@@ -71,19 +71,25 @@
 		<span style="font-weight: bold;">{uimessages.asdAttributeLabel}</span>
 		{data.getSchema.getAttributeNames}
 	</p>
-	<div style="overflow-x:auto; overflow-y:auto;">
+	<div>
 	<br>
-	<table align="center" class="features-table">
+	<table class="features-table">
 		<tr class="tr">
 			<th class="features-th">Num.</th>
-			<th class="features-th">{data.getSchema.getAttributeNames}</th>
+			<tpl for='attrNames'>
+			<th class="features-th">{toString}</th>
+			</tpl>
 		</tr>
+		
 		<tpl for='attrValues'>
 		<tr class="tr">
 			<td class="features-td">{#}</td>
+			<tpl for='.'>
 			<td class="features-td">{toString}</td>
+			</tpl>
 		</tr>
 		</tpl>
+		
 	</table>
 	</div>
 	<hr>

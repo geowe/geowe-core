@@ -34,6 +34,16 @@ The **geowe-core** is licensed under the [GPLv3](https://www.gnu.org/licenses/gp
 ##Configuration
 In order to use all **GeoWE** features, you must configure following basic params:
 
+####Google Maps config:
+To use Google maps, you need to specify yout own Google Maps Api key. Please, [read this carefully] (https://developers.google.com/maps/documentation/javascript/get-api-key).
+
+Append your key to the URL of the script, located on App.html.
+
+	For example:
+	<script type="text/javascript"
+	src="//maps.googleapis.com/maps/api/js?libraries=places&key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
+
 ####Bing Maps config:
 To use Bing maps, you need to specify your own Bing maps key. Please, [read this carefully] (https://www.microsoft.com/maps/create-a-bing-maps-key.aspx).
 

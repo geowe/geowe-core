@@ -22,6 +22,9 @@
  */
 package org.geowe.client.local.main.tool.info;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -32,22 +35,26 @@ import org.geowe.client.local.layermanager.tool.export.FileExporter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.core.client.dom.ScrollSupport;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Herramienta para generar informe html de una capa
  * 
- * @author geowe
+ * @author rafa@geowe.org
  *
  */
 @ApplicationScoped
@@ -55,7 +62,8 @@ public class HtmlReportLayerTool extends LayerTool {
 
 	public interface VectorLayerTemplate extends XTemplates {
 		@XTemplate(source = "LayerInfoTemplate.html")
-		public SafeHtml renderTemplate(UIMessages uimessages, VectorLayer data);
+		public SafeHtml renderTemplate(UIMessages uimessages, VectorLayer data,
+				List<List<String>> attrValues, List<String> attrNames);
 	}
 
 	@Inject
@@ -83,13 +91,13 @@ public class HtmlReportLayerTool extends LayerTool {
 	private void showDialog(final HTML htmlReport) {
 		final Dialog simple = new Dialog();
 		simple.setHeadingText("GeoWe Report");
-		simple.setSize("400px", "400px");
+		simple.setSize("420px", "420px");
 		simple.setResizable(true);
 		simple.setHideOnButtonClick(true);
 		simple.setPredefinedButtons(PredefinedButton.CLOSE);
 		simple.setBodyStyleName("pad-text");
 		simple.getBody().addClassName("pad-text");
-		simple.add(htmlReport);
+		simple.add(getPanel(htmlReport));
 		simple.addButton(new TextButton(UIMessages.INSTANCE.download(),
 				new SelectHandler() {
 					@Override
@@ -98,14 +106,36 @@ public class HtmlReportLayerTool extends LayerTool {
 								getSelectedVectorLayer().getName() + ".html");
 					}
 				}));
-
 		simple.show();
+	}
+
+	private HorizontalLayoutContainer getPanel(final HTML data) {
+		HorizontalLayoutContainer panel = new HorizontalLayoutContainer();
+		panel.setSize("400px", "400px");
+		panel.add(data);
+		ScrollSupport scrollSupport = panel.getScrollSupport();
+		scrollSupport.setScrollMode(ScrollMode.AUTO);
+		return panel;
 	}
 
 	public HTML getHtmlReport() {
 		VectorLayerTemplate template = GWT.create(VectorLayerTemplate.class);
 		return new HTML(template.renderTemplate(UIMessages.INSTANCE,
-				getSelectedVectorLayer()));
+				getSelectedVectorLayer(),
+				getAttributesValue(getSelectedVectorLayer().getFeatures()),
+				getAttributeNames()));
+	}
+	
+	private List<List<String>> getAttributesValue(VectorFeature[] features) {
+		List<List<String>> attrValues = new ArrayList<List<String>>();
+		for (VectorFeature feature : features) {
+			attrValues.add(feature.getAttributes().getAttributeValues());
+		}
+		return attrValues;
 	}
 
+	private List<String> getAttributeNames() {
+		return new ArrayList<String>(getSelectedVectorLayer().getSchema()
+				.getAttributeNames());
+	}
 }

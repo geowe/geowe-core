@@ -22,8 +22,6 @@
  */
 package org.geowe.client.local.main.tool.measure;
 
-import java.math.BigDecimal;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -41,6 +39,7 @@ import org.gwtopenmaps.openlayers.client.control.SelectFeature.UnselectFeatureLi
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 import org.gwtopenmaps.openlayers.client.geometry.LineString;
+import org.gwtopenmaps.openlayers.client.geometry.LinearRing;
 import org.gwtopenmaps.openlayers.client.geometry.Polygon;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
@@ -49,8 +48,9 @@ import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.widget.core.client.box.MessageBox;
 
 /**
- * Calculate selected element Area or lenght. 
- * @author geowe
+ * Calculate selected element Area and lenght.
+ * 
+ * @author rafa@geowe.org
  *
  */
 @ApplicationScoped
@@ -58,14 +58,13 @@ public class MeasureElementTool extends ToggleTool {
 
 	@Inject
 	private MapControlFactory mapControlFactory;
-	
+
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 
 	private SelectFeature clickSelectFeature;
 
 	private MessageBox measureDialog;
-	
 
 	@Inject
 	public MeasureElementTool(GeoMap geoMap, LayerManagerWidget layerManager) {
@@ -77,21 +76,21 @@ public class MeasureElementTool extends ToggleTool {
 		setEnabled(false);
 
 	}
-	
+
 	@PostConstruct
 	private void initialize() {
-		this.clickSelectFeature = mapControlFactory.createClickControl(new Vector("Empty"),
-				getUnselectListener(), getClickEvent());
+		this.clickSelectFeature = mapControlFactory.createClickControl(
+				new Vector("Empty"), getUnselectListener(), getClickEvent());
 		add(mapControlFactory.createSelectHover(new Vector("Empty")));
-		add(clickSelectFeature);		
+		add(clickSelectFeature);
 	}
-	
+
 	private UnselectFeatureListener getUnselectListener() {
 		return new UnselectFeatureListener() {
 
 			@Override
 			public void onFeatureUnselected(VectorFeature vectorFeature) {
-				if (measureDialog != null && measureDialog.isVisible()){
+				if (measureDialog != null && measureDialog.isVisible()) {
 					measureDialog.hide();
 				}
 			}
@@ -103,45 +102,69 @@ public class MeasureElementTool extends ToggleTool {
 
 			@Override
 			public void onFeatureClicked(VectorFeature vectorFeature) {
-				 clickSelectFeature.select(vectorFeature);
-				 clickSelectFeature.unselectAll(vectorFeature);
-				 
-				 
+				clickSelectFeature.select(vectorFeature);
+				clickSelectFeature.unselectAll(vectorFeature);
+
 				Geometry geom = vectorFeature.getGeometry();
 				Projection proj = new Projection(GeoMap.INTERNAL_EPSG);
-				if(geom.getClassName().equals(Geometry.LINESTRING_CLASS_NAME)){
-					
-					LineString lineString = LineString
-							.narrowToLineString(geom.getJSObject());
-					
-					show(getReoundedMeasure(lineString.getGeodesicLength(proj),
-							3), "distance", "m");
-				}else if(geom.getClassName().equals(Geometry.POLYGON_CLASS_NAME)){
-					Polygon polygon = Polygon
-							.narrowToPolygon(geom.getJSObject());
-					
-					show(getReoundedMeasure(polygon.getGeodesicArea(proj) , 3), "area", "m²");
-				}else{
-					show(0, "Not supported " + geom.getClassName(), "");
+				if (geom.getClassName().equals(Geometry.LINESTRING_CLASS_NAME)) {
+
+					LineString lineString = LineString.narrowToLineString(geom
+							.getJSObject());
+					MeasurementInfo distanceInfo = new MeasurementInfo(
+							lineString.getGeodesicLength(proj),
+							MeasurementInfo.UNIT_METERS);
+					show(distanceInfo, new MeasurementInfo(0D,
+							MeasurementInfo.UNIT_SQUARE_METERS));
+				} else if (geom.getClassName().equals(
+						Geometry.POLYGON_CLASS_NAME)) {
+					Polygon polygon = Polygon.narrowToPolygon(geom
+							.getJSObject());
+
+					MeasurementInfo areaInfo = new MeasurementInfo(
+							polygon.getGeodesicArea(proj),
+							MeasurementInfo.UNIT_SQUARE_METERS);
+
+					MeasurementInfo distanceInfo = new MeasurementInfo(
+							calculatePolygonLenght(polygon),
+							MeasurementInfo.UNIT_METERS);
+
+					show(distanceInfo, areaInfo);
+
+				} else {
+					show(new MeasurementInfo(0D,
+							MeasurementInfo.UNIT_SQUARE_METERS),
+							new MeasurementInfo(0D,
+									MeasurementInfo.UNIT_SQUARE_METERS));
 				}
 			}
 		};
 	}
-	
-	
-	private void show(double value, String type, String unit) {
 
-		measureDialog = messageDialogBuilder.createInfo(
-				UIMessages.INSTANCE.measure(),
-				UIMessages.INSTANCE.metDialogLabel(value, type, unit));
-		measureDialog.show();
-
-
+	private double calculatePolygonLenght(Polygon polygon) {
+		double lenght = 0;
+		for (LinearRing ring : polygon.getComponents()) {
+			lenght = lenght
+					+ ring.getGeodesicLength(new Projection(
+							GeoMap.INTERNAL_EPSG));
+		}
+		return lenght;
 	}
 
-	private float getReoundedMeasure(Double measure, int decimal) {
-		BigDecimal bd = new BigDecimal(Double.toString(measure));
-		bd = bd.setScale(decimal, BigDecimal.ROUND_HALF_UP);
-		return bd.floatValue();
+	private void show(MeasurementInfo distanceInfo, MeasurementInfo areaInfo) {
+		distanceInfo.normalizeLength();
+		areaInfo.normalizeArea();
+
+		String msg = UIMessages.INSTANCE.mtDialogLabel(
+				distanceInfo.getMeasureValue(),
+				distanceInfo.getUnit())
+				+ "<br>"
+				+ UIMessages.INSTANCE.metDialogLabel(
+						areaInfo.getMeasureValue(), "",
+						areaInfo.getUnit());
+
+		measureDialog = messageDialogBuilder.createInfo(UIMessages.INSTANCE
+				.measure(), msg);
+		measureDialog.show();
 	}
 }

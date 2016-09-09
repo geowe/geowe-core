@@ -7,8 +7,20 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
-## [1.1.0]Beta - 2016-09-02
+## [1.1.1]Beta - 2016-09-09
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added "Recintos SIGPAC 2016 Andalucía" to catalog
+- Added "Parcelas SIGPAC 2016 Andalucía" to catalog
+- Added property files to specify max extent and resolution  
+
+### Fixed
+- issue [#163](https://github.com/geowe/geowe-core/issues/163)
+- issue [#164](https://github.com/geowe/geowe-core/issues/164)
+- issue [#165](https://github.com/geowe/geowe-core/issues/165)
+
+## [1.1.0]Beta - 2016-09-02
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added WMTS PNOA layer into Catalog
 - Added WMTS and TMS support

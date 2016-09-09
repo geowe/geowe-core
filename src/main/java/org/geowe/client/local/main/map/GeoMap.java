@@ -23,8 +23,11 @@
 package org.geowe.client.local.main.map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.geowe.client.local.AppClientProperties;
 import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
+import org.gwtopenmaps.openlayers.client.Bounds;
 import org.gwtopenmaps.openlayers.client.LonLat;
 import org.gwtopenmaps.openlayers.client.Map;
 import org.gwtopenmaps.openlayers.client.MapOptions;
@@ -43,6 +46,9 @@ public class GeoMap implements ChangeSelectedLayerListener{
 	private final MapWidget mapWidget;
 	private final NavigationHistory navHistory = new NavigationHistory();	
 	private Projection displayProjection;
+		
+	@Inject
+	private AppClientProperties appClientProperties;
 	
 	public GeoMap() {
 		final MapOptions defaultMapOptions = new MapOptions();
@@ -75,14 +81,25 @@ public class GeoMap implements ChangeSelectedLayerListener{
 	}
 	
  	public void configure(final Projection displayProjection, final Integer numZoomLevels, final String units) {
- 		this.displayProjection = displayProjection;
- 		
+ 		this.displayProjection = displayProjection; 		
+		
  		final MapOptions mapOptions = new MapOptions();
 		mapOptions.setDisplayProjection(this.displayProjection);
 		mapOptions.setNumZoomLevels(numZoomLevels);
 		mapOptions.setUnits(units);
+		mapOptions.setMaxExtent(getMapBound());
+		mapOptions.setMaxResolution(appClientProperties.getFloatValue("maxResolution"));
 		getMap().setOptions(mapOptions);
 		getMap().setMinMaxZoomLevel(0, 50);
+ 	}
+ 	
+ 	private Bounds getMapBound() {
+ 		final double lowerLeftX = appClientProperties.getFloatValue("lowerLeftX");
+ 		final double lowerLeftY = appClientProperties.getFloatValue("lowerLeftY");
+ 		final double upperRightX = appClientProperties.getFloatValue("upperRightX");
+ 		final double upperRightY = appClientProperties.getFloatValue("upperRightY");
+		
+ 		return new Bounds(lowerLeftX,lowerLeftY,upperRightX,upperRightY);
  	}
 
 	public void addControl(final Control control) {

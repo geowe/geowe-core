@@ -59,7 +59,7 @@ public class W3WServiceImpl extends RemoteServiceServlet implements W3WService {
 	@Override
 	public String getPosition(final String words, final String lang) {
 		String response = "";
-		final String url = String.format("%sw3w?key=%s&string=%s&lang=%s",
+		final String url = String.format("%sv2/forward?key=%s&addr=%s&lang=%s",
 				this.baseUrl, this.apiKey, words, lang);
 		try {
 			response = doHttpGet(url);
@@ -72,7 +72,7 @@ public class W3WServiceImpl extends RemoteServiceServlet implements W3WService {
 	@Override
 	public String get3Words(final String latLong, final String lang) {
 		String response = "";
-		final String url = String.format("%sposition?key=%s&position=%s&lang=%s",
+		final String url = String.format("%sv2/reverse?key=%s&coords=%s&lang=%s",
 				this.baseUrl, this.apiKey, latLong, lang);
 		try {
 			response = doHttpGet(url);
@@ -110,7 +110,8 @@ public class W3WServiceImpl extends RemoteServiceServlet implements W3WService {
 				LOG.error("w3w getException(): Fail to close Reader");
 			}
 		}
-
+		
+		LOG.info(response.toString());
 		return response.toString();
 	}
 

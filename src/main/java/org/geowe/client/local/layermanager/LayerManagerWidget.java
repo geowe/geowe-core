@@ -35,6 +35,7 @@ import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.layer.GoogleV3;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
+import org.gwtopenmaps.openlayers.client.layer.WMS;
 import org.jboss.errai.ioc.client.container.IOC;
 
 import com.google.gwt.cell.client.ValueUpdater;
@@ -67,7 +68,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * Represents the Layer Manager. It is responsible for managing map layers
  * 
  * @author geowe
+ * 
+ *@autor jose@geowe.org
+ *@since 30/08/2016
  *
+ * Se añade notifiación de eventos al seleccionar una capa WMS del árbol de capas
  */
 @ApplicationScoped
 public class LayerManagerWidget implements IsWidget {
@@ -77,6 +82,8 @@ public class LayerManagerWidget implements IsWidget {
 	private final Map<String, LayerTree> layerTrees = new HashMap<String, LayerTree>();
 	private PlainTabPanel tabPanel;
 	private final List<ChangeSelectedLayerListener> events = new ArrayList<ChangeSelectedLayerListener>();
+	private final List<ChangeSelectedWMSLayerListener> wmsEvents = new ArrayList<ChangeSelectedWMSLayerListener>();
+	
 	private final List<AddLayerListener> addLayerListeners = new ArrayList<AddLayerListener>();
 	private final List<RemoveLayerListener> removeLayerListeners = new ArrayList<RemoveLayerListener>();
 	private final Label statusBar = new Label(
@@ -214,8 +221,19 @@ public class LayerManagerWidget implements IsWidget {
 				for (final ChangeSelectedLayerListener changeEvent : events) {
 					changeEvent.onChange((Vector) layer);
 				}
-			}
+			}			
 		}
+				
+		if (tabName.equals(LayerManagerWidget.RASTER_TAB)) {
+			final Layer layer = getSelectedLayer(tabName);
+			
+			if (layer instanceof WMS
+					&& !layer.equals(getRoot(LayerManagerWidget.RASTER_TAB))) {
+				for (final ChangeSelectedWMSLayerListener changeEvent : wmsEvents) {
+					changeEvent.onChange((WMS) layer);
+				}
+			}
+		}				
 	}
 
 	public void removeLayer(final String tabName, final Layer layer) {
@@ -282,6 +300,14 @@ public class LayerManagerWidget implements IsWidget {
 							changeEvent.onChange((Vector) layer);
 						}
 					}
+					
+					if (layer instanceof WMS
+							&& !layer
+									.equals(getRoot(LayerManagerWidget.RASTER_TAB))) {
+						for (final ChangeSelectedWMSLayerListener changeEvent : wmsEvents) {
+							changeEvent.onChange((WMS) layer);
+						}
+					}
 
 					if ((layer instanceof GoogleV3)) {
 						slider.disable();
@@ -297,6 +323,10 @@ public class LayerManagerWidget implements IsWidget {
 
 	public void addChangeLayerListener(final ChangeSelectedLayerListener event) {
 		events.add(event);
+	}
+	
+	public void addChangeWMSLayerListener(final ChangeSelectedWMSLayerListener event) {
+		wmsEvents.add(event);
 	}
 
 	public void addAddLayerListener(final AddLayerListener listener) {

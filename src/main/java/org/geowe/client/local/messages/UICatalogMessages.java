@@ -45,9 +45,9 @@ public interface UICatalogMessages extends Messages {
 
 	String enclosuresSigPacDescription();
 
-	String fruitTreesSigPacName();
+	String parcelSigPacName();
 
-	String fruitTreesSigPacDescription();
+	String parcelSigPacDescription();
 
 	String googleSatelliteName();
 

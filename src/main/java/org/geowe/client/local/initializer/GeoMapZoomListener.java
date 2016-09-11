@@ -25,13 +25,12 @@ package org.geowe.client.local.initializer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.geowe.client.local.main.ZoomStatusWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.map.catalog.AppLayerCatalog;
 import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.event.MapZoomListener;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
-
-import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * Responsible for listen zoom Map
@@ -43,18 +42,27 @@ import com.sencha.gxt.widget.core.client.info.Info;
 @ApplicationScoped
 public class GeoMapZoomListener implements MapZoomListener {
 
+	public static final String RED = "#FF0000";
+	public static final String BLACK = "#000000";
 	@Inject
 	private GeoMap geoMap;
 
+	@Inject
+	private ZoomStatusWidget zoomStatusWidget;
+
 	@Override
 	public void onMapZoom(MapZoomEvent eventObject) {
+
+		zoomStatusWidget.updateZoomLevel(geoMap.getMap().getZoom());
+
 		final Layer googleSatelliteLayer = geoMap.getMap().getLayerByName(
 				AppLayerCatalog.GOOGLE_SATELLITE);
-
-		if ((googleSatelliteLayer != null) && (geoMap.getMap().getZoom() > 17)) {
-			Info.display(UIMessages.INSTANCE.warning(), UIMessages.INSTANCE
+		if ((googleSatelliteLayer != null) && (geoMap.getMap().getZoom() > 18)) {
+			zoomStatusWidget.updateTitle(RED, UIMessages.INSTANCE
 					.zoomWarning(geoMap.getMap().getZoom(),
 							AppLayerCatalog.GOOGLE_SATELLITE));
+		} else {
+			zoomStatusWidget.updateTitle(BLACK, UIMessages.INSTANCE.currentZoomLevelText());
 		}
 	}
 

@@ -41,8 +41,9 @@ import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
 
 /**
+ * tool responsible for measuring the area
  * 
- * @author geowe
+ * @author rafa@geowe.org
  *
  */
 @ApplicationScoped
@@ -74,11 +75,14 @@ public class MeasureAreaTool extends ToggleTool {
 		return new MeasureListener() {
 			public void onMeasure(MeasureEvent eventObject) {
 
-				messageDialogBuilder.createInfo(
-						UIMessages.INSTANCE.measure(),
-						UIMessages.INSTANCE.matDialogLabel()
-								+ getReoundedMeasure(eventObject.getMeasure(),
-										3) + " " + "m²").show();
+				messageDialogBuilder
+						.createInfo(
+								UIMessages.INSTANCE.measure(),
+								UIMessages.INSTANCE.matDialogLabel()
+										+ getReoundedMeasure(
+												eventObject.getMeasure(), 3)
+										+ " " + eventObject.getUnits() + "²")
+						.show();
 			}
 
 			private float getReoundedMeasure(Float measure, int decimal) {

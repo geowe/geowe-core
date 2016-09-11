@@ -17,7 +17,7 @@ More information available on the [GeoWE Web site](http://geowe.org/).
 - Advanced geodata editing
 - Geolocation and geocoding support
 - Geoprocessing support
-- Geodata layer sharing via URL
+- Geodata layer sharing via URL - [Example](http://demo-geowe.rhcloud.com/App.html?layerUrl=http://repository.geowe.org/rutasgastronomicas/calles.kml&layerName=calles&layerProj=EPSG:23030&layerFormat=KML)
 - Supported geodata open formats: KML, GML, WKT and GeoJSON
 - WMS and WFS support
 - Base raster layer catalog: Google Maps, OSM, Bing, etc.
@@ -25,6 +25,7 @@ More information available on the [GeoWE Web site](http://geowe.org/).
 - Multi-device support
 - Style and customization support
 - Geometry validation features
+- Live version: [map.geowe.org](http://map.geowe.org/)
 
 ##License
 
@@ -32,6 +33,16 @@ The **geowe-core** is licensed under the [GPLv3](https://www.gnu.org/licenses/gp
 
 ##Configuration
 In order to use all **GeoWE** features, you must configure following basic params:
+
+####Google Maps config:
+To use Google maps, you need to specify yout own Google Maps Api key. Please, [read this carefully] (https://developers.google.com/maps/documentation/javascript/get-api-key).
+
+Append your key to the URL of the script, located on App.html.
+
+	For example:
+	<script type="text/javascript"
+	src="//maps.googleapis.com/maps/api/js?libraries=places&key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
 
 ####Bing Maps config:
 To use Bing maps, you need to specify your own Bing maps key. Please, [read this carefully] (https://www.microsoft.com/maps/create-a-bing-maps-key.aspx).

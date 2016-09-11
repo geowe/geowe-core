@@ -32,20 +32,28 @@ import org.geowe.client.local.main.tool.edition.CopyElementTool;
 import org.geowe.client.local.main.tool.edition.UnionTool;
 import org.geowe.client.local.main.tool.info.LayerInfoDialog;
 import org.geowe.client.local.main.tool.info.RasterInfoDialog;
+import org.geowe.client.local.main.tool.info.WmsGetInfoTool;
 import org.geowe.client.local.main.tool.layer.LayerInfoTool;
 import org.geowe.client.local.main.tool.layer.SearchAttributeTool;
 import org.geowe.client.local.main.tool.spatial.BufferTool;
 import org.geowe.client.local.main.tool.spatial.CentroidTool;
 import org.geowe.client.local.main.tool.spatial.EnvelopeTool;
-import org.geowe.client.local.main.tool.spatial.GeoprocessingTool;
 import org.geowe.client.local.main.tool.spatial.GeometryValidationTool;
+import org.geowe.client.local.main.tool.spatial.GeoprocessingTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.inject.Inject;
-
+/**
+ * Responsable de inicializar las herramientas que requieren de notificación al cambiar la capa seleccionada en el árbol de capas
+ * @author jose@geowe.org
+ * 
+ * @since 30/08/2016
+ * @author jose@geowe.org
+ * Se registra notificaciones en herramientas que requieren cambios de selección en capas WMS del árbol de capas
+ */
 @ApplicationScoped
 public class EventListenerInitializer {
 
@@ -81,6 +89,8 @@ public class EventListenerInitializer {
 	private LayerInfoDialog layerInfoDialog;
 	@Inject
 	private RasterInfoDialog rasterInfoDialog;
+	@Inject
+	private WmsGetInfoTool wmsGetInfoTool;
 
 	public void initialize() {
 
@@ -89,6 +99,8 @@ public class EventListenerInitializer {
 		addRemoveLayerListener();
 
 		addAddLayerListener();
+		
+		addChangeSelectedWMSLayerListener();
 
 		Window.addWindowClosingHandler(new Window.ClosingHandler() {
 			@Override
@@ -113,7 +125,11 @@ public class EventListenerInitializer {
 		layerManagerWidget.addChangeLayerListener(envelopeTool);
 		layerManagerWidget.addChangeLayerListener(centroidTool);
 		layerManagerWidget.addChangeLayerListener(bufferTool);
-		layerManagerWidget.addChangeLayerListener(geometricValidationTool);		
+		layerManagerWidget.addChangeLayerListener(geometricValidationTool);						
+	}
+	
+	private void addChangeSelectedWMSLayerListener() {
+		layerManagerWidget.addChangeWMSLayerListener(wmsGetInfoTool);
 	}
 
 	private void addRemoveLayerListener() {

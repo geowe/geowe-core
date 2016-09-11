@@ -43,7 +43,7 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		catastro.setDescription(UICatalogMessages.INSTANCE
 				.catastroDescription());
 		catastro.setUrl("http://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx?");
-		catastro.setWmsLayerName("CATASTRO");
+		catastro.setLayerName("CATASTRO");
 		catastro.setFormat("PNG");
 		catastro.setEpsg("EPSG:3785");
 		catastro.setIcon(ImageProvider.INSTANCE.catastro16());
@@ -54,22 +54,22 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 				.enclosuresSigPacDescription());
 		recintosSp
 				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoservergis/wms");
-		recintosSp.setWmsLayerName("dgpa_spa_sigpac:SPAD_RECINTOS_2015");
+		recintosSp.setLayerName("dgpa_spa_sigpac:SPAD_RECINTOS_2016");
 		recintosSp.setFormat("image/png");
 		recintosSp.setEpsg("EPSG:25830");
 		recintosSp.setIcon(ImageProvider.INSTANCE.sigpac16());
 
-		final WmsLayerDef frutalesSp = new WmsLayerDef();
-		frutalesSp.setName(UICatalogMessages.INSTANCE.fruitTreesSigPacName());
-		frutalesSp.setDescription(UICatalogMessages.INSTANCE
-				.fruitTreesSigPacDescription());
-		frutalesSp
+		final WmsLayerDef parcelasSp = new WmsLayerDef();
+		parcelasSp.setName(UICatalogMessages.INSTANCE.parcelSigPacName());
+		parcelasSp.setDescription(UICatalogMessages.INSTANCE
+				.parcelSigPacDescription());
+		parcelasSp
 				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoservergis/wms");
-		frutalesSp
-				.setWmsLayerName("dgpa_spa_sigpac:SPAD_FRUTALES_CASCARA_2015");
-		frutalesSp.setFormat("image/png");
-		frutalesSp.setEpsg("EPSG:25830");
-		frutalesSp.setIcon(ImageProvider.INSTANCE.sigpac16());
+		parcelasSp
+				.setLayerName("dgpa_spa_sigpac:SPAD_PARCELAS_2016");
+		parcelasSp.setFormat("image/png");
+		parcelasSp.setEpsg("EPSG:25830");
+		parcelasSp.setIcon(ImageProvider.INSTANCE.sigpac16());
 		
 		final WmsLayerDef ortoAndalucia = new WmsLayerDef();
 		ortoAndalucia
@@ -77,14 +77,14 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		ortoAndalucia.setDescription(UICatalogMessages.INSTANCE
 				.ideAndalucia2010Description());
 		ortoAndalucia.setUrl("http://www.ideandalucia.es/wms/ortofoto2010");
-		ortoAndalucia.setWmsLayerName("orto_2010-11");
+		ortoAndalucia.setLayerName("orto_2010-11");
 		ortoAndalucia.setFormat("image/png");
 		ortoAndalucia.setEpsg("EPSG:3857");
 		ortoAndalucia.setIcon(ImageProvider.INSTANCE.ideAndalucia16());
 		
 		layers.add(catastro);
-		layers.add(recintosSp);
-		layers.add(frutalesSp);
+		layers.add(parcelasSp);
+		layers.add(recintosSp);		
 		layers.add(ortoAndalucia);
 	}
 }

@@ -20,10 +20,18 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.layermanager;
+package org.geowe.client.local;
 
-import org.gwtopenmaps.openlayers.client.layer.Vector;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.TextResource;
 
-public interface ChangeSelectedLayerListener {
-	public void onChange(Vector layer);	
+public interface ConfigResourceProvider extends ClientBundle {
+
+	public ConfigResourceProvider INSTANCE = GWT
+			.create(ConfigResourceProvider.class);
+
+	@Source("config/config.properties")
+	TextResource config();
+	
 }

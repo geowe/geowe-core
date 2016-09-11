@@ -39,7 +39,9 @@ import org.slf4j.LoggerFactory;
  * se transformaran siempre al EPSG interno del GeoMap.
  * 
  * @author Atanasio Muñoz
- *
+ * @since 18-08-2016
+ * @author rafa@geowe.org
+ * Fixed issue #150: fail to load geojson with Z coordinate.
  */
 public final class VectorLayerFactory {
 	private static final Logger LOG = LoggerFactory
@@ -128,6 +130,7 @@ public final class VectorLayerFactory {
 
 	public static VectorLayer createGeoJsonVectorLayer(VectorLayerConfig layerConfig) {
 		GeoJSON geoJsonReader = new GeoJSON();
+		geoJsonReader.getJSObject().setProperty("ignoreExtraDims", true);
 		VectorFeature[] features = geoJsonReader.read(layerConfig.getGeoDataString());
 		layerConfig.setFeatures(features);
 				

@@ -7,6 +7,55 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.1.1]Beta - 2016-09-09
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added "Recintos SIGPAC 2016 Andalucía" to catalog
+- Added "Parcelas SIGPAC 2016 Andalucía" to catalog
+- Added property files to specify max extent and resolution  
+
+### Fixed
+- issue [#163](https://github.com/geowe/geowe-core/issues/163)
+- issue [#164](https://github.com/geowe/geowe-core/issues/164)
+- issue [#165](https://github.com/geowe/geowe-core/issues/165)
+
+## [1.1.0]Beta - 2016-09-02
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Added
+- Added WMTS PNOA layer into Catalog
+- Added WMTS and TMS support
+- Added zoom level info panel
+
+### Fixed
+- issue [#151](https://github.com/geowe/geowe-core/issues/151)
+- issue [#152](https://github.com/geowe/geowe-core/issues/152)
+- issue [#153](https://github.com/geowe/geowe-core/issues/153)
+- issue [#159](https://github.com/geowe/geowe-core/issues/159)
+- issue [#17](https://github.com/geowe/geowe-core/issues/17)
+- issue [#162](https://github.com/geowe/geowe-core/issues/162)
+
+## [1.0.5]Beta - 2016-08-19
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+
+### Added
+- Added Africa projections: EPSG:22032, EPSG:22033, EPSG:32732, EPSG:3036, EPSG:3037, EPSG:32737
+
+### Fixed
+- issue [#150](https://github.com/geowe/geowe-core/issues/150)
+- issue [#127](https://github.com/geowe/geowe-core/issues/127)
+
+## [1.0.4]Beta - 2016-07-22
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+
+### Fixed
+- issue [#147](https://github.com/geowe/geowe-core/issues/147)
+- issue [#148](https://github.com/geowe/geowe-core/issues/147)
+
+## [1.0.3]Beta - 2016-07-20
+
+### Fixed
+- issue [#100](https://github.com/geowe/geowe-core/issues/100) - Cargar por url
+
 ## [1.0.2]Beta - 2016-07-18
 
 ### Fixed
@@ -22,7 +71,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#126](https://github.com/geowe/geowe-core/issues/126)
 
 ## [1.0.0]Beta - 2016-07-8
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org)no longer available
 ### Added
 - improve performance
 

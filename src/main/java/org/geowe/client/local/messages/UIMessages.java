@@ -308,11 +308,11 @@ public interface UIMessages extends Messages {
 
 	String avltDialogTitle();
 
-	String addWMSLayerToolText();
+	String addRasterLayerToolText();
 
-	String aWMSltAlertMessageBoxTitle();
+	String aRasterltAlertMessageBoxTitle();
 
-	String aWMSltAlertMessageBoxLabel();
+	String aRasterltAlertMessageBoxLabel();
 
 	String createEmptyLayerToolText();
 
@@ -364,18 +364,20 @@ public interface UIMessages extends Messages {
 
 	String edtAlertDialogLabel();
 
-	// LoadWMSLayerDialog
-	String lWMSdTitle();
+	// LoadRasterLayerDialog
+	String lrasterdTitle();
 
-	String lWMSdUrlField();
+	String lrasterdUrlField();
 
-	String lWMSdLayerNameField();
+	String lrasterdLayerNameField();
 
-	String lWMSdImageFormatField();
+	String lrasterdImageFormatField();
 
-	String lWMSdAlertMessageBoxTitle();
+	String lrasterdAlertMessageBoxTitle();
 
-	String lWMSdAlertMessageBoxLabel(String wrongfield);
+	String lrasterdAlertMessageBoxLabel(String wrongfield);
+	
+	String lrasterdMatrixSetField();
 
 	// CatalogDialog
 	String catalogTitle();
@@ -692,4 +694,8 @@ public interface UIMessages extends Messages {
 	String noInputDataSpecified();
 	
 	String zoomWarning(int zoomLevel, String googleSatellite);
+	
+	String zoomLevelText(int zoomLevel);
+	
+	String currentZoomLevelText();
 }

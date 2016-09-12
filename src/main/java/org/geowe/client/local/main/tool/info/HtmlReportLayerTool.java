@@ -35,7 +35,9 @@ import org.geowe.client.local.layermanager.tool.export.FileExporter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
@@ -67,6 +69,9 @@ public class HtmlReportLayerTool extends LayerTool {
 	}
 
 	@Inject
+	private ClientTaskManager taskManager;
+
+	@Inject
 	public HtmlReportLayerTool(LayerManagerWidget layerManagerWidget,
 			GeoMap geoMap) {
 		super(layerManagerWidget, geoMap);
@@ -85,7 +90,18 @@ public class HtmlReportLayerTool extends LayerTool {
 
 	@Override
 	public void onClick() {
-		showDialog(getHtmlReport());
+		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false,
+				UIMessages.INSTANCE.processing());
+		autoMessageBox.center();
+		autoMessageBox.show();
+		taskManager.execute(new Runnable() {
+			@Override
+			public void run() {
+				showDialog(getHtmlReport());
+				autoMessageBox.hide();
+			}
+		});
+			
 	}
 
 	private void showDialog(final HTML htmlReport) {

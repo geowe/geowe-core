@@ -32,12 +32,17 @@ import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public abstract class AbstractGeoDataImport extends ButtonTool {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(AbstractGeoDataImport.class.getName());
+	
 	private final GeoDataImportDialog geoDataImportDialog;
 	private final LayerManagerWidget layerManager;
 	private final MessageDialogBuilder messageDialogBuilder;
@@ -76,9 +81,10 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 	protected VectorLayer createLayerFromText() {
 		VectorLayer layer = null;
-
+		VectorLayerConfig layerConfig = null;
+		
 		try {
-			final VectorLayerConfig layerConfig = new VectorLayerConfig();
+			layerConfig = new VectorLayerConfig();
 			layerConfig.setEpsg(geoDataImportDialog.getProjectionName());
 			layerConfig.setGeoDataFormat(geoDataImportDialog.getDataFormat());
 			layerConfig.setLayerName(geoDataImportDialog.getLayerName());
@@ -87,6 +93,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 			layer = VectorLayerFactory
 					.createVectorLayerFromGeoData(layerConfig);
 		} catch (Exception e) {
+			LOG.info("Creation of VectorLayer failed: " + layerConfig);
 			showAlert(UIMessages.INSTANCE.warning(),
 					UIMessages.INSTANCE.gditAlertMessage());
 		}
@@ -196,9 +203,8 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		boolean isValid = true;
 		if (geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.text())
-				&& (geoDataImportDialog.getGeoData() == null || (geoDataImportDialog
-						.getGeoData() != null && geoDataImportDialog
-						.getGeoData().isEmpty()))) {
+				&& (geoDataImportDialog.getGeoData() == null || geoDataImportDialog
+						.getGeoData().isEmpty())) {
 
 			isValid = false;
 		}

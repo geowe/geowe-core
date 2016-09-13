@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.1.2]Beta - 2016-09-13
+### Added
+- Make startup layer configurable from property file
+
+### Fixed
+- issue [#173](https://github.com/geowe/geowe-core/issues/173)
+- issue [#174](https://github.com/geowe/geowe-core/issues/174)
+
 ## [1.1.1]Beta - 2016-09-09
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

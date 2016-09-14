@@ -73,6 +73,7 @@ public class ExportDataTool extends LayerTool implements
 	private List<String> parameters;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
+	private Exporter exporter;
 
 	@Inject
 	public ExportDataTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
@@ -85,10 +86,19 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						if (isLayerToExportValid(exportDataDialog
-								.getVectorLayer())) {
-							save(exportDataDialog.getSelectedFormat());							
-						}
+						exporter = new FileExporter();
+						prepareToExport();
+
+					}
+				});
+
+		exportDataDialog.getGitHubButton().addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						exporter = new GitHubExporter();
+						prepareToExport();
+
 					}
 				});
 	}
@@ -113,16 +123,13 @@ public class ExportDataTool extends LayerTool implements
 		}
 	}
 
-	private void downloadFile() {
+	private void export() {
 		taskManager.execute(new Runnable() {
 			@Override
-			public void run() {				
+			public void run() {
 				final String content = parameters.get(0);
-				final String extension = parameters.get(1);
 				if (isContentValid(content)) {
-					String fileName = getSelectedLayer().getName() + "."
-							+ extension;
-					FileExporter.saveAs(content, fileName);
+					exporter.export(parameters);
 				}
 			}
 		});
@@ -150,17 +157,23 @@ public class ExportDataTool extends LayerTool implements
 		return isValid;
 	}
 
-	private void save(VectorFormat vectorFormat) {
+	private void prepareToExport() {
 
-		VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
-		VectorFeature[] selectedFeatures = selectedLayer.getSelectedFeatures();
+		if (isLayerToExportValid(exportDataDialog.getVectorLayer())) {
 
-		if (selectedFeatures != null && selectedFeatures.length > 0) {
-			confirmOnlySelected(vectorFormat, selectedFeatures,
-					selectedLayer);
-		} else {
-			setParameters(vectorFormat, selectedLayer);
-			downloadFile();
+			final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+			final VectorFeature[] selectedFeatures = selectedLayer
+					.getSelectedFeatures();
+			final VectorFormat vectorFormat = exportDataDialog
+					.getSelectedFormat();
+
+			if (selectedFeatures != null && selectedFeatures.length > 0) {
+				confirmOnlySelected(vectorFormat, selectedFeatures,
+						selectedLayer);
+			} else {
+				setParameters(vectorFormat, selectedLayer);
+				export();
+			}
 		}
 	}
 
@@ -168,26 +181,31 @@ public class ExportDataTool extends LayerTool implements
 			VectorLayer selectedLayer) {
 		String content = "";
 		String extension = "";
+		org.gwtopenmaps.openlayers.client.format.VectorFormat format = null;
 		parameters = new ArrayList<String>();
 		if (vectorFormat.getId() == VectorFormat.GML_FORMAT.getId()) {
-			content = getGML(selectedLayer);
+			format = new GML();			
 			extension = VectorFormat.GML_FORMAT.getName().toLowerCase();
 		} else if (vectorFormat.getId() == VectorFormat.KML_FORMAT.getId()) {
-			content = getKML(selectedLayer);
+			format = new KML();
 			extension = VectorFormat.KML_FORMAT.getName().toLowerCase();
 		} else if (vectorFormat.getId() == VectorFormat.GEO_JSON_FORMAT.getId()) {
-			content = getGeoJSON(selectedLayer);
+			format = new GeoJSON();
 			extension = VectorFormat.GEO_JSON_FORMAT.getName().toLowerCase();
 		} else if (vectorFormat.getId() == VectorFormat.WKT_FORMAT.getId()) {
-			content = getWKT(selectedLayer);
+			format = new WKT();
 			extension = VectorFormat.WKT_FORMAT.getName().toLowerCase();
 		} else if (vectorFormat.getId() == VectorFormat.CSV_FORMAT.getId()) {
-			content = getCSV(selectedLayer);
+			content = new CSV(exportDataDialog.getSelectedEpsg()).write(selectedLayer);
 			extension = VectorFormat.CSV_FORMAT.getName().toLowerCase();
 		}
 
+		if(content.isEmpty()) {
+			content = format.write(getTransformedFeatures(selectedLayer));
+		}
 		parameters.add(content);
 		parameters.add(extension);
+		parameters.add(selectedLayer.getName());
 	}
 
 	private VectorLayer getLayerWithSelectedFeature(
@@ -200,11 +218,12 @@ public class ExportDataTool extends LayerTool implements
 		return selectedDownloadLayer;
 	}
 
-	
 	private void confirmOnlySelected(final VectorFormat vectorFormat,
-			final VectorFeature[] selectedFeatures, final VectorLayer selectedLayer) {
-		
-		ConfirmMessageBox messageBox =  messageDialogBuilder.createConfirm(UIMessages.INSTANCE.edtAlertDialogTitle(),
+			final VectorFeature[] selectedFeatures,
+			final VectorLayer selectedLayer) {
+
+		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(
+				UIMessages.INSTANCE.edtAlertDialogTitle(),
 				UIMessages.INSTANCE.edtConfirmDownload(),
 				ImageProvider.INSTANCE.downloadBlue24());
 		messageBox.getButton(PredefinedButton.YES).addSelectHandler(
@@ -215,39 +234,19 @@ public class ExportDataTool extends LayerTool implements
 						VectorLayer tmpLayer = getLayerWithSelectedFeature(
 								selectedFeatures, selectedLayer.getSchema());
 						setParameters(vectorFormat, tmpLayer);
-						downloadFile();
+						export();
 					}
 				});
-		
+
 		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
 						setParameters(vectorFormat, selectedLayer);
-						downloadFile();
+						export();
 					}
 				});
 		messageBox.show();
-	}
-
-	private String getGML(Vector layer) {
-		GML format = new GML();
-		return format.write(getTransformedFeatures(layer));
-	}
-
-	private String getKML(Vector layer) {
-		KML format = new KML();
-		return format.write(getTransformedFeatures(layer));
-	}
-
-	private String getGeoJSON(Vector layer) {
-		GeoJSON format = new GeoJSON();
-		return format.write(getTransformedFeatures(layer));
-	}
-
-	private String getWKT(Vector layer) {
-		WKT format = new WKT();
-		return format.write(getTransformedFeatures(layer));
 	}
 
 	private VectorFeature[] getTransformedFeatures(Vector layer) {
@@ -264,10 +263,6 @@ public class ExportDataTool extends LayerTool implements
 		VectorFeature[] transArray = new VectorFeature[transformedFeatures
 				.size()];
 		return transformedFeatures.toArray(transArray);
-	}
-
-	private String getCSV(VectorLayer selectedLayer) {
-		return new CSV(exportDataDialog.getSelectedEpsg()).write(selectedLayer);
 	}
 
 	@Override

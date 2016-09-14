@@ -22,6 +22,8 @@
  */
 package org.geowe.client.local.layermanager.tool.export;
 
+import java.util.List;
+
 
 /**
  * Utility class responsible to export a file
@@ -29,10 +31,7 @@ package org.geowe.client.local.layermanager.tool.export;
  * @author geowe.org
  *
  */
-public final class FileExporter {
-
-	private FileExporter() {
-	}
+public final class FileExporter implements Exporter {
 
 	/**
 	 * Export a text/plain UTF-8 file.
@@ -47,4 +46,13 @@ public final class FileExporter {
 		$wnd.saveAs(blob, fileName);
 
 	}-*/;
+
+	@Override
+	public void export(List<String> parameters) {
+		final String content = parameters.get(0);
+		final String extension = parameters.get(1);
+		final String fileName = parameters.get(2)+ "." + extension;
+		 
+		saveAs(content, fileName);		
+	}
 }

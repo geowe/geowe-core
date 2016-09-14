@@ -20,7 +20,7 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.layermanager.tool.export;
+package org.geowe.client.local.layermanager.tool.export.exporter;
 
 import java.util.List;
 
@@ -31,6 +31,7 @@ import java.util.List;
  * @author geowe.org
  *
  */
+
 public final class FileExporter implements Exporter {
 
 	/**
@@ -39,7 +40,7 @@ public final class FileExporter implements Exporter {
 	 * @param text
 	 * @param fileName
 	 */
-	public static native void saveAs(String text, String fileName) /*-{
+	public static native void saveAs(final String text, final String fileName) /*-{
 		var blob = new Blob([ text ], {
 			type : "text/plain;charset=utf-8;",
 		});
@@ -48,7 +49,7 @@ public final class FileExporter implements Exporter {
 	}-*/;
 
 	@Override
-	public void export(List<String> parameters) {
+	public void export(final List<String> parameters) {
 		final String content = parameters.get(0);
 		final String extension = parameters.get(1);
 		final String fileName = parameters.get(2)+ "." + extension;

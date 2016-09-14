@@ -88,7 +88,12 @@ public final class VectorLayerFactory {
 	}	
 
 	public static VectorLayer createVectorLayer(final VectorLayerConfig layerConfig) {
+		LOG.info("Creating VectorLayer: " + layerConfig);
 		final VectorLayer layer = createEmptyVectorLayer(layerConfig);
+		
+		if(layerConfig.getFeatures() == null) {
+			return layer;
+		}
 		
 		for (final VectorFeature feature : layerConfig.getFeatures()) {
 			feature.getGeometry().transform(layerConfig.getProjection(),
@@ -128,7 +133,7 @@ public final class VectorLayerFactory {
 		geoJsonReader.getJSObject().setProperty("ignoreExtraDims", true);
 		VectorFeature[] features = geoJsonReader.read(layerConfig.getGeoDataString());
 		layerConfig.setFeatures(features);
-
+				
 		return createVectorLayer(layerConfig);
 	}
 

@@ -42,9 +42,10 @@ import org.gwtopenmaps.openlayers.client.control.ScaleLineOptions;
 import org.gwtopenmaps.openlayers.client.event.EventHandler;
 import org.gwtopenmaps.openlayers.client.event.EventObject;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -63,6 +64,9 @@ public class GeoMapInitializer {
 	public static final int MAX_NUM_ZOOM_LEVEL = 50;
 	public static final String DEFAUL_MAP_UNITS = "m";
 
+	private static final Logger LOG = LoggerFactory
+			.getLogger(GeoMapInitializer.class.getName());
+	
 	@Inject
 	private GeoMap geoMap;
 
@@ -195,18 +199,23 @@ public class GeoMapInitializer {
 					return;
 				}
 
+				LOG.debug("W3WService response: " + response);
 				final JSONValue jsonValue = JSONParser.parseLenient(response);
 				final JSONObject jsonObject = jsonValue.isObject();
 
-						if (jsonObject.containsKey("words")) {
-					final JSONArray jsonWords = jsonObject.get("words").isArray();
-					final String[] words = new String[3];
-					words[0] = jsonWords.get(0).isString().stringValue();
-					words[1] = jsonWords.get(1).isString().stringValue();
-					words[2] = jsonWords.get(2).isString().stringValue();
-
-					final String wordsW3W = words[0] + "." + words[1] + "."
-							+ words[2];
+				if (jsonObject.containsKey("words")) {
+					final String wordsW3W = jsonObject.get("words").toString();
+										
+//					W3W v1.0 [obsolete]
+//					final JSONArray jsonWords = jsonObject.get("words").isArray();
+//					final String[] words = new String[3];
+//					words[0] = jsonWords.get(0).isString().stringValue();
+//					words[1] = jsonWords.get(1).isString().stringValue();
+//					words[2] = jsonWords.get(2).isString().stringValue();
+//
+//					final String wordsW3W = words[0] + "." + words[1] + "."
+//							+ words[2];
+					
 					w3wTool.set3Words(wordsW3W);
 					w3wTool.addElementToW3wLayer(internalLonlat, wordsW3W);
 

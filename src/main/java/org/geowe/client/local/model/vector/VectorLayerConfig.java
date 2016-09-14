@@ -1,5 +1,7 @@
 package org.geowe.client.local.model.vector;
 
+import java.util.Arrays;
+
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.Projection;
@@ -90,4 +92,13 @@ public class VectorLayerConfig {
 	public void setFeatures(VectorFeature[] features) {
 		this.features = features;
 	}
+
+	@Override
+	public String toString() {
+		return "VectorLayerConfig [layerName=" + layerName + ", epsg=" + epsg + ", styleMap=" + styleMap
+				+ ", geoDataString=" + geoDataString + ", geoDataFormat=" + geoDataFormat + ", numFeatures="
+				+ (features == null ? "null" : features.length) + "]";
+	}
+	
+	
 }

@@ -42,6 +42,8 @@ import org.gwtopenmaps.openlayers.client.event.LocationFailedListener;
 import org.gwtopenmaps.openlayers.client.event.LocationUncapableListener;
 import org.gwtopenmaps.openlayers.client.event.LocationUpdateEvent;
 import org.gwtopenmaps.openlayers.client.event.LocationUpdateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
@@ -52,7 +54,6 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -79,7 +80,8 @@ import com.sencha.gxt.widget.core.client.menu.MenuItem;
  */
 @ApplicationScoped
 public class GeocodingPanelWidget implements IsWidget {
-
+	private static final Logger LOG = LoggerFactory
+			.getLogger(GeocodingPanelWidget.class.getName());
 	@Inject
 	private GeoMap geoMap;
 	@Inject
@@ -276,7 +278,7 @@ public class GeocodingPanelWidget implements IsWidget {
 		locationButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(final SelectEvent event) {
-				final String text = addressTextField.getText().trim();
+				final String text = addressTextField.getText().trim();				
 
 				final String words[] = text.split("\\.");
 				if (words.length != 3) {
@@ -284,6 +286,7 @@ public class GeocodingPanelWidget implements IsWidget {
 							UIMessages.INSTANCE.gcBadWords());
 					return;
 				}
+								
 				getW3WPosition(text);
 			}
 		});
@@ -312,21 +315,29 @@ public class GeocodingPanelWidget implements IsWidget {
 							return;
 						}
 
+						LOG.info("W3W response: " + response);
 						final JSONValue jsonValue = JSONParser.parseLenient(response);
 						final JSONObject jsonObject = jsonValue.isObject();
 
-						if (jsonObject.containsKey("position")) {
-
-							final JSONArray jsonCoords = jsonObject.get("position")
-									.isArray();
-							final double[] coords = new double[2];
-							coords[0] = jsonCoords.get(0).isNumber()
-									.doubleValue();
-							coords[1] = jsonCoords.get(1).isNumber()
-									.doubleValue();
-
-							final double latitud = coords[0];
-							final double longitud = coords[1];
+//						W3W v1.0 [obsolete]
+//						if (jsonObject.containsKey("position")) {
+//							final JSONArray jsonCoords = jsonObject.get("position").isArray();
+//
+//						final double[] coords = new double[2];
+//						coords[0] = jsonCoords.get(0).isNumber()
+//								.doubleValue();
+//						coords[1] = jsonCoords.get(1).isNumber()
+//								.doubleValue();
+//
+//						final double latitud = coords[0];
+//						final double longitud = coords[1];
+						
+						if (jsonObject.containsKey("geometry")) {
+							final JSONObject jsonCoords = jsonObject.get("geometry").isObject();
+							LOG.info("W3W coordinates: " + jsonCoords.toString());
+																					
+							final double latitud = jsonCoords.get("lat").isNumber().doubleValue();
+							final double longitud = jsonCoords.get("lng").isNumber().doubleValue();
 
 							updateMap(latitud, longitud, 20);
 							final LonLat lonLat = new LonLat(longitud, latitud);

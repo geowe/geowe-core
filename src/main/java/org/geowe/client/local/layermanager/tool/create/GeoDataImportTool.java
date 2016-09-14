@@ -37,6 +37,8 @@ import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
@@ -58,9 +60,12 @@ import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitComplet
  */
 @ApplicationScoped
 public class GeoDataImportTool extends AbstractGeoDataImport {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(GeoDataImportTool.class.getName());
 
 	protected final GeoDataImportDialog geoDataImportDialog;
 	protected final LayerManagerWidget layerManagerWidget;
+	
 	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
@@ -102,17 +107,26 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 							return;
 						}
 
-						final VectorLayerConfig layerConfig = new VectorLayerConfig();
-						layerConfig.setEpsg(geoDataImportDialog
+						VectorLayerConfig layerConfig = null;
+						Layer layer = null; 
+						
+						try {
+							layerConfig = new VectorLayerConfig();
+							layerConfig.setEpsg(geoDataImportDialog
 								.getProjectionName());
-						layerConfig.setGeoDataFormat(geoDataImportDialog
+							layerConfig.setGeoDataFormat(geoDataImportDialog
 								.getDataFormat());
-						layerConfig.setLayerName(geoDataImportDialog
+							layerConfig.setLayerName(geoDataImportDialog
 								.getLayerName());
-						layerConfig.setGeoDataString(contentFile);
+							layerConfig.setGeoDataString(contentFile);
 
-						final Layer layer = VectorLayerFactory
-								.createVectorLayerFromGeoData(layerConfig);
+							layer = VectorLayerFactory
+									.createVectorLayerFromGeoData(layerConfig);
+							
+						} catch (Exception e) {
+							LOG.info("Creation of VectorLayer failed: " + layerConfig);
+							showAlert(UIMessages.INSTANCE.gditAlertMessage());
+						}
 
 						layerManagerWidget.addVector(layer);
 						layerManagerWidget.setSelectedLayer(
@@ -196,6 +210,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 										autoMessageBox.hide();
 									}
 								} else {
+									LOG.info("Fallo la validacion del dialogo de Nueva Capa");
 									showAlert(UIMessages.INSTANCE.warning(),
 											UIMessages.INSTANCE
 													.gditAlertMessage());

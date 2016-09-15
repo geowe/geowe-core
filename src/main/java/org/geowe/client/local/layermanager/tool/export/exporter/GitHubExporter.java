@@ -28,14 +28,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.geowe.client.local.util.Base64;
+import org.geowe.client.local.util.BasicAuthenticationProvider;
+import org.geowe.client.shared.rest.GitHubContentRequest;
 import org.geowe.client.shared.rest.GitHubService;
-import org.geowe.client.shared.rest.InfoCommitGitHub;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
 import com.google.gwt.http.client.Request;
-import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Base64;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
@@ -62,30 +63,20 @@ public class GitHubExporter implements Exporter {
 		final String fileName = parameters.get(2)+ "." + extension;
 		
 		
-		String user = "jmmluna";
+		String userName = "jmmluna";
+		String password = "k45o0eb";
 		String repository = "geodata";
 		String path = "tmp";
+		String message = "create file by geowe";
 		
-		InfoCommitGitHub infoCommit = new InfoCommitGitHub();
-		infoCommit.setContent("bXkgbmV3IGZpbGUgY29udGVudHM=");
-		infoCommit.setMessage("create file by geowe");
-		
-		
-        String password = "k45o0eb";
- 
-        String usernameAndPassword = user + ":" + password;
-//        String authorizationHeaderName = "Authorization";
-        String authorizationHeaderValue  = "Basic ";
-        
-        
-		
-			authorizationHeaderValue = authorizationHeaderValue + Base64.encode(usernameAndPassword.getBytes());
-		
-				
-		RestClient.create(GitHubService.class, URL_BASE, getRemoteCallback(), getErrorCallback()).createFile(user, repository, path, fileName, authorizationHeaderValue, infoCommit);
-
+		GitHubContentRequest content = new GitHubContentRequest();
+		content.setContent(Base64.encode(contentLayer));
+		content.setMessage(message);
+		String authorizationHeaderValue = BasicAuthenticationProvider.getAuthorizationHeaderValue(userName, password);
+        					
+		RestClient.create(GitHubService.class, URL_BASE, getRemoteCallback(), getErrorCallback()).createFile(userName, repository, path, fileName, authorizationHeaderValue, content);
 	}
-
+	
 	private RestErrorCallback getErrorCallback() {
 		return new RestErrorCallback() {
 

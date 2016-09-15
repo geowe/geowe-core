@@ -76,6 +76,10 @@ public class ExportDataTool extends LayerTool implements
 	private List<String> parameters;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
+	@Inject
+	private GitHubExporter gitHubExporter;
+	@Inject
+	private GitHubExportDialog gitHubExportDialog;
 	private Exporter exporter;
 
 	@Inject
@@ -99,11 +103,31 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						exporter = new GitHubExporter();
-						prepareToExport();
+						gitHubExportDialog.initializeFields();
+						gitHubExportDialog.setFileNameField(getFileName());
+						gitHubExportDialog.show();
+						
+						
+//						exporter = gitHubExporter;
+//						prepareToExport();
 
 					}
 				});
+		
+		
+		gitHubExportDialog.getButton(PredefinedButton.OK).addSelectHandler(
+					new SelectHandler() {
+						@Override
+						public void onSelect(SelectEvent event) {
+							
+							Info.display("perfect", "perfect");
+
+						}
+					});
+		
+		
+		
+		
 	}
 
 	@Override
@@ -178,6 +202,11 @@ public class ExportDataTool extends LayerTool implements
 				export();
 			}
 		}
+	}
+	
+	private String getFileName() {
+		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();		
+		return selectedLayer.getName();
 	}
 
 	private void setParameters(VectorFormat vectorFormat,

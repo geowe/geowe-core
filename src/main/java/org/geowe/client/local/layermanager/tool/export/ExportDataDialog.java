@@ -106,8 +106,8 @@ public class ExportDataDialog extends Dialog {
 		downloadFileButton.setIconAlign(IconAlign.TOP);
 		
 		gitHubButton = new TextButton(
-				"Guardar en GitHub");
-		gitHubButton.setIcon(ImageProvider.INSTANCE.download32());
+				"GitHub");
+		gitHubButton.setIcon(ImageProvider.INSTANCE.github32());
 		gitHubButton.setIconAlign(IconAlign.TOP);
 
 		HorizontalPanel horizontalGroup = new HorizontalPanel();

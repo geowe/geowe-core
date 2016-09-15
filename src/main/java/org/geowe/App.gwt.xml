@@ -33,9 +33,7 @@
 	<stylesheet src="reset.css" />
 
 	<!-- GXT Theme -->
-	<inherits name="com.sencha.gxt.theme.neptune.Theme" />
-	<!-- codificacion en Base64 -->
-	<inherits name="com.googlecode.gwt.crypto.Crypto"/> 
+	<inherits name="com.sencha.gxt.theme.neptune.Theme" />	
 
 	<inherits name="org.jboss.errai.common.ErraiCommon" />
 	<inherits name="org.jboss.errai.bus.ErraiBus" />

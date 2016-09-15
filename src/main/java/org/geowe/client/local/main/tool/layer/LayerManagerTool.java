@@ -31,10 +31,15 @@ import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
 
 import com.google.inject.Inject;
-import com.sencha.gxt.core.client.Style.Direction;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.fx.client.FxElement;
 
+/**
+ * show/hide Layer Manager dialog
+ * 
+ * @author rafa@geowe.org
+ *
+ */
 @ApplicationScoped
 public class LayerManagerTool extends ButtonTool {
 	
@@ -54,23 +59,12 @@ public class LayerManagerTool extends ButtonTool {
 	@Override
 	protected void onRelease() {
 		if (layerMangerWidget.asWidget().isVisible()) {
-			// TODO para moverlo a la posición original
-			// Rectangle bounds = MenuPanelWidget.this.getBounds();
-			// layerTreeWidget.asWidget().getElement().<FxElement>
-			// cast().setXY(bounds.getX() + 50, bounds.getY() + 50, new
-			// Fx());
 			layerMangerWidget.asWidget().getElement().<FxElement> cast()
-					.slideOut(Direction.LEFT);
+					.fadeToggle();
 		} else {
-			layerMangerWidget.asWidget().setVisible(true);
 			layerMangerWidget.asWidget().getElement().<FxElement> cast()
-					.slideIn(Direction.RIGHT);
+					.fadeToggle();
+			layerMangerWidget.asWidget().setVisible(true);
 		}
 	}
-	
-	
-	
-	
-	
-	
 }

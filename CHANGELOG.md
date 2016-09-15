@@ -10,6 +10,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [1.1.2]Beta - 2016-09-13
 ### Added
 - Make startup layer configurable from property file
+- updated what3words api v2
 
 ### Fixed
 - issue [#173](https://github.com/geowe/geowe-core/issues/173)

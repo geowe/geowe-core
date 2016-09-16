@@ -23,10 +23,9 @@
 package org.geowe.client.local.layermanager.tool.export;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.geowe.client.local.messages.UIMessages;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,8 +42,6 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 @ApplicationScoped
 public class GitHubExportDialog extends Dialog {
 	private static final String FIELD_WIDTH = "300px";
-	@Inject
-	private MessageDialogBuilder messageDialogBuilder;
 	
 	private TextField userNameField;
 	private PasswordField passwordField;
@@ -103,8 +100,8 @@ public class GitHubExportDialog extends Dialog {
 			
 	public GitHubExportDialog() {
 		super();
-		this.setHeadingText("Create File in GitHub");
-		this.getHeader().setIcon(ImageProvider.INSTANCE.layerIcon());
+		this.setHeadingText(UIMessages.INSTANCE.gitHubExportDialogTitle());
+		this.getHeader().setIcon(ImageProvider.INSTANCE.github24());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
 		this.setPixelSize(350, 350);		
 		this.setModal(true);
@@ -115,11 +112,10 @@ public class GitHubExportDialog extends Dialog {
 		panel.add(createCommitPanel());	
 		add(panel);
 	}
-	
-	
-	
+			
 	private Widget createAuthenticationPanel() {
 		final VerticalPanel panel = new VerticalPanel();
+		panel.getElement().getStyle().setBackgroundColor("#E0ECF8");
 		panel.setWidth("350px");		
 		panel.setSpacing(10);
 
@@ -139,8 +135,7 @@ public class GitHubExportDialog extends Dialog {
 	}
 	
 	private Widget createRepositoryPanel() {
-		final VerticalPanel panel = new VerticalPanel();
-		panel.getElement().getStyle().setBackgroundColor("#E0ECF8");		
+		final VerticalPanel panel = new VerticalPanel();			
 		panel.setWidth("350px");		
 		panel.setSpacing(10);		
 

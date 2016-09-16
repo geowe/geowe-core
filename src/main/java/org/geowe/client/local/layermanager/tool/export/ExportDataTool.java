@@ -74,7 +74,6 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 	private ExportDataDialog exportDataDialog;
 	@Inject
 	private ClientTaskManager taskManager;
-
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	@Inject

@@ -24,13 +24,13 @@ package org.geowe.client.shared.rest.github;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-
+/**
+ * 
+ * @author jose@geowe.org
+ *
+ */
 @Portable
 public class GitHubResponse {
-	
-	public GitHubResponse() {
-		
-	}
 	
 	public GitHubResponse(@MapsTo("content") GitHubContentResponse content, @MapsTo("commit") GitHubCommitResponse commit) {
 		this.content = content;

@@ -698,4 +698,10 @@ public interface UIMessages extends Messages {
 	String zoomLevelText(int zoomLevel);
 	
 	String currentZoomLevelText();
+	
+	String gitHubSavedSucsessfully(String link);
+	
+	String gitHubResponseTitle();
+	
+	String gitHubExportDialogTitle();
 }

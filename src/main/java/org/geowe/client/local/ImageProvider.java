@@ -348,4 +348,6 @@ public interface ImageProvider extends ClientBundle {
 	@Source("images/ic_github-32.png")
 	ImageResource github32();
 	
+	@Source("images/ic_github-24.png")
+	ImageResource github24();
 }

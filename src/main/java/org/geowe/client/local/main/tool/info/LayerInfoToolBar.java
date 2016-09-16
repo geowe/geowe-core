@@ -58,7 +58,7 @@ public class LayerInfoToolBar extends ContentPanel {
 
 	public LayerInfoToolBar() {
 		super();
-		setHeight("180px");
+		setHeight("200px");
 		setHeaderVisible(false);		
 		
 		tools = new ArrayList<FeatureTool>();

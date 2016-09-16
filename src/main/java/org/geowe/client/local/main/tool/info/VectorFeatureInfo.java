@@ -29,11 +29,13 @@ import org.gwtopenmaps.openlayers.client.util.Attributes;
  * Feature info
  * 
  * @author geowe
+ * @since 15-09-2016
+ * @author rafa@geoew.org change ATTR_BRIEF_SEPARATOS
  *
  */
 public class VectorFeatureInfo {
-	public static final int ATTR_BRIEF_LENGTH = 25;
-	public static final String ATTR_BRIEF_SEPARATOR = " - ";
+	public static final int ATTR_BRIEF_LENGTH = 125;
+	public static final String ATTR_BRIEF_SEPARATOR = "\t | \t";
 	
 	private VectorFeature feature;
 	

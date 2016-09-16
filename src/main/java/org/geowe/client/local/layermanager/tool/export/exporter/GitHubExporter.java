@@ -22,22 +22,20 @@
  */
 package org.geowe.client.local.layermanager.tool.export.exporter;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.util.Base64;
 import org.geowe.client.local.util.BasicAuthenticationProvider;
-import org.geowe.client.shared.rest.GitHubContentRequest;
-import org.geowe.client.shared.rest.GitHubService;
+import org.geowe.client.shared.rest.github.GitHubContentRequest;
+import org.geowe.client.shared.rest.github.GitHubResponse;
+import org.geowe.client.shared.rest.github.GitHubService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
 import com.google.gwt.http.client.Request;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filenma.
@@ -55,24 +53,20 @@ public class GitHubExporter implements Exporter {
 	private MessageDialogBuilder messageDialogBuilder;
 	
 	@Override
-	public void export(final List<String> parameters) {
-		Info.display("GitHub", "GitHub");
-		
-		final String contentLayer = parameters.get(0);
-		final String extension = parameters.get(1);
-		final String fileName = parameters.get(2)+ "." + extension;
-		
-		
-		String userName = "jmmluna";
-		String password = "k45o0eb";
-		String repository = "geodata";
-		String path = "tmp";
-		String message = "create file by geowe";
-		
-		GitHubContentRequest content = new GitHubContentRequest();
-		content.setContent(Base64.encode(contentLayer));
+	public void export(final FileParameter fileParameter) {
+						
+		final String fileName = fileParameter.getFileName() + "." + fileParameter.getExtension();
+		final GitHubParameter gitHubParameter = (GitHubParameter)fileParameter;		
+		final String userName = gitHubParameter.getUserName();
+		final String password = gitHubParameter.getPassword();
+		final String repository = gitHubParameter.getRepository();
+		final String path = gitHubParameter.getPath();
+		final String message = gitHubParameter.getMessageCommit();
+		final String authorizationHeaderValue = BasicAuthenticationProvider.getAuthorizationHeaderValue(userName, password);		
+		final GitHubContentRequest content = new GitHubContentRequest();
+		content.setContent(Base64.encode(fileParameter.getContent()));
 		content.setMessage(message);
-		String authorizationHeaderValue = BasicAuthenticationProvider.getAuthorizationHeaderValue(userName, password);
+		
         					
 		RestClient.create(GitHubService.class, URL_BASE, getRemoteCallback(), getErrorCallback()).createFile(userName, repository, path, fileName, authorizationHeaderValue, content);
 	}
@@ -88,12 +82,12 @@ public class GitHubExporter implements Exporter {
 		};
 	}
 	
-	private RemoteCallback<String> getRemoteCallback() {
-		return new RemoteCallback<String>() {
+	private RemoteCallback<GitHubResponse> getRemoteCallback() {
+		return new RemoteCallback<GitHubResponse>() {
 
 			@Override
-			public void callback(String response) {
-				messageDialogBuilder.createInfo("OK", response).show();
+			public void callback(GitHubResponse response) {
+				messageDialogBuilder.createInfo("URL de descarga", response.getContent().getDownloadUrl()).show();
 				
 			}			
 		};

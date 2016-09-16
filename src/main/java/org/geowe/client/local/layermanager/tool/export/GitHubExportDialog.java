@@ -61,43 +61,43 @@ public class GitHubExportDialog extends Dialog {
 		this.userNameField.setText(userName);
 	}
 
-	public String getPasswordField() {
+	public String getPassword() {
 		return passwordField.getText();
 	}
 
-	public void setPasswordField(String password) {
+	public void setPassword(String password) {
 		this.passwordField.setText(password);
 	}
 	
-	public String getRepositoryField() {
+	public String getRepository() {
 		return repositoryField.getText();
 	}
 
-	public void setRepositoryField(String repository) {
+	public void setRepository(String repository) {
 		this.repositoryField.setText(repository);
 	}
 	
-	public String getPathField() {
+	public String getPath() {
 		return pathField.getText();
 	}
 
-	public void setPathField(String path) {
+	public void setPath(String path) {
 		this.pathField.setText(path);
 	}
 	
-	public String getMessageField() {
+	public String getMessage() {
 		return messageField.getText();
 	}
 
-	public void setMessageField(String message) {
+	public void setMessage(String message) {
 		this.messageField.setText(message);
 	}
 	
-	public String getFileNameField() {
+	public String getFileName() {
 		return fileNameField.getText();
 	}
 
-	public void setFileNameField(String fileName) {
+	public void setFileName(String fileName) {
 		this.fileNameField.setText(fileName);
 	}
 			
@@ -109,9 +109,11 @@ public class GitHubExportDialog extends Dialog {
 		this.setPixelSize(350, 350);		
 		this.setModal(true);
 		this.setHideOnButtonClick(true);
-		add(createAuthenticationPanel());
-		add(createRepositoryPanel());
-		add(createCommitPanel());		
+		final VerticalPanel panel = new VerticalPanel();
+		panel.add(createAuthenticationPanel());
+		panel.add(createRepositoryPanel());
+		panel.add(createCommitPanel());	
+		add(panel);
 	}
 	
 	
@@ -125,18 +127,14 @@ public class GitHubExportDialog extends Dialog {
 		userNameField.setTitle("user name");
 		userNameField.setWidth(FIELD_WIDTH);
 		userNameField.setAllowBlank(false);
-
 		panel.add(userNameField);
 
-		passwordField = new PasswordField();
-		
+		passwordField = new PasswordField();		
 		passwordField.setTitle("password");
 		passwordField.setAllowBlank(false);
 		passwordField.setWidth(FIELD_WIDTH);
 		panel.add(passwordField);
 		
-		panel.add(messageField);
-
 		return panel;
 	}
 	
@@ -171,8 +169,7 @@ public class GitHubExportDialog extends Dialog {
 		fileNameField.setAllowBlank(false);
 		fileNameField.setWidth(FIELD_WIDTH);
 		panel.add(fileNameField);
-		
-		
+				
 		messageField = new TextField();
 		messageField.setTitle("message commit");
 		messageField.setAllowBlank(false);
@@ -187,7 +184,7 @@ public class GitHubExportDialog extends Dialog {
 		passwordField.setEmptyText("password");
 		repositoryField.setEmptyText("repository");
 		pathField.setEmptyText("path in repository");
-		messageField.setEmptyText("file name");
+		fileNameField.setEmptyText("file name");
 		messageField.setEmptyText("message commit");				
 	}
 }

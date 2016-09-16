@@ -22,9 +22,6 @@
  */
 package org.geowe.client.local.layermanager.tool.export.exporter;
 
-import java.util.List;
-
-
 /**
  * Utility class responsible to export a file
  * 
@@ -49,11 +46,9 @@ public final class FileExporter implements Exporter {
 	}-*/;
 
 	@Override
-	public void export(final List<String> parameters) {
-		final String content = parameters.get(0);
-		final String extension = parameters.get(1);
-		final String fileName = parameters.get(2)+ "." + extension;
+	public void export(final FileParameter fileParameter) {		
+		final String fileName = fileParameter.getFileName() + "." + fileParameter.getExtension();
 		 
-		saveAs(content, fileName);		
+		saveAs(fileParameter.getContent(), fileName);		
 	}
 }

@@ -1,4 +1,4 @@
-package org.geowe.client.shared.rest;
+package org.geowe.client.shared.rest.github;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;

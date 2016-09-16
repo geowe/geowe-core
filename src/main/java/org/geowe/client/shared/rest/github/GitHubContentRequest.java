@@ -20,7 +20,7 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.shared.rest;
+package org.geowe.client.shared.rest.github;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 /**
@@ -37,11 +37,6 @@ public class GitHubContentRequest {
 	
 	public GitHubContentRequest() {		
 	}
-	
-//	public GitHubBean(@MapsTo("message") String message, @MapsTo("content") String content) {
-//        this.message = message;
-//        this.content = content;        
-//      }
 
 	public String getMessage() {
 		return message;

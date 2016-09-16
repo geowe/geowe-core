@@ -98,6 +98,7 @@ public class ExportDataDialog extends Dialog {
 		vectorFormatCombo = new VectorFormatComboBox(comboWidth,
 				VectorFormat.getAllFormat());
 		vectorFormatCombo.addSelectionHandler(getVectorComboSelectionHandler());
+		vectorFormatCombo.setValue(VectorFormat.GEO_JSON_FORMAT);
 		epsgCombo = new ProjectionComboBox(comboWidth);
 
 		downloadFileButton = new TextButton(

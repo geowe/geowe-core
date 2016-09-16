@@ -38,13 +38,13 @@ import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
-import com.sencha.gxt.core.client.Style.Direction;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
+ * Show/hide Change Style dialog
  * 
  * @author geowe
  *
@@ -72,11 +72,11 @@ public class ChangeStyleTool extends ButtonTool {
 	protected void onRelease() {
 		if (vectorLayerStyleWidget.asWidget().isVisible()) {
 			vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
-			.slideOut(Direction.LEFT);
+					.fadeToggle();
 		} else {
-			vectorLayerStyleWidget.asWidget().setVisible(true);
 			vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
-					.slideIn(Direction.RIGHT);
+					.fadeToggle();
+			vectorLayerStyleWidget.asWidget().setVisible(true);
 			
 		}
 	}

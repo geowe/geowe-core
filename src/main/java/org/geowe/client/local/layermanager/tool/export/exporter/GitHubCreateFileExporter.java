@@ -30,7 +30,7 @@ import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.local.util.Base64;
 import org.geowe.client.local.util.BasicAuthenticationProvider;
-import org.geowe.client.shared.rest.github.GitHubContentRequest;
+import org.geowe.client.shared.rest.github.GitHubCreateFileRequest;
 import org.geowe.client.shared.rest.github.GitHubContentResponse;
 import org.geowe.client.shared.rest.github.GitHubResponse;
 import org.geowe.client.shared.rest.github.GitHubService;
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.HTML;
  */
 
 @ApplicationScoped
-public class GitHubExporter implements Exporter {
+public class GitHubCreateFileExporter implements Exporter {
 	private final static String URL_BASE = "https://api.github.com/repos/";
 
 	@Inject
@@ -75,7 +75,7 @@ public class GitHubExporter implements Exporter {
 		final String message = gitHubParameter.getMessageCommit();
 		final String authorizationHeaderValue = BasicAuthenticationProvider
 				.getAuthorizationHeaderValue(userName, password);
-		final GitHubContentRequest content = new GitHubContentRequest();
+		final GitHubCreateFileRequest content = new GitHubCreateFileRequest();
 		content.setContent(Base64.encode(fileParameter.getContent()));
 		content.setMessage(message);
 

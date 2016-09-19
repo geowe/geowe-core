@@ -30,6 +30,7 @@ import org.geowe.client.local.messages.UIMessages;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.form.PasswordField;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
@@ -49,6 +50,8 @@ public class GitHubExportDialog extends Dialog {
 	private TextField pathField;
 	private TextField fileNameField;
 	private TextField messageField;
+	private TextButton createButton;
+	private TextButton updateButton;
 	
 	public String getUserName() {
 		return userNameField.getText();
@@ -102,7 +105,7 @@ public class GitHubExportDialog extends Dialog {
 		super();
 		this.setHeadingText(UIMessages.INSTANCE.gitHubExportDialogTitle());
 		this.getHeader().setIcon(ImageProvider.INSTANCE.github24());
-		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
+		this.setPredefinedButtons(PredefinedButton.CANCEL);
 		this.setPixelSize(350, 350);		
 		this.setModal(true);
 		this.setHideOnButtonClick(true);
@@ -111,6 +114,20 @@ public class GitHubExportDialog extends Dialog {
 		panel.add(createRepositoryPanel());
 		panel.add(createCommitPanel());	
 		add(panel);
+		createButton = new TextButton("Create");
+		updateButton = new TextButton("Update");
+		
+		getButtonBar().add(createButton);
+		getButtonBar().add(updateButton);
+		
+	}
+	
+	public TextButton getCreateButton() {
+		return createButton;
+	}
+	
+	public TextButton getUpdateButton() {
+		return updateButton;
 	}
 			
 	private Widget createAuthenticationPanel() {

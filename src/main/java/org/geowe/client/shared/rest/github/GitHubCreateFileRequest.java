@@ -24,18 +24,18 @@ package org.geowe.client.shared.rest.github;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 /**
- * Representa al contenido (en el body) de la petición a la API Rest de GitHub 
+ * Representa al contenido (en el body) de la petición a la API Rest de GitHub para la creación de un fichero 
  * @author jose@geowe.org
  *
  */
 
 @Portable
-public class GitHubContentRequest {
+public class GitHubCreateFileRequest {
 		
 	private String message;
 	private String content;
 	
-	public GitHubContentRequest() {		
+	public GitHubCreateFileRequest() {		
 	}
 
 	public String getMessage() {

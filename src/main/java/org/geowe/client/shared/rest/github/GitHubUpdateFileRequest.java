@@ -22,36 +22,17 @@
  */
 package org.geowe.client.shared.rest.github;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-/**
- * 
- * @author jose@geowe.org
- *
- */
+
 @Portable
-public class GitHubContentResponse {
-	private String downloadUrl;
+public class GitHubUpdateFileRequest extends GitHubCreateFileRequest {
 	private String sha;
-	
+
 	public String getSha() {
 		return sha;
 	}
 
 	public void setSha(String sha) {
 		this.sha = sha;
-	}
-
-	public GitHubContentResponse(@MapsTo("download_url") String downloadUrl, @MapsTo("sha") String sha) {
-		this.downloadUrl = downloadUrl;
-		this.sha = sha;
-	}
-
-	public String getDownloadUrl() {
-		return downloadUrl;
-	}
-
-	public void setDownloadUrl(String downloadUrl) {
-		this.downloadUrl = downloadUrl;
-	}
+	} 
 }

@@ -37,8 +37,10 @@ import org.geowe.client.local.layermanager.tool.create.CSV;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
-import org.geowe.client.local.layermanager.tool.export.exporter.GitHubExporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.GitHubGetFileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubParameter;
+import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
@@ -77,7 +79,11 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	@Inject
-	private GitHubExporter gitHubExporter;
+	private GitHubCreateFileExporter gitHubCreateFileExporter;
+//	@Inject
+//	private GitHubUpdateFileExporter gitHubUpdateFileExporter;
+	@Inject
+	private GitHubGetFileExporter gitHubGetFileExporter;
 	@Inject
 	private GitHubExportDialog gitHubExportDialog;
 	private Exporter exporter;
@@ -96,7 +102,8 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 				exporter = new FileExporter();
 				fileParameter = new FileParameter();
 				fileParameter.setFileName(((VectorLayer) getSelectedLayer()).getName());
-				prepareParameterAndExport();
+				final boolean validContent = true;
+				prepareParameterAndExport(validContent);
 			}
 		});
 
@@ -109,7 +116,8 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 			}
 		});
 
-		gitHubExportDialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+		//gitHubExportDialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+		gitHubExportDialog.getCreateButton().addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
 				GitHubParameter gitHubParameter = new GitHubParameter();
@@ -120,8 +128,30 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 				gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 				gitHubParameter.setFileName(gitHubExportDialog.getFileName());
 				fileParameter = gitHubParameter;
-				exporter = gitHubExporter;
-				prepareParameterAndExport();
+				exporter = gitHubCreateFileExporter;
+				final boolean validContent = true;
+				prepareParameterAndExport(validContent);
+
+			}
+		});
+		
+		gitHubExportDialog.getUpdateButton().addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				GitHubParameter gitHubParameter = new GitHubParameter();
+				gitHubParameter.setUserName(gitHubExportDialog.getUserName());
+				gitHubParameter.setPassword(gitHubExportDialog.getPassword());
+				gitHubParameter.setRepository(gitHubExportDialog.getRepository());
+				gitHubParameter.setPath(gitHubExportDialog.getPath());
+				//gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
+				gitHubParameter.setFileName(gitHubExportDialog.getFileName());
+				gitHubParameter.setExtension(exportDataDialog.getSelectedFormat().getName().toLowerCase());
+								
+				fileParameter = gitHubParameter;				
+				exporter = gitHubGetFileExporter;
+				
+				final boolean validContent = false;
+				export(validContent);
 
 			}
 		});
@@ -146,17 +176,20 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 		}
 	}
 
-	private void export() {
+	private void export(final boolean validContent) {
 		taskManager.execute(new Runnable() {
 			@Override
 			public void run() {
 
-				if (isContentValid(fileParameter.getContent())) {
+				if (!validContent) {
+					exporter.export(fileParameter);
+				}
+				else if(isContentValid(fileParameter.getContent())) {
 					exporter.export(fileParameter);
 				}
 			}
 		});
-	}
+	}			
 
 	private boolean isContentValid(String content) {
 		boolean isValid = true;
@@ -179,7 +212,7 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 		return isValid;
 	}
 
-	private void prepareParameterAndExport() {
+	private void prepareParameterAndExport(final boolean validContent) {
 
 		if (isLayerToExportValid(exportDataDialog.getVectorLayer())) {
 
@@ -188,10 +221,10 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 			final VectorFormat vectorFormat = exportDataDialog.getSelectedFormat();
 
 			if (selectedFeatures != null && selectedFeatures.length > 0) {
-				confirmOnlySelected(vectorFormat, selectedFeatures, selectedLayer);
+				confirmOnlySelected(vectorFormat, selectedFeatures, selectedLayer, validContent);
 			} else {
-				createFileParameters(vectorFormat, selectedLayer);
-				export();
+				setContentAndExtensionFile(vectorFormat, selectedLayer);
+				export(validContent);
 			}
 		}
 	}
@@ -201,7 +234,7 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 		return selectedLayer.getName();
 	}
 
-	private void createFileParameters(VectorFormat vectorFormat, VectorLayer selectedLayer) {
+	private void setContentAndExtensionFile(VectorFormat vectorFormat, VectorLayer selectedLayer) {
 		String content = "";
 		String extension = "";
 		org.gwtopenmaps.openlayers.client.format.VectorFormat format = null;
@@ -241,7 +274,7 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 	}
 
 	private void confirmOnlySelected(final VectorFormat vectorFormat, final VectorFeature[] selectedFeatures,
-			final VectorLayer selectedLayer) {
+			final VectorLayer selectedLayer, final boolean validContent) {
 
 		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(UIMessages.INSTANCE.edtAlertDialogTitle(),
 				UIMessages.INSTANCE.edtConfirmDownload(), ImageProvider.INSTANCE.downloadBlue24());
@@ -250,16 +283,16 @@ public class ExportDataTool extends LayerTool implements ChangeSelectedLayerList
 			public void onSelect(SelectEvent event) {
 
 				VectorLayer tmpLayer = getLayerWithSelectedFeature(selectedFeatures, selectedLayer.getSchema());
-				createFileParameters(vectorFormat, tmpLayer);
-				export();
+				setContentAndExtensionFile(vectorFormat, tmpLayer);
+				export(validContent);
 			}
 		});
 
 		messageBox.getButton(PredefinedButton.NO).addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				createFileParameters(vectorFormat, selectedLayer);
-				export();
+				setContentAndExtensionFile(vectorFormat, selectedLayer);
+				export(validContent);
 			}
 		});
 		messageBox.show();

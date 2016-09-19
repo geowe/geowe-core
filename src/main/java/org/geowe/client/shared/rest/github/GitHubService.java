@@ -22,12 +22,13 @@
  */
 package org.geowe.client.shared.rest.github;
 
-import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 /**
  * 
  * @author jose@geowe.org
@@ -36,6 +37,17 @@ import javax.ws.rs.PathParam;
 @Path("/{user}/{repository}")
 public interface GitHubService {
 
+	
+	@GET
+	@Path("/contents/{path}/{fileName}")
+	//@Produces("application/json")
+	@Consumes("application/json")
+	public GitHubContentResponse getFile(@PathParam("user") String user,
+			@PathParam("repository") String repository,
+			@PathParam("path") String path,
+			@PathParam("fileName") String fileName,
+			@HeaderParam("Authorization") String authorization);
+	
 	@PUT
 	@Path("/contents/{path}/{fileName}")
 	@Produces("application/json")
@@ -45,5 +57,16 @@ public interface GitHubService {
 			@PathParam("path") String path,
 			@PathParam("fileName") String fileName,
 			@HeaderParam("Authorization") String authorization,
-			GitHubContentRequest content);
+			GitHubCreateFileRequest content);
+	
+	@PUT
+	@Path("/contents/{path}/{fileName}")
+	@Produces("application/json")
+	@Consumes("application/json")
+	public GitHubResponse updateFile(@PathParam("user") String user,
+			@PathParam("repository") String repository,
+			@PathParam("path") String path,
+			@PathParam("fileName") String fileName,
+			@HeaderParam("Authorization") String authorization,
+			GitHubUpdateFileRequest content);
 }

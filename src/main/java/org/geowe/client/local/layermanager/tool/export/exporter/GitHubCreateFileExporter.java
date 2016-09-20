@@ -61,7 +61,7 @@ public class GitHubCreateFileExporter implements Exporter {
 	private ProgressBarDialog autoMessageBox;
 
 	@Override
-	public void export(final FileParameter fileParameter) {
+	public void export(FileParameter fileParameter) {
 		autoMessageBox = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
 		autoMessageBox.show();

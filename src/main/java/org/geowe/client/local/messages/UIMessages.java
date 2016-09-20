@@ -704,4 +704,6 @@ public interface UIMessages extends Messages {
 	String gitHubResponseTitle();
 	
 	String gitHubExportDialogTitle();
+	
+	String gitHubConfirmUpdate(String file, String userName);
 }

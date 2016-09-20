@@ -37,7 +37,7 @@ public final class FileExporter implements Exporter {
 	 * @param text
 	 * @param fileName
 	 */
-	public static native void saveAs(final String text, final String fileName) /*-{
+	public native static void saveAs(final String text, final String fileName) /*-{
 		var blob = new Blob([ text ], {
 			type : "text/plain;charset=utf-8;",
 		});

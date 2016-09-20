@@ -1,6 +1,18 @@
 package org.geowe.client.local.layermanager.tool.export.exporter;
 
 public class GitHubParameter extends FileParameter {
+	private String password;
+	private String repository;
+	private String path;
+	private String messageCommit;
+	private String sha;
+	
+	public String getSha() {
+		return sha;
+	}
+	public void setSha(String sha) {
+		this.sha = sha;
+	}
 	
 	public GitHubParameter() {
 		
@@ -42,9 +54,5 @@ public class GitHubParameter extends FileParameter {
 	}
 	public void setMessageCommit(String messageCommit) {
 		this.messageCommit = messageCommit;
-	}
-	private String password;
-	private String repository;
-	private String path;
-	private String messageCommit;
+	}	
 }

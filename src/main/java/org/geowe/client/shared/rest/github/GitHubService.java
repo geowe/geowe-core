@@ -40,13 +40,11 @@ public interface GitHubService {
 	
 	@GET
 	@Path("/contents/{path}/{fileName}")
-	//@Produces("application/json")
 	@Consumes("application/json")
 	public GitHubContentResponse getFile(@PathParam("user") String user,
 			@PathParam("repository") String repository,
 			@PathParam("path") String path,
-			@PathParam("fileName") String fileName,
-			@HeaderParam("Authorization") String authorization);
+			@PathParam("fileName") String fileName);
 	
 	@PUT
 	@Path("/contents/{path}/{fileName}")

@@ -22,9 +22,11 @@
  */
 package org.geowe.client.local.layermanager.tool.export.exporter;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
@@ -41,6 +43,10 @@ import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
@@ -51,21 +57,57 @@ import com.google.gwt.http.client.Response;
  */
 
 @ApplicationScoped
-public class GitHubUpdateFileExporter implements Exporter {
+public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener {
 	private final static String URL_BASE = "https://api.github.com/repos/";
 
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	private ProgressBarDialog autoMessageBox;
+	@Inject
+	private GitHubGetFileRequest gitHubGetFileRequest;
+	private GitHubParameter gitHubParameter;
+	
+	@PostConstruct
+	private void registerEvent() {
+		gitHubGetFileRequest.addListener(this);
+	}
 
 	@Override
-	public void export(final FileParameter fileParameter) {
+	public void export(FileParameter fileParameter) {
 		autoMessageBox = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
 		autoMessageBox.show();
-		final String fileName = fileParameter.getFileName() + "."
-				+ fileParameter.getExtension();
-		final GitHubParameter gitHubParameter = (GitHubParameter) fileParameter;
+		this.gitHubParameter = (GitHubParameter)fileParameter;		
+		gitHubGetFileRequest.send(gitHubParameter);
+	}
+	
+	@Override
+	public void onFinish(GitHubContentResponse response) {
+		autoMessageBox.hide();
+		gitHubParameter.setSha(response.getSha());
+		confirmUpdate();
+	}	
+	
+	private void confirmUpdate() {
+
+		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(UIMessages.INSTANCE.edtAlertDialogTitle(),
+				UIMessages.INSTANCE.gitHubConfirmUpdate(gitHubParameter.getFileName(), gitHubParameter.getUserName()), ImageProvider.INSTANCE.github24());
+		messageBox.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				send();				
+			}
+		});
+		
+		messageBox.show();
+	}
+	
+	private void send() {
+		autoMessageBox = new ProgressBarDialog(false,
+				UIMessages.INSTANCE.processing());
+		autoMessageBox.show();
+		final String fileName = gitHubParameter.getFileName() + "."
+				+ gitHubParameter.getExtension();		
 		final String userName = gitHubParameter.getUserName();
 		final String password = gitHubParameter.getPassword();
 		final String repository = gitHubParameter.getRepository();
@@ -74,9 +116,9 @@ public class GitHubUpdateFileExporter implements Exporter {
 		final String authorizationHeaderValue = BasicAuthenticationProvider
 				.getAuthorizationHeaderValue(userName, password);
 		final GitHubUpdateFileRequest content = new GitHubUpdateFileRequest();
-		content.setContent(Base64.encode(fileParameter.getContent()));
+		content.setContent(Base64.encode(gitHubParameter.getContent()));
 		content.setMessage(message);
-		content.setSha("");
+		content.setSha(gitHubParameter.getSha());
 		
 
 		RestClient.setJacksonMarshallingActive(true);
@@ -84,7 +126,7 @@ public class GitHubUpdateFileExporter implements Exporter {
 				getErrorCallback(), Response.SC_OK).updateFile(userName,
 				repository, path, fileName, authorizationHeaderValue, content);
 	}
-
+	
 	private RestErrorCallback getErrorCallback() {
 		return new RestErrorCallback() {
 
@@ -123,5 +165,5 @@ public class GitHubUpdateFileExporter implements Exporter {
 				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(),UIMessages.INSTANCE.gitHubSavedSucsessfully(url)).show();
 			}
 		};
-	}
+	}	
 }

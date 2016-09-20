@@ -129,20 +129,15 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						fileParameter = getGitHubParameter();
-						exporter = gitHubCreateFileExporter;						
-						export();
-
+						gitHubCreateFileExporter.export(getGitHubParameter());	
 					}
 				});
 
 		gitHubExportDialog.getUpdateButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {						
-						fileParameter = getGitHubParameter();
-						exporter = gitHubUpdateFileExporter;						
-						export();
+					public void onSelect(SelectEvent event) {												
+						gitHubUpdateFileExporter.export(getGitHubParameter());						
 					}
 				});
 	}

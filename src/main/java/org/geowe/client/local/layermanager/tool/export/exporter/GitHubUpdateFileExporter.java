@@ -65,7 +65,7 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener {
 	private ProgressBarDialog autoMessageBox;
 	@Inject
 	private GitHubGetFileRequest gitHubGetFileRequest;
-	private GitHubParameter gitHubParameter;
+	private GitHubParameter gitHubParameter;	
 	
 	@PostConstruct
 	private void registerEvent() {

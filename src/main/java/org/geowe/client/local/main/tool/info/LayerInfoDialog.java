@@ -23,6 +23,7 @@
 package org.geowe.client.local.main.tool.info;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -36,25 +37,28 @@ import org.geowe.client.local.layermanager.RemoveLayerListener;
 import org.geowe.client.local.layermanager.tool.CopyLayerTool;
 import org.geowe.client.local.main.tool.edition.DeleteFeatureListenerManager;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.vector.AttributeValueProvider;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.gwtopenmaps.openlayers.client.util.Attributes;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -85,9 +89,9 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private TextField projectionField;
 	private TextField numElementsField;
 
-	private VectorLayer selectedLayer;
-	private ListStore<VectorFeatureInfo> layerStore;
-	private ListView<VectorFeatureInfo, String> listView;
+	private VectorLayer selectedLayer;	
+	private ListStore<VectorFeature> featureStore;
+	private Grid<VectorFeature> featureGrid;	
 
 	private TextButton renameLayerbutton;
 	private TextButton applyRenameLayerbutton;
@@ -195,35 +199,68 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 		hPanel.setSize("490px", "200px");
-		hPanel.add(createListView());
+		hPanel.add(createFeatureGrid());
 		hPanel.add(layerInfoToolBar);
 		return hPanel;
 	}
-
-	private ListView<VectorFeatureInfo, String> createListView() {
-		VectorFeatureProperties properties = GWT
-				.create(VectorFeatureProperties.class);
-
-		listView = new ListView<VectorFeatureInfo, String>(
-				new ListStore<VectorFeatureInfo>(properties.key()),
-				properties.attributeBrief());
-		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
-		listView.setWidth("430px");
-		listView.setHeight("200px");
-
-		layerStore = new ListStore<VectorFeatureInfo>(properties.key());
-		listView.setStore(layerStore);
-
-		listView.getSelectionModel().addSelectionChangedHandler(
-				new SelectionChangedHandler<VectorFeatureInfo>() {
+	
+	/**
+	 * Creates an empty feature grid
+	 * @return
+	 */
+	private Grid<VectorFeature> createFeatureGrid() {
+		featureStore = new ListStore<VectorFeature>(
+				new ModelKeyProvider<VectorFeature> () {
+					@Override
+					public String getKey(VectorFeature item) {						
+						return item.getFeatureId();
+					}					
+				});
+		
+		ColumnModel<VectorFeature> columnModel = createColumnList(featureStore);
+		featureGrid = new Grid<VectorFeature>(featureStore, columnModel);				
+		featureGrid.setBorders(true);
+		featureGrid.getView().setForceFit(true);				
+		featureGrid.getView().setAutoExpandColumn(columnModel.getColumn(2));
+		featureGrid.getView().setStripeRows(true);
+		featureGrid.getView().setColumnLines(true);
+		featureGrid.setBorders(true);
+		featureGrid.setColumnReordering(true);		
+		
+		featureGrid.setWidth("430px");
+		featureGrid.setHeight("200px");		
+		
+		featureGrid.getSelectionModel().addSelectionChangedHandler(
+				new SelectionChangedHandler<VectorFeature>() {
 					@Override
 					public void onSelectionChanged(
-							SelectionChangedEvent<VectorFeatureInfo> event) {
+							SelectionChangedEvent<VectorFeature> event) {
 						setSelectedElement();
 					}
 				});
+		
+		return featureGrid;
+	}	
+	
+	private ColumnModel<VectorFeature> createColumnList(ListStore<VectorFeature> featureStore) {
+		List<ColumnConfig<VectorFeature, ?>> columns = new ArrayList<ColumnConfig<VectorFeature, ?>>();
+		
+		if(featureStore.size() > 0) {
+			VectorFeature feature = featureStore.get(0);
 
-		return listView;
+			if(feature.getAttributes() != null) {
+				for(String attributeName : feature.getAttributes().getAttributeNames()) {	
+					AttributeValueProvider attributeProvider = new AttributeValueProvider(attributeName);
+					
+					ColumnConfig<VectorFeature, String> attributeColumn = new ColumnConfig<VectorFeature, String>(
+							attributeProvider, 100, attributeName);
+					attributeColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+					columns.add(attributeColumn);
+				}
+			}					
+		}
+		
+		return new ColumnModel<VectorFeature>(columns);
 	}
 
 	public void setSelectedLayer(VectorLayer layer) {
@@ -244,7 +281,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 
 			setElementList(selectedLayer);
 		} else {
-			layerStore.clear();
+			featureStore.clear();
 		}
 	}
 
@@ -258,8 +295,9 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 			}
 		}
 
-		layerStore.clear();
-		layerStore.addAll(featureInfoList);
+		featureStore.clear();
+		featureStore.addAll(Arrays.asList(vectorFeatures));
+		featureGrid.reconfigure(featureStore, createColumnList(featureStore));
 	}
 
 	private VectorFeatureInfo getAttributeNames(VectorFeature vectorFeature) {
@@ -275,7 +313,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	}
 
 	private void setSelectedElement() {
-		List<VectorFeatureInfo> selectedElements = listView.getSelectionModel()
+		List<VectorFeature> selectedElements =  
+				featureGrid.getSelectionModel()
 				.getSelectedItems();
 
 		if (selectedElements != null && !selectedElements.isEmpty()) {
@@ -284,14 +323,9 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 				tool.setSelectedLayer(selectedLayer);
 
 				if (selectedElements.size() > 1) {
-					List<VectorFeature> features = new ArrayList<VectorFeature>();
-					for (VectorFeatureInfo vfi : selectedElements) {
-						features.add(vfi.getFeature());
-					}
-					tool.setSelectedFeatures(features);
+					tool.setSelectedFeatures(selectedElements);
 				} else {
-					tool.setSelectedFeature(selectedElements.get(0)
-							.getFeature());
+					tool.setSelectedFeature(selectedElements.get(0));
 				}
 			}
 		}
@@ -303,7 +337,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		if (selectedLayer != null) {
 			updateData();
 		}
-		numElementsField.setText(Integer.toString(layerStore.getAll().size()));
+		numElementsField.setText(Integer.toString(featureStore.getAll().size()));
 	}
 
 	@Override

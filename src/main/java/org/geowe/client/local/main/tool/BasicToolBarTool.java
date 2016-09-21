@@ -33,11 +33,12 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
+import com.sencha.gxt.fx.client.FxElement;
 
 /**
  * Show/hide basic tool bar
  * 
- * @author geowe
+ * @author rafa@geowe.org
  *
  */
 @ApplicationScoped
@@ -63,12 +64,10 @@ public class BasicToolBarTool extends ToggleTool {
 		return new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					basicToolBar.show();
-				} else {
-					basicToolBar.hide();
-				}
+				basicToolBar.asWidget().getElement().<FxElement> cast()
+				.fadeToggle();
 			}
 		};
 	}
 }
+

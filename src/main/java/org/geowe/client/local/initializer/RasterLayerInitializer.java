@@ -28,6 +28,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.geowe.client.local.AppClientProperties;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.LayerTree;
 import org.geowe.client.local.layermanager.toolbar.RasterLayerToolBar;
@@ -43,14 +44,15 @@ import com.google.gwt.core.client.GWT;
 /**
  * Responsible for initializing the default Raster Layers.
  * 
- * @author geowe.org
  * @author jose@geowe.org, rafa@geowe.org, ata@geowe.org
+ * @since 13-09-2016
+ * @author rafa@geowe.org Configurable startup layer. Must exists in Catalog
  *
  */
 @ApplicationScoped
 public class RasterLayerInitializer {
 	private static final String RASTER_ROOT_NAME = "Raster layers";
-	
+
 	@Inject
 	private GeoMap geoMap;
 	@Inject
@@ -59,12 +61,14 @@ public class RasterLayerInitializer {
 	private LayerManagerWidget layerManagerWidget;
 	@Inject
 	private AppLayerCatalog appLayerCatalog;
+	@Inject
+	private AppClientProperties appClientProperties;
 
 	public void initialize() {
 
 		geoMap.getMap().addLayer(createEmptyBaseLayer());
 
-		final Layer googleSatelliteLayer = createGoogleSatelliteLayer();
+		final Layer googleSatelliteLayer = createStartupLayer();
 		geoMap.getMap().addLayer(googleSatelliteLayer);
 
 		final List<Layer> wmsLayers = new ArrayList<Layer>();
@@ -85,12 +89,12 @@ public class RasterLayerInitializer {
 		return new EmptyLayer("Empty Base layer", emptyLayerOptions);
 	}
 
-	private Layer createGoogleSatelliteLayer() {
-		final LayerDef layerDef = appLayerCatalog
-				.getLayer(AppLayerCatalog.GOOGLE_SATELLITE);
-		final Layer googleSatelliteLayer = layerDef.getLayer();
-		googleSatelliteLayer.setIsBaseLayer(false);
-		return googleSatelliteLayer;
+	private Layer createStartupLayer() {
+		final LayerDef layerDef = appLayerCatalog.getLayer(appClientProperties
+				.getStringValue("startupLayer"));
+		final Layer startupLayer = layerDef.getLayer();
+		startupLayer.setIsBaseLayer(false);
+		return startupLayer;
 	}
 
 	private LayerTree createRasterLayerTree(final List<Layer> wmsLayers) {

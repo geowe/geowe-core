@@ -100,7 +100,7 @@ public class VectorLayerStyleWidget implements IsWidget,
 
 			panel.getHeader().setIcon(ImageProvider.INSTANCE.layerIcon());
 			panel.getElement().getStyle().setPosition(Position.ABSOLUTE);
-			panel.setPosition(300, 50);
+			panel.setPosition(300, 185);
 			panel.getElement().getStyle().setBorderWidth(1.0, Unit.PX);
 			panel.setVisible(false);
 

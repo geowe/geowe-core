@@ -35,7 +35,7 @@ import javax.ws.rs.Produces;
  *
  */
 @Path("/{user}/{repository}")
-public interface GitHubService {
+public interface GitHubFileService {
 
 	
 	@GET

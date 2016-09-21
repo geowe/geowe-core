@@ -34,7 +34,7 @@ import org.geowe.client.local.util.Base64;
 import org.geowe.client.local.util.BasicAuthenticationProvider;
 import org.geowe.client.shared.rest.github.GitHubContentResponse;
 import org.geowe.client.shared.rest.github.GitHubResponse;
-import org.geowe.client.shared.rest.github.GitHubService;
+import org.geowe.client.shared.rest.github.GitHubFileService;
 import org.geowe.client.shared.rest.github.GitHubUpdateFileRequest;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
@@ -73,17 +73,20 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener {
 	}
 
 	@Override
-	public void export(FileParameter fileParameter) {
-		autoMessageBox = new ProgressBarDialog(false,
-				UIMessages.INSTANCE.processing());
-		autoMessageBox.show();
+	public void export(FileParameter fileParameter) {		
 		this.gitHubParameter = (GitHubParameter)fileParameter;		
 		gitHubGetFileRequest.send(gitHubParameter);
 	}
 	
 	@Override
 	public void onFinish(GitHubContentResponse response) {
-		autoMessageBox.hide();
+		String contentCurrentBase64 = response.getContent();		
+		String contentToUpdateBase64 = Base64.encode(gitHubParameter.getContent());
+		if(contentCurrentBase64.equals(contentToUpdateBase64)) {
+			messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), "No hay cambios para guardar").show();
+			return;
+		}
+		
 		gitHubParameter.setSha(response.getSha());
 		confirmUpdate();
 	}	
@@ -120,9 +123,8 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener {
 		content.setMessage(message);
 		content.setSha(gitHubParameter.getSha());
 		
-
 		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubService.class, URL_BASE, getRemoteCallback(),
+		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
 				getErrorCallback(), Response.SC_OK).updateFile(userName,
 				repository, path, fileName, authorizationHeaderValue, content);
 	}
@@ -160,9 +162,14 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener {
 			public void callback(GitHubResponse response) {
 				autoMessageBox.hide();
 				GitHubContentResponse content = response.getContent();
+				String shaUpdate = content.getSha(); 
 				String url = content.getDownloadUrl();
+				String message = UIMessages.INSTANCE.gitHubSavedSucsessfully(url);
+				if(shaUpdate.equals(gitHubParameter.getSha())) {
+					message = "El fichero en GitHub no se ha modificado.";
+				}
 				//String html = "Guardado en GitHub correctamente. <br>Puedes acceder al fichero en la siguiente URL: <br><a href='"+ url + "'>descarga directa</a>";								
-				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(),UIMessages.INSTANCE.gitHubSavedSucsessfully(url)).show();
+				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), message).show();
 			}
 		};
 	}	

@@ -20,15 +20,24 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.util;
+package org.geowe.client.shared.rest.github;
 
-public class Base64 {
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+/**
+ * 
+ * @author jose@geowe.org
+ *
+ */
+@Path("/{user}/repos")
+public interface GitHubRepositoryService {
 
-	public static native String decode(String a) /*-{
-	  return window.atob(a);	  	  
-	}-*/;
 	
-	public static native String encode(String a) /*-{
-	  return window.btoa(a);	  
-	}-*/;
+	@GET	
+	@Consumes("application/json")
+	public GitHubRepositoryList getRepositories(@PathParam("user") String user);
+	
+	
 }

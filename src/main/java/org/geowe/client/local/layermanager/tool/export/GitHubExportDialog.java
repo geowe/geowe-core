@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.messages.UIMessages;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
@@ -52,6 +53,7 @@ public class GitHubExportDialog extends Dialog {
 	private TextField messageField;
 	private TextButton createButton;
 	private TextButton updateButton;
+	private TextButton repositoriesButton;
 	
 	public String getUserName() {
 		return userNameField.getText();
@@ -116,6 +118,7 @@ public class GitHubExportDialog extends Dialog {
 		add(panel);
 		createButton = new TextButton("Create");
 		updateButton = new TextButton("Update");
+		repositoriesButton = new TextButton("...");
 		
 		getButtonBar().add(createButton);
 		getButtonBar().add(updateButton);
@@ -129,6 +132,10 @@ public class GitHubExportDialog extends Dialog {
 	public TextButton getUpdateButton() {
 		return updateButton;
 	}
+	
+	public TextButton getRepositoriesButton() {
+		return repositoriesButton;
+	}
 			
 	private Widget createAuthenticationPanel() {
 		final VerticalPanel panel = new VerticalPanel();
@@ -139,12 +146,10 @@ public class GitHubExportDialog extends Dialog {
 		userNameField = new TextField();
 		userNameField.setTitle("user name");
 		userNameField.setWidth(FIELD_WIDTH);
-		userNameField.setAllowBlank(false);
 		panel.add(userNameField);
 
 		passwordField = new PasswordField();		
 		passwordField.setTitle("password");
-		passwordField.setAllowBlank(false);
 		passwordField.setWidth(FIELD_WIDTH);
 		panel.add(passwordField);
 		
@@ -156,15 +161,19 @@ public class GitHubExportDialog extends Dialog {
 		panel.setWidth("350px");		
 		panel.setSpacing(10);		
 
+		final HorizontalPanel horizontalPanel = new HorizontalPanel();
+		
 		repositoryField = new TextField();
-		repositoryField.setTitle("repository");
-		repositoryField.setAllowBlank(false);
+		repositoryField.setTitle("repository");		
 		repositoryField.setWidth(FIELD_WIDTH);
-		panel.add(repositoryField);
+		
+		horizontalPanel.add(repositoryField);
+		horizontalPanel.add(repositoriesButton);
+		
+		panel.add(horizontalPanel);		
 		
 		pathField = new TextField();
-		pathField.setTitle("path");
-		pathField.setAllowBlank(false);
+		pathField.setTitle("path");		
 		pathField.setWidth(FIELD_WIDTH);
 		panel.add(pathField);				
 
@@ -178,13 +187,11 @@ public class GitHubExportDialog extends Dialog {
 		
 		fileNameField = new TextField();
 		fileNameField.setTitle("file name");
-		fileNameField.setAllowBlank(false);
 		fileNameField.setWidth(FIELD_WIDTH);
 		panel.add(fileNameField);
 				
 		messageField = new TextField();
 		messageField.setTitle("message commit");
-		messageField.setAllowBlank(false);
 		messageField.setWidth(FIELD_WIDTH);
 		panel.add(messageField);
 

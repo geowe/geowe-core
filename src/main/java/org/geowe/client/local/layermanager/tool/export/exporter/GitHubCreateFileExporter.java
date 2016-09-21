@@ -33,7 +33,7 @@ import org.geowe.client.local.util.BasicAuthenticationProvider;
 import org.geowe.client.shared.rest.github.GitHubCreateFileRequest;
 import org.geowe.client.shared.rest.github.GitHubContentResponse;
 import org.geowe.client.shared.rest.github.GitHubResponse;
-import org.geowe.client.shared.rest.github.GitHubService;
+import org.geowe.client.shared.rest.github.GitHubFileService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
@@ -80,7 +80,7 @@ public class GitHubCreateFileExporter implements Exporter {
 		content.setMessage(message);
 
 		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubService.class, URL_BASE, getRemoteCallback(),
+		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
 				getErrorCallback(), Response.SC_CREATED).createFile(userName,
 				repository, path, fileName, authorizationHeaderValue, content);
 	}

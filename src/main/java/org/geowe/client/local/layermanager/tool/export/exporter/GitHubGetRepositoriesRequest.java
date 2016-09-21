@@ -25,14 +25,13 @@ package org.geowe.client.local.layermanager.tool.export.exporter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.shared.rest.github.GitHubContentResponse;
-import org.geowe.client.shared.rest.github.GitHubFileService;
+import org.geowe.client.shared.rest.github.GitHubRepositoryService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
@@ -42,35 +41,29 @@ import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 
 /**
- * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
+ * 
  * 
  * 
  * @author jose@geowe.org
  *
  */
 
-@ApplicationScoped
-public class GitHubGetFileRequest  {
-	private final static String URL_BASE = "https://api.github.com/repos/";	
+//@ApplicationScoped
+public class GitHubGetRepositoriesRequest  {
+	private final static String URL_BASE = "https://api.github.com/users/";
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	private ProgressBarDialog autoMessageBox;	
 	private List<GitHubEventListener> listener = new ArrayList<GitHubEventListener>();
 	
-	public void send(GitHubParameter gitHubParameter) {
+	public void send(String userName) {
 		autoMessageBox = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
 		autoMessageBox.show();		
-		final String fileName = gitHubParameter.getFileName() + "."
-				+ gitHubParameter.getExtension();		
-		final String userName = gitHubParameter.getUserName();		
-		final String repository = gitHubParameter.getRepository();
-		final String path = gitHubParameter.getPath();
 				
 		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
-				getErrorCallback(), Response.SC_OK).getFile(userName,
-				repository, path, fileName);
+		RestClient.create(GitHubRepositoryService.class, URL_BASE, getRemoteCallback(),
+				getErrorCallback(), Response.SC_OK).getRepositories(userName);
 	}
 	
 	public void addListener(GitHubEventListener event) {

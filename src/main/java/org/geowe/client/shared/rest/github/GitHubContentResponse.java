@@ -33,6 +33,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class GitHubContentResponse {
 	private String downloadUrl;
 	private String sha;
+	private String content;
 	
 	public String getSha() {
 		return sha;
@@ -42,9 +43,17 @@ public class GitHubContentResponse {
 		this.sha = sha;
 	}
 
-	public GitHubContentResponse(@MapsTo("download_url") String downloadUrl, @MapsTo("sha") String sha) {
+	public GitHubContentResponse(@MapsTo("download_url") String downloadUrl, @MapsTo("sha") String sha, @MapsTo("content") String content) {
 		this.downloadUrl = downloadUrl;
 		this.sha = sha;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String getDownloadUrl() {

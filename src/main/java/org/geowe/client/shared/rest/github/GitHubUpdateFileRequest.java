@@ -20,28 +20,19 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.shared.rest.github.service;
+package org.geowe.client.shared.rest.github;
 
-import java.util.List;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+@Portable
+public class GitHubUpdateFileRequest extends GitHubCreateFileRequest {
+	private String sha;
 
-import org.geowe.client.shared.rest.github.response.GitHubRepositoryAttributeBean;
-/**
- * 
- * @author jose@geowe.org
- *
- */
-@Path("/{user}/repos")
-public interface GitHubRepositoryService {
+	public String getSha() {
+		return sha;
+	}
 
-	
-	@GET	
-	@Consumes("application/json")
-	public List<GitHubRepositoryAttributeBean> getRepositories(@PathParam("user") String user);
-	
-	
+	public void setSha(String sha) {
+		this.sha = sha;
+	} 
 }

@@ -42,5 +42,7 @@ public interface GitHubRepositoryAttributeBeanProperties extends PropertyAccess<
 
 	ValueProvider<GitHubRepositoryAttributeBean, String> attributeName();
 
+	ValueProvider<GitHubRepositoryAttributeBean, String> description();
+	
 	ValueProvider<GitHubRepositoryAttributeBean, String> attributeFullName();
 }

@@ -38,12 +38,22 @@ public class GitHubRepositoryAttributeBean {
 	private Integer attributeId;
 	private String attributeName;
 	private String attributeFullName;
+	private String description;
 
 	
-	public GitHubRepositoryAttributeBean(@MapsTo("id") Integer id, @MapsTo("name") String name, @MapsTo("full_Name")String fullName) {
+	public GitHubRepositoryAttributeBean(@MapsTo("id") Integer id, @MapsTo("name") String name, @MapsTo("full_name")String fullName, @MapsTo("description")String description) {
 		this.attributeId = id;
 		this.attributeName = name;
 		this.attributeFullName = fullName;
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getAttributeName() {

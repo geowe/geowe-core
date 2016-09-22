@@ -72,9 +72,10 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 	private Logger log;
 	@Inject
 	private GitHubGetRepositoriesRequest<GitHubRepositoryAttributeBean> gitHubGetRepositoriesRequest;
-	
+	private Grid<GitHubRepositoryAttributeBean> grid;
 	private ListStore<GitHubRepositoryAttributeBean> repositoryStore;	
-	
+	@Inject
+	private GitHubExportDialog gitHubExportDialog;
 	
 	public GitHubRepositoryListDialog() {
 		super();
@@ -107,18 +108,22 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 				props.attributeId(), 190, "Id");		
 		final ColumnConfig<GitHubRepositoryAttributeBean, String> nameCol = new ColumnConfig<GitHubRepositoryAttributeBean, String>(
 				props.attributeName(), 190, "Name");
+		final ColumnConfig<GitHubRepositoryAttributeBean, String> descriptionCol = new ColumnConfig<GitHubRepositoryAttributeBean, String>(
+				props.description(), 200, "Description");
+		
 		final ColumnConfig<GitHubRepositoryAttributeBean, String> fullNameCol = new ColumnConfig<GitHubRepositoryAttributeBean, String>(
 				props.attributeFullName(), 200, "Full Name");
 
 		final List<ColumnConfig<GitHubRepositoryAttributeBean, ?>> columns = new ArrayList<ColumnConfig<GitHubRepositoryAttributeBean, ?>>();
 		columns.add(idCol);
 		columns.add(nameCol);
+		columns.add(descriptionCol);		
 		columns.add(fullNameCol);
 
 		final ColumnModel<GitHubRepositoryAttributeBean> columModel = new ColumnModel<GitHubRepositoryAttributeBean>(
 				columns);
 
-		final Grid<GitHubRepositoryAttributeBean> grid = new Grid<GitHubRepositoryAttributeBean>(
+		grid = new Grid<GitHubRepositoryAttributeBean>(
 				repositoryStore, columModel);
 		grid.setSelectionModel(new CellSelectionModel<GitHubRepositoryAttributeBean>());
 		grid.getColumnModel().getColumn(0).setHideable(false);
@@ -150,6 +155,10 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 		});
 	}
 	
+	public GitHubRepositoryAttributeBean getSelectedRepository() {
+		return grid.getSelectionModel().getSelectedItem();
+	}
+	
 	
 	public void load(String userName) {		
 		gitHubGetRepositoriesRequest.send(userName);
@@ -158,11 +167,9 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 	
 	public void setData(List<GitHubRepositoryAttributeBean> data) {
 		if(data == null) {
-			data = new ArrayList<GitHubRepositoryAttributeBean>();
-			log.info("Los datos de listado de repositorios son nulos");
+			data = new ArrayList<GitHubRepositoryAttributeBean>();			
 		}
-		
-		log.info("numero de datos: " + data.size());
+				
 		repositoryStore.clear();
 		repositoryStore.addAll(data);
 		setHeadingText("Lista de repositorios");
@@ -174,22 +181,13 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 				new SelectHandler() {
 					@Override
 					public void onSelect(final SelectEvent event) {
-						
+						gitHubExportDialog.setRepository(getSelectedRepository().getAttributeName());
 					}
-				});
-
-		this.getButton(PredefinedButton.CANCEL).addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(final SelectEvent event) {
-						
-					}
-				});
+				});		
 	}
 
 	@Override
-	public void onFinish(List<GitHubRepositoryAttributeBean> response) {
-		log.info("entra en resultado de la petición de repositorioss");
+	public void onFinish(List<GitHubRepositoryAttributeBean> response) {		
 		setData(response);	
 	}
 

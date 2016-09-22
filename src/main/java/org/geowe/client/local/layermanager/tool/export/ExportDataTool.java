@@ -37,16 +37,11 @@ import org.geowe.client.local.layermanager.tool.create.CSV;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
-import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
-import org.geowe.client.local.layermanager.tool.export.exporter.GitHubParameter;
-import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
-import org.geowe.client.local.layermanager.tool.export.github.GitHubRepositoryListDialog;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.MessageDialogBuilder;
-import org.geowe.client.shared.rest.github.GitHubRepositoryAttributeBean;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.GML;
@@ -81,14 +76,14 @@ public class ExportDataTool extends LayerTool implements
 	private ClientTaskManager taskManager;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
-	@Inject
-	private GitHubCreateFileExporter gitHubCreateFileExporter;
-	@Inject
-	private GitHubUpdateFileExporter gitHubUpdateFileExporter;
-	@Inject
-	private GitHubExportDialog gitHubExportDialog;
-	@Inject
-	private GitHubRepositoryListDialog repositoryListDialog;
+//	@Inject
+//	private GitHubCreateFileExporter gitHubCreateFileExporter;
+//	@Inject
+//	private GitHubUpdateFileExporter gitHubUpdateFileExporter;
+//	@Inject
+//	private GitHubExportDialog gitHubExportDialog;
+//	@Inject
+//	private GitHubRepositoryListDialog repositoryListDialog;
 	
 	private Exporter exporter;
 	private FileParameter fileParameter;
@@ -125,50 +120,50 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						gitHubExportDialog.initializeFields();
-						gitHubExportDialog.setFileName(getFileName());
-						gitHubExportDialog.show();
+//						gitHubExportDialog.initializeFields();
+//						gitHubExportDialog.setFileName(getFileName());
+//						gitHubExportDialog.show();
 					}
 				});
 
-		gitHubExportDialog.getCreateButton().addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						if (isValidFieldGitHub()) {
-							gitHubCreateFileExporter
-									.export(getGitHubParameter());
-						} else {
-							messageDialogBuilder.createInfo(
-									UIMessages.INSTANCE.gitHubResponseTitle(),
-									"Debe rellenar todos los campos").show();
-						}
-					}
-				});
-
-		gitHubExportDialog.getUpdateButton().addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						if (isValidFieldGitHub()) {
-							gitHubUpdateFileExporter
-									.export(getGitHubParameter());
-						} else {
-							messageDialogBuilder.createInfo(
-									UIMessages.INSTANCE.gitHubResponseTitle(),
-									"Debe rellenar todos los campos").show();
-						}
-					}
-				});
-		
-		gitHubExportDialog.getRepositoriesButton().addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						repositoryListDialog.setData(new ArrayList<GitHubRepositoryAttributeBean>());
-						//repositoryListDialog.load(gitHubExportDialog.getUserName());
-					}
-				});
+//		gitHubExportDialog.getCreateButton().addSelectHandler(
+//				new SelectHandler() {
+//					@Override
+//					public void onSelect(SelectEvent event) {
+//						if (isValidFieldGitHub()) {
+//							gitHubCreateFileExporter
+//									.export(getGitHubParameter());
+//						} else {
+//							messageDialogBuilder.createInfo(
+//									UIMessages.INSTANCE.gitHubResponseTitle(),
+//									"Debe rellenar todos los campos").show();
+//						}
+//					}
+//				});
+//
+//		gitHubExportDialog.getUpdateButton().addSelectHandler(
+//				new SelectHandler() {
+//					@Override
+//					public void onSelect(SelectEvent event) {
+//						if (isValidFieldGitHub()) {
+//							gitHubUpdateFileExporter
+//									.export(getGitHubParameter());
+//						} else {
+//							messageDialogBuilder.createInfo(
+//									UIMessages.INSTANCE.gitHubResponseTitle(),
+//									"Debe rellenar todos los campos").show();
+//						}
+//					}
+//				});
+//		
+//		gitHubExportDialog.getRepositoriesButton().addSelectHandler(
+//				new SelectHandler() {
+//					@Override
+//					public void onSelect(SelectEvent event) {
+//						repositoryListDialog.setData(new ArrayList<GitHubRepositoryAttributeBean>());
+//						repositoryListDialog.load(gitHubExportDialog.getUserName());
+//					}
+//				});
 	}
 
 	@Override
@@ -191,18 +186,18 @@ public class ExportDataTool extends LayerTool implements
 		}
 	}
 
-	private boolean isValidFieldGitHub() {
-		boolean isValid = true;
-		if (gitHubExportDialog.getUserName().trim().isEmpty()
-				|| gitHubExportDialog.getPassword().trim().isEmpty()
-				|| gitHubExportDialog.getRepository().trim().isEmpty()
-				|| gitHubExportDialog.getPath().trim().isEmpty()
-				|| gitHubExportDialog.getFileName().trim().isEmpty()
-				|| gitHubExportDialog.getMessage().trim().isEmpty()) {
-			isValid = false;
-		}
-		return isValid;
-	}
+//	private boolean isValidFieldGitHub() {
+//		boolean isValid = true;
+//		if (gitHubExportDialog.getUserName().trim().isEmpty()
+//				|| gitHubExportDialog.getPassword().trim().isEmpty()
+//				|| gitHubExportDialog.getRepository().trim().isEmpty()
+//				|| gitHubExportDialog.getPath().trim().isEmpty()
+//				|| gitHubExportDialog.getFileName().trim().isEmpty()
+//				|| gitHubExportDialog.getMessage().trim().isEmpty()) {
+//			isValid = false;
+//		}
+//		return isValid;
+//	}
 
 	private void export() {
 		taskManager.execute(new Runnable() {
@@ -254,21 +249,21 @@ public class ExportDataTool extends LayerTool implements
 		return isSelected;
 	}
 
-	private GitHubParameter getGitHubParameter() {
-		final GitHubParameter gitHubParameter = new GitHubParameter();
-		gitHubParameter.setUserName(gitHubExportDialog.getUserName());
-		gitHubParameter.setPassword(gitHubExportDialog.getPassword());
-		gitHubParameter.setRepository(gitHubExportDialog.getRepository());
-		gitHubParameter.setPath(gitHubExportDialog.getPath());
-		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
-		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
-		gitHubParameter.setExtension(getExtension());
-		log.info("num elementos: "
-				+ ((VectorLayer) getSelectedLayer()).getFeatures().length);
-		gitHubParameter
-				.setContent(getContent((VectorLayer) getSelectedLayer()));
-		return gitHubParameter;
-	}
+//	private GitHubParameter getGitHubParameter() {
+//		final GitHubParameter gitHubParameter = new GitHubParameter();
+//		gitHubParameter.setUserName(gitHubExportDialog.getUserName());
+//		gitHubParameter.setPassword(gitHubExportDialog.getPassword());
+//		gitHubParameter.setRepository(gitHubExportDialog.getRepository());
+//		gitHubParameter.setPath(gitHubExportDialog.getPath());
+//		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
+//		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
+//		gitHubParameter.setExtension(getExtension());
+//		log.info("num elementos: "
+//				+ ((VectorLayer) getSelectedLayer()).getFeatures().length);
+//		gitHubParameter
+//				.setContent(getContent((VectorLayer) getSelectedLayer()));
+//		return gitHubParameter;
+//	}
 
 	private String getFileName() {
 		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();

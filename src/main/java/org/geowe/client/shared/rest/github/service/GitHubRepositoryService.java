@@ -20,37 +20,24 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.shared.rest.github;
+package org.geowe.client.shared.rest.github.service;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 /**
  * 
  * @author jose@geowe.org
  *
  */
-@Portable
-public class GitHubResponse {
+@Path("/{user}/repos")
+public interface GitHubRepositoryService {
+
 	
-	public GitHubResponse(@MapsTo("content") GitHubContentResponse content, @MapsTo("commit") GitHubCommitResponse commit) {
-		this.content = content;
-		this.commit = commit;
-	}
+//	@GET	
+//	@Consumes("application/json")
+//	public GitHubRepositoryList getRepositories(@PathParam("user") String user);
+//	
 	
-	private GitHubContentResponse content;
-	private GitHubCommitResponse commit;
-	
-	
-	public GitHubContentResponse getContent() {
-		return content;
-	}
-	public void setContent(GitHubContentResponse content) {
-		this.content = content;
-	}
-	public GitHubCommitResponse getCommit() {
-		return commit;
-	}
-	public void setCommit(GitHubCommitResponse commit) {
-		this.commit = commit;
-	}
 }

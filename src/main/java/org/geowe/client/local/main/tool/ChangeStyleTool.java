@@ -31,13 +31,16 @@ import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.style.SimpleThemingVerticalLegend;
 import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.slf4j.Logger;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -57,6 +60,10 @@ public class ChangeStyleTool extends ButtonTool {
 	private LayerManagerWidget layerTreeWidget;
 	@Inject
 	private ClientTaskManager taskManager;
+
+	private SimpleThemingVerticalLegend legendPanel;
+	@Inject
+	private Logger logger;
 
 	@Inject
 	public ChangeStyleTool(final GeoMap geoMap) {
@@ -147,6 +154,37 @@ public class ChangeStyleTool extends ButtonTool {
 							StyleFactory.DEFAULT_HIGHLIGHTED_COLOR, 
 							vectorLayerStyleWidget.isEnableLabeling() ? vectorLayerStyleWidget.getAttributeLabel() : null, 
 							vectorLayerStyleWidget.isEnableTheming() ? vectorLayerStyleWidget.getAttributeTheming() : null));
+
+			applyLengendVisibility(selectedLayer);
+		} else {
+			hideLegendPanel();
+		}
+	}
+
+	private void applyLengendVisibility(VectorLayer selectedLayer) {
+		if (vectorLayerStyleWidget.isEnableLegend()) {
+			logger.info("Legend 1: habilitado "
+					+ vectorLayerStyleWidget.isEnableLegend());
+			if (legendPanel != null) {
+				RootPanel.get().remove(legendPanel);
+				logger.info("Legend 1.1: remove del rootpane");
+			}
+			legendPanel = new SimpleThemingVerticalLegend(selectedLayer,
+					vectorLayerStyleWidget.getAttributeTheming());
+
+			RootPanel.get().add(legendPanel);
+			legendPanel.getElement().<FxElement> cast().fadeToggle();
+			legendPanel.setVisible(true);
+		} else {
+			logger.info("Legend 2: VLSW "
+					+ vectorLayerStyleWidget.isEnableLegend());
+			hideLegendPanel();
+		}
+	}
+
+	private void hideLegendPanel() {
+		if (legendPanel != null && legendPanel.isVisible()) {
+			legendPanel.getElement().<FxElement> cast().fadeToggle();
 		}
 	}
 	

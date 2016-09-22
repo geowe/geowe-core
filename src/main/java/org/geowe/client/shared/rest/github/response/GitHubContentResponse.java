@@ -20,29 +20,47 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.shared.rest.github;
+package org.geowe.client.shared.rest.github.response;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-
 /**
  * 
  * @author jose@geowe.org
  *
  */
 @Portable
-public class GitHubCommitResponse {
-	private String message;		
+public class GitHubContentResponse {
+	private String downloadUrl;
+	private String sha;
+	private String content;
 	
-	public GitHubCommitResponse(@MapsTo("message") String message) {
-		this.message = message;
+	public String getSha() {
+		return sha;
 	}
 
-	public String getMessage() {
-		return message;
+	public void setSha(String sha) {
+		this.sha = sha;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public GitHubContentResponse(@MapsTo("download_url") String downloadUrl, @MapsTo("sha") String sha, @MapsTo("content") String content) {
+		this.downloadUrl = downloadUrl;
+		this.sha = sha;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getDownloadUrl() {
+		return downloadUrl;
+	}
+
+	public void setDownloadUrl(String downloadUrl) {
+		this.downloadUrl = downloadUrl;
 	}
 }

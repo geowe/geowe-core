@@ -16,12 +16,14 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 - A random color is assigned to each new/loaded layer.
 
 ### Fixed
+- issue [#123](https://github.com/geowe/geowe-core/issues/123)
+- issue [#170](https://github.com/geowe/geowe-core/issues/170)
 - issue [#176](https://github.com/geowe/geowe-core/issues/176)
+- issue [#177](https://github.com/geowe/geowe-core/issues/177)
+- issue [#178](https://github.com/geowe/geowe-core/issues/178)
 - issue [#181](https://github.com/geowe/geowe-core/issues/181)
 - issue [#182](https://github.com/geowe/geowe-core/issues/182)
-- issue [#170](https://github.com/geowe/geowe-core/issues/170)
 - issue [#184](https://github.com/geowe/geowe-core/issues/184)
-- issue [#123](https://github.com/geowe/geowe-core/issues/123)
 
 ## [1.1.2]Beta - 2016-09-13
 version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available

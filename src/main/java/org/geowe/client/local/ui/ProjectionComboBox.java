@@ -28,6 +28,14 @@ import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 
+/**
+ * Componente gráfico reutilizable que representa una lista desplegable
+ * con las proyecciones o sistemas de referencia (SRS) soportados 
+ * en GeoWE.
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class ProjectionComboBox extends SimpleComboBox<String> {
 	
 	public ProjectionComboBox(String width) {

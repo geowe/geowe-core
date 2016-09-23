@@ -22,7 +22,6 @@
  */
 package org.geowe.client.local.main.tool.search;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,8 +31,6 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.main.tool.info.FeatureTool;
-import org.geowe.client.local.main.tool.info.VectorFeatureInfo;
-import org.geowe.client.local.main.tool.info.VectorFeatureProperties;
 import org.geowe.client.local.main.tool.search.searcher.ContainSearcher;
 import org.geowe.client.local.main.tool.search.searcher.EndSearcher;
 import org.geowe.client.local.main.tool.search.searcher.EqualSearcher;
@@ -44,12 +41,12 @@ import org.geowe.client.local.main.tool.search.searcher.StartSearcher;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureAttributeDef;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.ui.FeatureGrid;
 import org.geowe.client.local.ui.KeyShortcutHandler;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.slf4j.Logger;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -58,13 +55,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
-import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
@@ -99,8 +94,7 @@ public class AttributeSearchDialog extends Dialog {
 	private TextButton searchButton;
 
 	private VectorLayer selectedLayer;
-	private ListStore<VectorFeatureInfo> layerStore;
-	private ListView<VectorFeatureInfo, String> listView;
+	private FeatureGrid featureGrid;
 
 	private ComboBox<FeatureAttributeDef> attributeCombo;
 
@@ -160,7 +154,18 @@ public class AttributeSearchDialog extends Dialog {
 		listPanel.setSpacing(5);
 
 		listPanel.add(new Label(UIMessages.INSTANCE.asdFeaturesListLabel()));
-		listPanel.add(createListView());
+		
+		featureGrid = new FeatureGrid(225, 200);
+		featureGrid.getSelectionModel().addSelectionChangedHandler(
+				new SelectionChangedHandler<VectorFeature>() {
+					@Override
+					public void onSelectionChanged(
+							SelectionChangedEvent<VectorFeature> event) {
+						setSelectedElements();
+					}
+				});
+		
+		listPanel.add(featureGrid);
 
 		hPanel.add(infoPanel);
 		hPanel.add(listPanel);
@@ -285,41 +290,20 @@ public class AttributeSearchDialog extends Dialog {
 					e.getMessage());
 			logger.error(e.getMessage());
 		}
-
-		setElementList(filteredFeatures);
-	}
-
-	private ListView<VectorFeatureInfo, String> createListView() {
-		VectorFeatureProperties properties = GWT
-				.create(VectorFeatureProperties.class);
-
-		listView = new ListView<VectorFeatureInfo, String>(
-				new ListStore<VectorFeatureInfo>(properties.key()),
-				properties.attributeBrief());
-		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
-		listView.setWidth("225px");
-		listView.setHeight("200px");
-
-		layerStore = new ListStore<VectorFeatureInfo>(properties.key());
-		listView.setStore(layerStore);
-
-		listView.getSelectionModel().addSelectionChangedHandler(
-				new SelectionChangedHandler<VectorFeatureInfo>() {
-					@Override
-					public void onSelectionChanged(
-							SelectionChangedEvent<VectorFeatureInfo> event) {
-						setSelectedElements();
-					}
-				});
-
-		return listView;
+		
+		featureGrid.update(filteredFeatures);
+		numElementsField.setText(String.valueOf(filteredFeatures.size()));
 	}
 
 	public void setSelectedLayer(VectorLayer layer) {
 		selectedLayer = layer;
 		layerNameField.setText(selectedLayer.getName());
+				
+		//Initilize the featureGrid for the new layer
+		featureGrid.rebuild(layer.getFeatures());
+		featureGrid.clear();
 		updateLayerAttributes();
-		layerStore.clear();
+				
 		numElementsField.clear();
 		valueAttributeField.clear();
 	}
@@ -339,23 +323,10 @@ public class AttributeSearchDialog extends Dialog {
 		}
 	}
 
-	private void setElementList(List<VectorFeature> filteredFeatures) {
-		List<VectorFeatureInfo> featureInfoList = new ArrayList<VectorFeatureInfo>();
-
-		if (filteredFeatures != null) {
-			for (VectorFeature vectorFeature : filteredFeatures) {
-				featureInfoList.add(new VectorFeatureInfo(vectorFeature));
-			}
-		}
-
-		layerStore.clear();
-		layerStore.addAll(featureInfoList);
-		numElementsField.setText(String.valueOf(featureInfoList.size()));
-	}
-
 	private void setSelectedElements() {
-		List<VectorFeatureInfo> selectedElements = listView.getSelectionModel()
+		List<VectorFeature> selectedElements = featureGrid.getSelectionModel()
 				.getSelectedItems();
+		
 		if (selectedElements == null || selectedElements.isEmpty()) {
 			Info.display(UIMessages.INSTANCE.warning(),
 					UIMessages.INSTANCE.selectAtLeast(1));
@@ -366,18 +337,13 @@ public class AttributeSearchDialog extends Dialog {
 		}
 	}
 
-	private void setSelectedElement(List<VectorFeatureInfo> selectedElements,
-			FeatureTool tool) {
+	private void setSelectedElement(List<VectorFeature> selectedElements, FeatureTool tool) {		
 		tool.setSelectedLayer(selectedLayer);
-		if (selectedElements.size() > 1) {
-			List<VectorFeature> features = new ArrayList<VectorFeature>();
-			for (VectorFeatureInfo vfi : selectedElements) {
-				features.add(vfi.getFeature());
-			}
-			tool.setSelectedFeatures(features);
+		
+		if (selectedElements.size() > 1) {			
+			tool.setSelectedFeatures(selectedElements);
 		} else {
-			tool.setSelectedFeature(selectedElements.get(0)
-					.getFeature());
+			tool.setSelectedFeature(selectedElements.get(0));
 		}
 	}
 
@@ -390,5 +356,4 @@ public class AttributeSearchDialog extends Dialog {
 		valueAttributeField.addKeyDownHandler(keyShortcut);
 		attributeCombo.addKeyDownHandler(keyShortcut);
 	}
-
 }

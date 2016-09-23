@@ -29,6 +29,14 @@ import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 
+/**
+ * Componente gráfico reutilizable que representa una lista desplegable
+ * con tamaños de fuente. Por defecto se cargar con los tamaños
+ * soportados en GeoWE.
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class FontSizeComboBox extends SimpleComboBox<Integer> {
 	private static final List<Integer> fontSizes = Arrays.asList(
 			8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36);

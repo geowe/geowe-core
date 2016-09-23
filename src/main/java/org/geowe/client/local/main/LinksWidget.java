@@ -26,6 +26,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.main.map.SimpleMapVerticalLegend;
+import org.geowe.client.local.messages.UIMessages;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -33,9 +36,11 @@ import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -46,9 +51,12 @@ public class LinksWidget implements IsWidget {
 
 	private HorizontalLayoutContainer widget;
 	private HorizontalPanel hp;
+	private SimpleMapVerticalLegend mapLegend;
 
 	@Inject
 	private StatusPanelWidget statusPanelWidget;
+	@Inject
+	private LayerManagerWidget layerManager;
 
 	@Override
 	public Widget asWidget() {
@@ -86,9 +94,8 @@ public class LinksWidget implements IsWidget {
 		hp.add(abuilder.getFaceBookLink());
 		hp.add(abuilder.getTwiterLink());
 		hp.add(abuilder.getBugLink());
-		hp.add(abuilder.getMailLink());
+		hp.add(createLegendAnchor());
 		hp.add(createStatusPanelAnchor());
-
 	}
 	
 	public void addLink(Anchor anchor){
@@ -101,8 +108,8 @@ public class LinksWidget implements IsWidget {
 
 	private TextButton createStatusPanelAnchor() {
 		TextButton showButton = new TextButton();
-		showButton.getElement().setId("statusPanelShowButton");
 		showButton.setIcon(ImageProvider.INSTANCE.info24());
+		showButton.setTitle(UIMessages.INSTANCE.statusPanelTile());
 		showButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
@@ -113,8 +120,28 @@ public class LinksWidget implements IsWidget {
 		return showButton;
 	}
 
+	private TextButton createLegendAnchor() {
+		TextButton legendButton = new TextButton();
+		legendButton.setIcon(ImageProvider.INSTANCE.mapLegend24());
+		legendButton.setTitle(UIMessages.INSTANCE.mapLegendTitle());
+		legendButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				if (mapLegend != null && mapLegend.isVisible()) {
+					mapLegend.getElement().<FxElement> cast().fadeToggle();
+					RootPanel.get().remove(mapLegend);
+				} else {
+					mapLegend = new SimpleMapVerticalLegend(layerManager);
+					RootPanel.get().add(mapLegend);
+					mapLegend.getElement().<FxElement> cast().fadeToggle();
+					mapLegend.setVisible(true);
+				}
+			}
+		});
+		return legendButton;
+	}
+
 	private void showHideStatusBar() {
 		statusPanelWidget.showHideStatusBar();
 	}
-
 }

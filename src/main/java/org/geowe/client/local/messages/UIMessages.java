@@ -698,4 +698,46 @@ public interface UIMessages extends Messages {
 	String zoomLevelText(int zoomLevel);
 	
 	String currentZoomLevelText();
+	
+	String gitHubSavedSucsessfully(String link);
+	
+	String gitHubResponseTitle();
+	
+	String gitHubExportDialogTitle();
+	
+	String gitHubConfirmUpdate(String file, String userName);
+	
+	String gitHubColumNameRepo();
+    
+	String gitHubColumDescriptionRepo();
+	
+	String gitHubTitleListRepo();
+	
+	String gitHubCreateButton();
+	
+	String gitHubUpdateButton();
+	
+	String gitHubRepositoryNameField();
+	
+	String gitHubPathNameField();
+	
+	String gitHubFileNameField();
+	
+	String gitHubMessageCommitField();
+	
+	String gitHubUserNameField();
+	
+	String gitHubPasswordField();
+	
+	String gitHubCheckAllFields();
+	
+	String gitHubUserNameCheckField();
+	
+	String colorThemingShowLegend();
+	
+	String statusPanelTile();
+	
+	String mapLegendTitle();
+	
+	String gitHubResponseNotUpdate();
 }

@@ -60,8 +60,8 @@ import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitComplet
  */
 @ApplicationScoped
 public class GeoDataImportTool extends AbstractGeoDataImport {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(GeoDataImportTool.class.getName());
+//	private static final Logger LOG = LoggerFactory
+//			.getLogger(GeoDataImportTool.class.getName());
 
 	protected final GeoDataImportDialog geoDataImportDialog;
 	protected final LayerManagerWidget layerManagerWidget;
@@ -123,8 +123,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 							layer = VectorLayerFactory
 									.createVectorLayerFromGeoData(layerConfig);
 							
-						} catch (Exception e) {
-							LOG.info("Creation of VectorLayer failed: " + layerConfig);
+						} catch (Exception e) {							
 							showAlert(UIMessages.INSTANCE.gditAlertMessage());
 						}
 
@@ -209,8 +208,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 											.equals(UIMessages.INSTANCE.url())) {
 										autoMessageBox.hide();
 									}
-								} else {
-									LOG.info("Fallo la validacion del dialogo de Nueva Capa");
+								} else {									
 									showAlert(UIMessages.INSTANCE.warning(),
 											UIMessages.INSTANCE
 													.gditAlertMessage());

@@ -34,6 +34,12 @@ import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.LayerTool;
 import org.geowe.client.local.layermanager.tool.create.CSV;
+import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
+import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubParameter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
@@ -70,10 +76,19 @@ public class ExportDataTool extends LayerTool implements
 	private ExportDataDialog exportDataDialog;
 	@Inject
 	private ClientTaskManager taskManager;
-	private List<String> parameters;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
-
+	@Inject
+	private GitHubCreateFileExporter gitHubCreateFileExporter;
+	@Inject
+	private GitHubUpdateFileExporter gitHubUpdateFileExporter;
+	@Inject
+	private GitHubExportDialog gitHubExportDialog;
+	@Inject
+	private GitHubRepositoryListDialog repositoryListDialog;
+	private Exporter exporter;
+	private FileParameter fileParameter;
+	
 	@Inject
 	public ExportDataTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
@@ -85,10 +100,73 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						if (isLayerToExportValid(exportDataDialog
-								.getVectorLayer())) {
-							save(exportDataDialog.getSelectedFormat());							
+						exporter = new FileExporter();
+						fileParameter = new FileParameter();
+						fileParameter.setFileName(getFileName());
+						fileParameter.setExtension(getExtension());
+
+						if (isSelectedFeatures()) {
+							confirmDownloadSelected();
+						} else {
+							fileParameter
+									.setContent(getContent((VectorLayer) getSelectedLayer()));
+							export();
 						}
+					}
+				});
+
+		exportDataDialog.getGitHubButton().addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {						
+						gitHubExportDialog.setFileName(getFileName());
+						gitHubExportDialog.show();
+					}
+				});
+
+		gitHubExportDialog.getCreateButton().addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						if (isValidFieldGitHub()) {
+							gitHubCreateFileExporter
+									.export(getGitHubParameter());
+						} else {
+							messageDialogBuilder.createInfo(
+									UIMessages.INSTANCE.gitHubResponseTitle(),
+									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
+						}
+					}
+				});
+
+		gitHubExportDialog.getUpdateButton().addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						if (isValidFieldGitHub()) {
+							gitHubUpdateFileExporter
+									.export(getGitHubParameter());
+						} else {
+							messageDialogBuilder.createInfo(
+									UIMessages.INSTANCE.gitHubResponseTitle(),
+									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
+						}
+					}
+				});
+
+		gitHubExportDialog.getRepositoriesButton().addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						String userName = gitHubExportDialog.getUserName();
+						if (userName.trim().isEmpty()) {
+							messageDialogBuilder.createInfo(
+									UIMessages.INSTANCE.gitHubResponseTitle(),
+									UIMessages.INSTANCE.gitHubUserNameCheckField())
+									.show();
+							return;
+						}
+						repositoryListDialog.load(userName);
 					}
 				});
 	}
@@ -113,16 +191,26 @@ public class ExportDataTool extends LayerTool implements
 		}
 	}
 
-	private void downloadFile() {
+	private boolean isValidFieldGitHub() {
+		boolean isValid = true;
+		if (gitHubExportDialog.getUserName().trim().isEmpty()
+				|| gitHubExportDialog.getPassword().trim().isEmpty()
+				|| gitHubExportDialog.getRepository().trim().isEmpty()
+				|| gitHubExportDialog.getPath().trim().isEmpty()
+				|| gitHubExportDialog.getFileName().trim().isEmpty()
+				|| gitHubExportDialog.getMessage().trim().isEmpty()) {
+			isValid = false;
+		}
+		return isValid;
+	}
+
+	private void export() {
 		taskManager.execute(new Runnable() {
 			@Override
-			public void run() {				
-				final String content = parameters.get(0);
-				final String extension = parameters.get(1);
-				if (isContentValid(content)) {
-					String fileName = getSelectedLayer().getName() + "."
-							+ extension;
-					FileExporter.saveAs(content, fileName);
+			public void run() {
+
+				if (isContentValid(fileParameter.getContent())) {
+					exporter.export(fileParameter);
 				}
 			}
 		});
@@ -150,104 +238,108 @@ public class ExportDataTool extends LayerTool implements
 		return isValid;
 	}
 
-	private void save(VectorFormat vectorFormat) {
+	private boolean isSelectedFeatures() {
+		boolean isSelected = false;
+		if (isLayerToExportValid(exportDataDialog.getVectorLayer())) {
 
-		VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
-		VectorFeature[] selectedFeatures = selectedLayer.getSelectedFeatures();
+			final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+			final VectorFeature[] selectedFeatures = selectedLayer
+					.getSelectedFeatures();
 
-		if (selectedFeatures != null && selectedFeatures.length > 0) {
-			confirmOnlySelected(vectorFormat, selectedFeatures,
-					selectedLayer);
-		} else {
-			setParameters(vectorFormat, selectedLayer);
-			downloadFile();
+			if (selectedFeatures != null && selectedFeatures.length > 0) {
+				isSelected = true;
+			}
 		}
+
+		return isSelected;
 	}
 
-	private void setParameters(VectorFormat vectorFormat,
-			VectorLayer selectedLayer) {
+	private GitHubParameter getGitHubParameter() {
+		final GitHubParameter gitHubParameter = new GitHubParameter();
+		gitHubParameter.setUserName(gitHubExportDialog.getUserName());
+		gitHubParameter.setPassword(gitHubExportDialog.getPassword());
+		gitHubParameter.setRepository(gitHubExportDialog.getRepository());
+		gitHubParameter.setPath(gitHubExportDialog.getPath());
+		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
+		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
+		gitHubParameter.setExtension(getExtension());		
+		gitHubParameter
+				.setContent(getContent((VectorLayer) getSelectedLayer()));
+		return gitHubParameter;
+	}
+
+	private String getFileName() {
+		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+		return selectedLayer.getName();
+	}
+
+	private String getExtension() {
+		return exportDataDialog.getSelectedFormat().getName().toLowerCase();
+	}
+
+	private String getContent(VectorLayer selectedLayer) {
+
+		final VectorFormat vectorFormat = exportDataDialog.getSelectedFormat();
 		String content = "";
-		String extension = "";
-		parameters = new ArrayList<String>();
+		org.gwtopenmaps.openlayers.client.format.VectorFormat format = null;
+
 		if (vectorFormat.getId() == VectorFormat.GML_FORMAT.getId()) {
-			content = getGML(selectedLayer);
-			extension = VectorFormat.GML_FORMAT.getName().toLowerCase();
+			format = new GML();
 		} else if (vectorFormat.getId() == VectorFormat.KML_FORMAT.getId()) {
-			content = getKML(selectedLayer);
-			extension = VectorFormat.KML_FORMAT.getName().toLowerCase();
+			format = new KML();
 		} else if (vectorFormat.getId() == VectorFormat.GEO_JSON_FORMAT.getId()) {
-			content = getGeoJSON(selectedLayer);
-			extension = VectorFormat.GEO_JSON_FORMAT.getName().toLowerCase();
+			format = new GeoJSON();
 		} else if (vectorFormat.getId() == VectorFormat.WKT_FORMAT.getId()) {
-			content = getWKT(selectedLayer);
-			extension = VectorFormat.WKT_FORMAT.getName().toLowerCase();
+			format = new WKT();
 		} else if (vectorFormat.getId() == VectorFormat.CSV_FORMAT.getId()) {
-			content = getCSV(selectedLayer);
-			extension = VectorFormat.CSV_FORMAT.getName().toLowerCase();
+			content = new CSV(exportDataDialog.getSelectedEpsg())
+					.write(selectedLayer);
 		}
 
-		parameters.add(content);
-		parameters.add(extension);
+		if (content.isEmpty()) {
+			content = format.write(getTransformedFeatures(selectedLayer));
+		}
+
+		return content;
 	}
 
-	private VectorLayer getLayerWithSelectedFeature(
-			VectorFeature[] selectedFeatures, FeatureSchema schema) {
+	private VectorLayer getLayerWithSelectedFeature() {
+		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+		final FeatureSchema schema = selectedLayer.getSchema();
+		VectorFeature[] features = selectedLayer.getSelectedFeatures();
+
 		VectorLayer selectedDownloadLayer = new VectorLayer("selectedDownload",
 				schema);
-		for (VectorFeature feature : selectedFeatures) {
+		for (VectorFeature feature : features) {
 			selectedDownloadLayer.addFeature(feature);
 		}
 		return selectedDownloadLayer;
 	}
 
-	
-	private void confirmOnlySelected(final VectorFormat vectorFormat,
-			final VectorFeature[] selectedFeatures, final VectorLayer selectedLayer) {
-		
-		ConfirmMessageBox messageBox =  messageDialogBuilder.createConfirm(UIMessages.INSTANCE.edtAlertDialogTitle(),
+	private void confirmDownloadSelected() {
+
+		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(
+				UIMessages.INSTANCE.edtAlertDialogTitle(),
 				UIMessages.INSTANCE.edtConfirmDownload(),
 				ImageProvider.INSTANCE.downloadBlue24());
 		messageBox.getButton(PredefinedButton.YES).addSelectHandler(
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-
-						VectorLayer tmpLayer = getLayerWithSelectedFeature(
-								selectedFeatures, selectedLayer.getSchema());
-						setParameters(vectorFormat, tmpLayer);
-						downloadFile();
+						VectorLayer tmpLayer = getLayerWithSelectedFeature();
+						fileParameter.setContent(getContent(tmpLayer));
+						export();
 					}
 				});
-		
+
 		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						setParameters(vectorFormat, selectedLayer);
-						downloadFile();
+						export();
 					}
 				});
 		messageBox.show();
-	}
-
-	private String getGML(Vector layer) {
-		GML format = new GML();
-		return format.write(getTransformedFeatures(layer));
-	}
-
-	private String getKML(Vector layer) {
-		KML format = new KML();
-		return format.write(getTransformedFeatures(layer));
-	}
-
-	private String getGeoJSON(Vector layer) {
-		GeoJSON format = new GeoJSON();
-		return format.write(getTransformedFeatures(layer));
-	}
-
-	private String getWKT(Vector layer) {
-		WKT format = new WKT();
-		return format.write(getTransformedFeatures(layer));
 	}
 
 	private VectorFeature[] getTransformedFeatures(Vector layer) {
@@ -264,10 +356,6 @@ public class ExportDataTool extends LayerTool implements
 		VectorFeature[] transArray = new VectorFeature[transformedFeatures
 				.size()];
 		return transformedFeatures.toArray(transArray);
-	}
-
-	private String getCSV(VectorLayer selectedLayer) {
-		return new CSV(exportDataDialog.getSelectedEpsg()).write(selectedLayer);
 	}
 
 	@Override

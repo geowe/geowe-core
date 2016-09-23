@@ -20,8 +20,7 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.layermanager.tool.export;
-
+package org.geowe.client.local.layermanager.tool.export.exporter;
 
 /**
  * Utility class responsible to export a file
@@ -29,10 +28,8 @@ package org.geowe.client.local.layermanager.tool.export;
  * @author geowe.org
  *
  */
-public final class FileExporter {
 
-	private FileExporter() {
-	}
+public final class FileExporter implements Exporter {
 
 	/**
 	 * Export a text/plain UTF-8 file.
@@ -40,11 +37,18 @@ public final class FileExporter {
 	 * @param text
 	 * @param fileName
 	 */
-	public static native void saveAs(String text, String fileName) /*-{
+	public native static void saveAs(final String text, final String fileName) /*-{
 		var blob = new Blob([ text ], {
 			type : "text/plain;charset=utf-8;",
 		});
 		$wnd.saveAs(blob, fileName);
 
 	}-*/;
+
+	@Override
+	public void export(final FileParameter fileParameter) {		
+		final String fileName = fileParameter.getFileName() + "." + fileParameter.getExtension();
+		 
+		saveAs(fileParameter.getContent(), fileName);		
+	}
 }

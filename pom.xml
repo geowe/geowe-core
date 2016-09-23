@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.geowe</groupId>
 	<artifactId>geowe</artifactId>
-	<version>1.1.2</version>
+	<version>1.2.0</version>
 	<packaging>war</packaging>
 	<properties>
 		<errai.dev.context>${project.artifactId}</errai.dev.context>
@@ -45,30 +45,31 @@
 	</dependencyManagement>
 	<dependencies>
 		<!-- RESTEASY -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.jboss.resteasy</groupId> -->
-		<!-- <artifactId>resteasy-jaxrs</artifactId> -->
-		<!-- <version>3.0.6.Final</version> -->
-		<!-- <scope>runtime</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>javax.ws.rs</groupId> -->
-		<!-- <artifactId>javax.ws.rs-api</artifactId> -->
-		<!-- <version>2.0.1</version> -->
-		<!-- <scope>runtime</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>javax.annotation</groupId> -->
-		<!-- <artifactId>javax.annotation-api</artifactId> -->
-		<!-- <version>1.2</version> -->
-		<!-- <scope>runtime</scope> -->
-		<!-- </dependency> -->
-		<!-- necesario para peticiones wms capabilities -->
 <!-- 		<dependency> -->
-<!-- 			<groupId>org.jvnet.ogc</groupId> -->
-<!-- 			<artifactId>wms-v_1_3_0-schema</artifactId> -->
-<!-- 			<version>1.1.0</version> -->
+<!-- 			<groupId>org.jboss.resteasy</groupId> -->
+<!-- 			<artifactId>resteasy-jaxrs</artifactId> -->
+<!-- 			<version>3.0.6.Final</version> -->
+<!-- 			<scope>runtime</scope> -->
 <!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>javax.ws.rs</groupId> -->
+<!-- 			<artifactId>javax.ws.rs-api</artifactId> -->
+<!-- 			<version>2.0.1</version> -->
+<!-- 			<scope>runtime</scope> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>javax.annotation</groupId> -->
+<!-- 			<artifactId>javax.annotation-api</artifactId> -->
+<!-- 			<version>1.2</version> -->
+<!-- 			<scope>runtime</scope> -->
+<!-- 		</dependency> -->
+		<!-- necesario para peticiones wms capabilities -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.jvnet.ogc</groupId> -->
+		<!-- <artifactId>wms-v_1_3_0-schema</artifactId> -->
+		<!-- <version>1.1.0</version> -->
+		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>org.gwtopenmaps.openlayers</groupId>
 			<artifactId>gwt-openlayers-server</artifactId>
@@ -395,7 +396,7 @@
 				<dependency>
 					<groupId>javax.inject</groupId>
 					<artifactId>javax.inject</artifactId>
-<!-- 					<scope>provided</scope> -->
+					<!-- <scope>provided</scope> -->
 				</dependency>
 				<dependency>
 					<groupId>javax.annotation</groupId>

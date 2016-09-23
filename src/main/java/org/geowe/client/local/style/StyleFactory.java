@@ -28,9 +28,11 @@ import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gwt.user.client.Random;
+
 /**
- * Factoria de creacion de estilos y mapas de estilos para las capas 
- * vectoriales de manera centralizada y en todas sus combinaciones.
+ * Factoria de creacion de estilos y mapas de estilos para las capas vectoriales
+ * de manera centralizada y en todas sus combinaciones.
  * 
  * @author Atanasio Muñoz
  *
@@ -50,8 +52,10 @@ public final class StyleFactory {
 	}
 
 	public static StyleMap createDefaultStyleMap() {
-		return createStyleMap(DEFAULT_NORMAL_COLOR, DEFAULT_SELECTED_COLOR,
-				DEFAULT_HIGHLIGHTED_COLOR, null, null);
+		String default_normal_color = String.valueOf(Random.nextInt());
+		return createStyleMap(
+				StyleFactory.stringToColour(default_normal_color),
+				DEFAULT_SELECTED_COLOR, DEFAULT_HIGHLIGHTED_COLOR, null, null);
 	}
 
 	public static StyleMap createStyleMap(String normalColor,

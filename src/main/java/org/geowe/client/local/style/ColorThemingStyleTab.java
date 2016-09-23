@@ -68,7 +68,7 @@ public class ColorThemingStyleTab extends StyleTab {
 		});
 
 		enableLegend = new CheckBox();
-		enableLegend.setBoxLabel("Show legend");
+		enableLegend.setBoxLabel(UIMessages.INSTANCE.colorThemingShowLegend());
 		enableLegend.setValue(false);
 		enableLegend.setEnabled(false);
 

@@ -54,7 +54,6 @@ import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
-import org.slf4j.Logger;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -87,12 +86,9 @@ public class ExportDataTool extends LayerTool implements
 	private GitHubExportDialog gitHubExportDialog;
 	@Inject
 	private GitHubRepositoryListDialog repositoryListDialog;
-
 	private Exporter exporter;
 	private FileParameter fileParameter;
-	@Inject
-	private Logger log;
-
+	
 	@Inject
 	public ExportDataTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
@@ -122,8 +118,7 @@ public class ExportDataTool extends LayerTool implements
 		exportDataDialog.getGitHubButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {
-						gitHubExportDialog.initializeFields();
+					public void onSelect(SelectEvent event) {						
 						gitHubExportDialog.setFileName(getFileName());
 						gitHubExportDialog.show();
 					}
@@ -139,7 +134,7 @@ public class ExportDataTool extends LayerTool implements
 						} else {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									"Debe rellenar todos los campos").show();
+									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
 						}
 					}
 				});
@@ -154,7 +149,7 @@ public class ExportDataTool extends LayerTool implements
 						} else {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									"Debe rellenar todos los campos").show();
+									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
 						}
 					}
 				});
@@ -167,7 +162,7 @@ public class ExportDataTool extends LayerTool implements
 						if (userName.trim().isEmpty()) {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									"El nombre de usuario debe estar relleno")
+									UIMessages.INSTANCE.gitHubUserNameCheckField())
 									.show();
 							return;
 						}
@@ -267,9 +262,7 @@ public class ExportDataTool extends LayerTool implements
 		gitHubParameter.setPath(gitHubExportDialog.getPath());
 		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
-		gitHubParameter.setExtension(getExtension());
-		log.info("num elementos: "
-				+ ((VectorLayer) getSelectedLayer()).getFeatures().length);
+		gitHubParameter.setExtension(getExtension());		
 		gitHubParameter
 				.setContent(getContent((VectorLayer) getSelectedLayer()));
 		return gitHubParameter;

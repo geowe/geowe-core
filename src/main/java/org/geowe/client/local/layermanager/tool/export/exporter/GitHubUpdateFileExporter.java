@@ -82,14 +82,7 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener<G
 	}
 	
 	@Override
-	public void onFinish(GitHubContentResponse response) {
-		String contentCurrentBase64 = response.getContent();		
-		String contentToUpdateBase64 = Base64.encode(gitHubParameter.getContent());
-		if(contentCurrentBase64.equals(contentToUpdateBase64)) {
-			messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), "No hay cambios para guardar").show();
-			return;
-		}
-		
+	public void onFinish(GitHubContentResponse response) {		
 		gitHubParameter.setSha(response.getSha());
 		confirmUpdate();
 	}	
@@ -169,9 +162,8 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener<G
 				String url = content.getDownloadUrl();
 				String message = UIMessages.INSTANCE.gitHubSavedSucsessfully(url);
 				if(shaUpdate.equals(gitHubParameter.getSha())) {
-					message = "El fichero en GitHub no se ha modificado.";
-				}
-				//String html = "Guardado en GitHub correctamente. <br>Puedes acceder al fichero en la siguiente URL: <br><a href='"+ url + "'>descarga directa</a>";								
+					message = UIMessages.INSTANCE.gitHubResponseNotUpdate();
+				}								
 				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), message).show();
 			}
 		};

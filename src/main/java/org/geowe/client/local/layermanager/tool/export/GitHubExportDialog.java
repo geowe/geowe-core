@@ -116,13 +116,11 @@ public class GitHubExportDialog extends Dialog {
 		panel.add(createRepositoryPanel());
 		panel.add(createCommitPanel());	
 		add(panel);
-		createButton = new TextButton("Create");
-		updateButton = new TextButton("Update");
-		
-		
+		createButton = new TextButton(UIMessages.INSTANCE.gitHubCreateButton());
+		updateButton = new TextButton(UIMessages.INSTANCE.gitHubUpdateButton());
+				
 		getButtonBar().add(createButton);
-		getButtonBar().add(updateButton);
-		
+		getButtonBar().add(updateButton);		
 	}
 	
 	public TextButton getCreateButton() {
@@ -144,12 +142,14 @@ public class GitHubExportDialog extends Dialog {
 		panel.setSpacing(10);
 
 		userNameField = new TextField();
-		userNameField.setTitle("user name");
+		userNameField.setTitle(UIMessages.INSTANCE.gitHubUserNameField());
+		userNameField.setEmptyText(UIMessages.INSTANCE.gitHubUserNameField());
 		userNameField.setWidth(FIELD_WIDTH);
 		panel.add(userNameField);
 
 		passwordField = new PasswordField();		
-		passwordField.setTitle("password");
+		passwordField.setTitle(UIMessages.INSTANCE.gitHubPasswordField());
+		passwordField.setEmptyText(UIMessages.INSTANCE.gitHubPasswordField());
 		passwordField.setWidth(FIELD_WIDTH);
 		panel.add(passwordField);
 		
@@ -165,16 +165,20 @@ public class GitHubExportDialog extends Dialog {
 		final HorizontalPanel horizontalPanel = new HorizontalPanel();
 		
 		repositoryField = new TextField();
-		repositoryField.setTitle("repository");		
+		repositoryField.setTitle(UIMessages.INSTANCE.gitHubRepositoryNameField());		
+		repositoryField.setEmptyText(UIMessages.INSTANCE.gitHubRepositoryNameField());
 		repositoryField.setWidth(FIELD_WIDTH);
 		
 		horizontalPanel.add(repositoryField);
+		
+		repositoriesButton.setTitle(UIMessages.INSTANCE.gitHubTitleListRepo());
 		horizontalPanel.add(repositoriesButton);
 		
 		panel.add(horizontalPanel);		
 		
 		pathField = new TextField();
-		pathField.setTitle("path");		
+		pathField.setTitle(UIMessages.INSTANCE.gitHubPathNameField());		
+		pathField.setEmptyText(UIMessages.INSTANCE.gitHubPathNameField());
 		pathField.setWidth(FIELD_WIDTH);
 		panel.add(pathField);				
 
@@ -187,24 +191,17 @@ public class GitHubExportDialog extends Dialog {
 		panel.setSpacing(10);				
 		
 		fileNameField = new TextField();
-		fileNameField.setTitle("file name");
+		fileNameField.setTitle(UIMessages.INSTANCE.gitHubFileNameField());
+		fileNameField.setEmptyText(UIMessages.INSTANCE.gitHubFileNameField());
 		fileNameField.setWidth(FIELD_WIDTH);
 		panel.add(fileNameField);
 				
 		messageField = new TextField();
-		messageField.setTitle("message commit");
+		messageField.setTitle(UIMessages.INSTANCE.gitHubMessageCommitField());
+		messageField.setEmptyText(UIMessages.INSTANCE.gitHubMessageCommitField());
 		messageField.setWidth(FIELD_WIDTH);
 		panel.add(messageField);
 
 		return panel;
-	}
-	
-	public void initializeFields() {
-		userNameField.setEmptyText("user name");
-		passwordField.setEmptyText("password");
-		repositoryField.setEmptyText("repository");
-		pathField.setEmptyText("path in repository");
-		fileNameField.setEmptyText("file name");
-		messageField.setEmptyText("message commit");				
-	}
+	}		
 }

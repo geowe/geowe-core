@@ -52,7 +52,6 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.grid.CellSelectionModel;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -67,9 +66,7 @@ import com.sencha.gxt.widget.core.client.info.Info;
 * 
 * **/
 @ApplicationScoped
-public class GitHubRepositoryListDialog extends Dialog implements GitHubListEventListener<GitHubRepositoryAttributeBean> {
-	@Inject
-	private Logger log;
+public class GitHubRepositoryListDialog extends Dialog implements GitHubListEventListener<GitHubRepositoryAttributeBean> {	
 	@Inject
 	private GitHubGetRepositoriesRequest<GitHubRepositoryAttributeBean> gitHubGetRepositoriesRequest;
 	private Grid<GitHubRepositoryAttributeBean> grid;
@@ -87,7 +84,6 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 		setMaximizable(true);
 		setWidth(400);
 		setHeight(300);
-
 		add(createPanel());
 		addButtonHandlers();
 	}
@@ -107,29 +103,29 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 		final ColumnConfig<GitHubRepositoryAttributeBean, Integer> idCol = new ColumnConfig<GitHubRepositoryAttributeBean, Integer>(
 				props.attributeId(), 190, "Id");		
 		final ColumnConfig<GitHubRepositoryAttributeBean, String> nameCol = new ColumnConfig<GitHubRepositoryAttributeBean, String>(
-				props.attributeName(), 190, "Name");
+				props.attributeName(), 190, UIMessages.INSTANCE.gitHubColumNameRepo());
 		final ColumnConfig<GitHubRepositoryAttributeBean, String> descriptionCol = new ColumnConfig<GitHubRepositoryAttributeBean, String>(
-				props.description(), 200, "Description");
+				props.description(), 200, UIMessages.INSTANCE.gitHubColumDescriptionRepo());
 		
 		final ColumnConfig<GitHubRepositoryAttributeBean, String> fullNameCol = new ColumnConfig<GitHubRepositoryAttributeBean, String>(
 				props.attributeFullName(), 200, "Full Name");
 
 		final List<ColumnConfig<GitHubRepositoryAttributeBean, ?>> columns = new ArrayList<ColumnConfig<GitHubRepositoryAttributeBean, ?>>();
-		columns.add(idCol);
+		//columns.add(idCol);
 		columns.add(nameCol);
 		columns.add(descriptionCol);		
-		columns.add(fullNameCol);
+		//columns.add(fullNameCol);
 
 		final ColumnModel<GitHubRepositoryAttributeBean> columModel = new ColumnModel<GitHubRepositoryAttributeBean>(
 				columns);
 
 		grid = new Grid<GitHubRepositoryAttributeBean>(
 				repositoryStore, columModel);
-		grid.setSelectionModel(new CellSelectionModel<GitHubRepositoryAttributeBean>());
+		//grid.setSelectionModel(new CellSelectionModel<GitHubRepositoryAttributeBean>());
 		grid.getColumnModel().getColumn(0).setHideable(false);
 		grid.setAllowTextSelection(true);
 		grid.getView().setStripeRows(true);
-		grid.getView().setColumnLines(true);
+		grid.getView().setColumnLines(true);		
 		grid.setBorders(false);
 		setGridDragable(grid);
 		
@@ -172,7 +168,7 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 				
 		repositoryStore.clear();
 		repositoryStore.addAll(data);
-		setHeadingText("Lista de repositorios");
+		setHeadingText(UIMessages.INSTANCE.gitHubTitleListRepo());
 		show();
 	}
 
@@ -189,8 +185,5 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 	@Override
 	public void onFinish(List<GitHubRepositoryAttributeBean> response) {		
 		setData(response);	
-	}
-
-	
-	
+	}		
 }

@@ -37,19 +37,15 @@ import org.geowe.client.local.layermanager.tool.CopyLayerTool;
 import org.geowe.client.local.main.tool.edition.DeleteFeatureListenerManager;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.ui.FeatureGrid;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
-import org.gwtopenmaps.openlayers.client.util.Attributes;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.Style.SelectionMode;
-import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -85,9 +81,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private TextField projectionField;
 	private TextField numElementsField;
 
-	private VectorLayer selectedLayer;
-	private ListStore<VectorFeatureInfo> layerStore;
-	private ListView<VectorFeatureInfo, String> listView;
+	private VectorLayer selectedLayer;		
+	private FeatureGrid featureGrid;	
 
 	private TextButton renameLayerbutton;
 	private TextButton applyRenameLayerbutton;
@@ -192,40 +187,24 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	}
 
 	private HorizontalLayoutContainer createBottomPanel() {
-		
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 		hPanel.setSize("490px", "200px");
-		hPanel.add(createListView());
-		hPanel.add(layerInfoToolBar);
-		return hPanel;
-	}
-
-	private ListView<VectorFeatureInfo, String> createListView() {
-		VectorFeatureProperties properties = GWT
-				.create(VectorFeatureProperties.class);
-
-		listView = new ListView<VectorFeatureInfo, String>(
-				new ListStore<VectorFeatureInfo>(properties.key()),
-				properties.attributeBrief());
-		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
-		listView.setWidth("430px");
-		listView.setHeight("200px");
-
-		layerStore = new ListStore<VectorFeatureInfo>(properties.key());
-		listView.setStore(layerStore);
-
-		listView.getSelectionModel().addSelectionChangedHandler(
-				new SelectionChangedHandler<VectorFeatureInfo>() {
+		
+		featureGrid = new FeatureGrid();
+		featureGrid.getSelectionModel().addSelectionChangedHandler(
+				new SelectionChangedHandler<VectorFeature>() {
 					@Override
 					public void onSelectionChanged(
-							SelectionChangedEvent<VectorFeatureInfo> event) {
+							SelectionChangedEvent<VectorFeature> event) {
 						setSelectedElement();
 					}
 				});
-
-		return listView;
+		
+		hPanel.add(featureGrid);
+		hPanel.add(layerInfoToolBar);
+		return hPanel;
 	}
-
+		
 	public void setSelectedLayer(VectorLayer layer) {
 		selectedLayer = layer;
 		updateData();
@@ -242,41 +221,15 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 			numElementsField.setText(Integer.toString(((Vector) selectedLayer)
 					.getNumberOfFeatures()));
 
-			setElementList(selectedLayer);
+			featureGrid.rebuild(selectedLayer.getFeatures());
 		} else {
-			layerStore.clear();
+			featureGrid.rebuild(new ArrayList<VectorFeature>());
 		}
-	}
-
-	private void setElementList(Layer layer) {
-		List<VectorFeatureInfo> featureInfoList = new ArrayList<VectorFeatureInfo>();
-		VectorFeature[] vectorFeatures = ((Vector) layer).getFeatures();
-		if (vectorFeatures != null) {
-			featureInfoList.add(getAttributeNames(vectorFeatures[0]));
-			for (VectorFeature vectorFeature : vectorFeatures) {
-				featureInfoList.add(new VectorFeatureInfo(vectorFeature));
-			}
-		}
-
-		layerStore.clear();
-		layerStore.addAll(featureInfoList);
-	}
-
-	private VectorFeatureInfo getAttributeNames(VectorFeature vectorFeature) {
-		VectorFeature dummyVectorFeature = vectorFeature.clone();
-		dummyVectorFeature.getGeometry().destroy();
-		Attributes attrs = new Attributes();
-		for (String attrName : dummyVectorFeature.getAttributes()
-				.getAttributeNames()) {
-			attrs.setAttribute(attrName, attrName.toUpperCase());
-		}
-		dummyVectorFeature.setAttributes(attrs);
-		return new VectorFeatureInfo(dummyVectorFeature);
 	}
 
 	private void setSelectedElement() {
-		List<VectorFeatureInfo> selectedElements = listView.getSelectionModel()
-				.getSelectedItems();
+		List<VectorFeature> selectedElements =  
+				featureGrid.getSelectionModel().getSelectedItems();
 
 		if (selectedElements != null && !selectedElements.isEmpty()) {
 			for (FeatureTool tool : layerInfoToolBar.getTools()) {
@@ -284,14 +237,9 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 				tool.setSelectedLayer(selectedLayer);
 
 				if (selectedElements.size() > 1) {
-					List<VectorFeature> features = new ArrayList<VectorFeature>();
-					for (VectorFeatureInfo vfi : selectedElements) {
-						features.add(vfi.getFeature());
-					}
-					tool.setSelectedFeatures(features);
+					tool.setSelectedFeatures(selectedElements);
 				} else {
-					tool.setSelectedFeature(selectedElements.get(0)
-							.getFeature());
+					tool.setSelectedFeature(selectedElements.get(0));
 				}
 			}
 		}
@@ -303,7 +251,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		if (selectedLayer != null) {
 			updateData();
 		}
-		numElementsField.setText(Integer.toString(layerStore.getAll().size()));
+		numElementsField.setText(Integer.toString(featureGrid.getStore().size()));
 	}
 
 	@Override

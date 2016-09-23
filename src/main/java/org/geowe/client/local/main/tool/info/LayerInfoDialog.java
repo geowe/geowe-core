@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.info;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -220,16 +221,15 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 			numElementsField.setText(Integer.toString(((Vector) selectedLayer)
 					.getNumberOfFeatures()));
 
-			featureGrid.setFeatures(selectedLayer.getFeatures());
+			featureGrid.rebuild(selectedLayer.getFeatures());
 		} else {
-			featureGrid.getStore().clear();
+			featureGrid.rebuild(new ArrayList<VectorFeature>());
 		}
 	}
 
 	private void setSelectedElement() {
 		List<VectorFeature> selectedElements =  
-				featureGrid.getSelectionModel()
-				.getSelectedItems();
+				featureGrid.getSelectionModel().getSelectedItems();
 
 		if (selectedElements != null && !selectedElements.isEmpty()) {
 			for (FeatureTool tool : layerInfoToolBar.getTools()) {

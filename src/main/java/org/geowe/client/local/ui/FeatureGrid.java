@@ -1,3 +1,25 @@
+/*
+ * #%L
+ * GeoWE Project
+ * %%
+ * Copyright (C) 2015 - 2016 GeoWE.org
+ * %%
+ * This file is part of GeoWE.org.
+ * 
+ * GeoWE is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * GeoWE is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
 package org.geowe.client.local.ui;
 
 import java.util.ArrayList;
@@ -14,6 +36,13 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
+/**
+ * Componente gráfico que representa una tabla con todos los datos
+ * alfanuméricos (atributos) de un conjunto de VectorFeature 
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class FeatureGrid extends Grid<VectorFeature> {
 	public static final int DEFAULT_WIDTH = 430;
 	public static final int DEFAULT_HEIGHT = 200;
@@ -45,10 +74,52 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	
-	public void setFeatures(VectorFeature[] vectorFeatures) {
-		this.getStore().clear();
-		this.getStore().addAll(Arrays.asList(vectorFeatures));
+	/**
+	 * Reconstruye la tabla completa en base a los atributos de las
+	 * features que se reciben como parámetro.
+	 * @param features
+	 */
+	public void rebuild(List<VectorFeature> features) {
+		update(features);
 		this.reconfigure(this.getStore(), createColumnList());
+	}
+	
+	/**
+	 * Reconstruye la tabla completa en base a los atributos de las
+	 * features que se reciben como parámetro.
+	 * @param vectorFeatures
+	 */
+	public void rebuild(VectorFeature[] vectorFeatures) {
+		rebuild(Arrays.asList(vectorFeatures));
+	}
+	
+	/**
+	 * Actualiza los datos de la tabla con los datos de los atributos
+	 * de las features que se pasan como parámetro. El esquema de las
+	 * features debe coincidir con las columnas de la tabla
+	 * @param features
+	 */
+	public void update(List<VectorFeature> features) {
+		this.getStore().clear();
+		this.getStore().addAll(features);
+	}
+	
+	/**
+	 * Actualiza los datos de la tabla con los datos de los atributos
+	 * de las features que se pasan como parámetro. El esquema de las
+	 * features debe coincidir con las columnas de la tabla
+	 * @param vectorFeatures
+	 */
+	public void update(VectorFeature[] vectorFeatures) {
+		update(Arrays.asList(vectorFeatures));
+	}
+	
+	/**
+	 * Limpia todos los datos de la tabla manteniendo la definición
+	 * de las columnas
+	 */
+	public void clear() {
+		this.getStore().clear();
 	}
 	
 	private ColumnModel<VectorFeature> createColumnList() {

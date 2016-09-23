@@ -291,8 +291,7 @@ public class AttributeSearchDialog extends Dialog {
 			logger.error(e.getMessage());
 		}
 		
-		featureGrid.getStore().clear();
-		featureGrid.getStore().addAll(filteredFeatures);
+		featureGrid.update(filteredFeatures);
 		numElementsField.setText(String.valueOf(filteredFeatures.size()));
 	}
 
@@ -301,8 +300,8 @@ public class AttributeSearchDialog extends Dialog {
 		layerNameField.setText(selectedLayer.getName());
 				
 		//Initilize the featureGrid for the new layer
-		featureGrid.setFeatures(layer.getFeatures());
-		featureGrid.getStore().clear();
+		featureGrid.rebuild(layer.getFeatures());
+		featureGrid.clear();
 		updateLayerAttributes();
 				
 		numElementsField.clear();

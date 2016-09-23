@@ -35,6 +35,13 @@ import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
+/**
+ * Componente gráfico reutilizable que representa una lista desplegable
+ * con un cojunto de formatos vectoriales soportados.
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class VectorFormatComboBox extends ComboBox<VectorFormat> {
 
 	public VectorFormatComboBox(String width,
@@ -66,5 +73,4 @@ public class VectorFormatComboBox extends ComboBox<VectorFormat> {
 			}
 		});
 	}
-
 }

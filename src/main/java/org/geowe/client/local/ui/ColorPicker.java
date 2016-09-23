@@ -31,6 +31,14 @@ import com.sencha.gxt.core.client.Style.Direction;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.ColorPalette;
 
+/**
+ * Componente gráfico que representa una paleta de selección de color
+ * que soporta listeners del color seleccionado. También implementa
+ * un efecto de slide para mostrarlo u ocultarlo.
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class ColorPicker extends ColorPalette {
 	
 	public interface SelectedColorChangedListener {

@@ -11,7 +11,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Added simple theming legend.
-- Added simple map layer.
+- Added simple map layer legend.
 - Added GitHub integration to save vector layer.
 - A random color is assigned to each new/loaded layer.
 

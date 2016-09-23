@@ -46,13 +46,14 @@ public class ColorThemingStyleTab extends StyleTab {
 
 	private CheckBox enableTheming;
 	private FeatureAttributeComboBox attributeTheming;	
+	private CheckBox enableLegend;
 	
 	@Override
 	protected void initializePanel() {
 		String fieldWidth = "125px";
 
 		attributeTheming = new FeatureAttributeComboBox(fieldWidth);
-
+		attributeTheming.setEnabled(false);
 		enableTheming = new CheckBox();
 		enableTheming.setBoxLabel(UIMessages.INSTANCE.enableColorTheming());
 		enableTheming.setValue(false);
@@ -60,13 +61,22 @@ public class ColorThemingStyleTab extends StyleTab {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				attributeTheming.setEnabled(event.getValue());
+				enableLegend.setValue(event.getValue());
+				enableLegend.setEnabled(event.getValue());
+
 			}
 		});
+
+		enableLegend = new CheckBox();
+		enableLegend.setBoxLabel(UIMessages.INSTANCE.colorThemingShowLegend());
+		enableLegend.setValue(false);
+		enableLegend.setEnabled(false);
 
 		VerticalLayoutContainer vlc = new VerticalLayoutContainer();
 		vlc.add(enableTheming, new VerticalLayoutData(-18, -1));
 		vlc.add(new FieldLabel(attributeTheming, UIMessages.INSTANCE
 				.vlswLabelAttribute()), new VerticalLayoutData(-18, -1));
+		vlc.add(enableLegend, new VerticalLayoutData(-18, -1));
 
 		panel.setSpacing(5);
 		panel.add(vlc);
@@ -76,6 +86,10 @@ public class ColorThemingStyleTab extends StyleTab {
 		return enableTheming.getValue();
 	}
 	
+	public Boolean isEnableLegend() {
+		return enableLegend.getValue();
+	}
+
 	public String getAttributeTheming() {
 		return attributeTheming.getValue() != null ?
 				attributeTheming.getValue().toString() : null;
@@ -103,7 +117,9 @@ public class ColorThemingStyleTab extends StyleTab {
 			}
 						
 			enableTheming.setValue(colorThemingIsActive, true);
-//			attributeTheming.setValue(currentAttributeTheming);
+			attributeTheming.setValue(null);
+			attributeTheming.setEmptyText(UIMessages.INSTANCE
+					.sbLayerComboEmptyText());
 		}
 	}
 

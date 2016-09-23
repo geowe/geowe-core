@@ -36,6 +36,14 @@ import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
+/**
+ * Componente gráfico que representa una lista desplegable con los
+ * estilos de vértice soportados en GeoWE. Se incluye una representación
+ * visual de cada estilo.
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class VertexStyleComboBox extends ComboBox<VertexStyleDef> {
 	
 	interface VertexStyleComboTemplates extends XTemplates {
@@ -67,5 +75,4 @@ public class VertexStyleComboBox extends ComboBox<VertexStyleDef> {
 		
 		getStore().addAll(VertexStyles.getAll());
 	}
-	
 }

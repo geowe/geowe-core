@@ -31,6 +31,13 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
+/**
+ * Componente gráfico que representa una lista desplegable con los atributos
+ * de una Layer.
+ * 
+ * @author Atanasio Muñoz
+ *
+ */
 public class FeatureAttributeComboBox extends ComboBox<FeatureAttributeDef> {
 
 	public FeatureAttributeComboBox(String width) {

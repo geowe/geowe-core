@@ -29,6 +29,14 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
+/**
+ * Manejador de eventos para asociar una tecla a un botón de la interfaz,
+ * de manera que cuando se pulse dicha tecla se dispare el evento de 
+ * pulsar el botón.
+ * 
+ * @author atamunoz
+ *
+ */
 public class KeyShortcutHandler implements KeyDownHandler {
 	private final TextButton actionButton;
 	private final int keyCode;

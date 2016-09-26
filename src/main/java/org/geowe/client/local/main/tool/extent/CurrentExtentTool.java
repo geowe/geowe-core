@@ -46,7 +46,8 @@ import com.sencha.gxt.core.client.Style.Side;
 public class CurrentExtentTool extends ButtonTool {
 	
 	private final GeoMap geoMap;
-	
+	@Inject
+	private CurrentExtentDialog currentExtentDialog;
 	@Inject
 	public CurrentExtentTool(GeoMap geoMap) {		
 		super(UIMessages.INSTANCE.zoomToFullExtendToolText(),
@@ -71,6 +72,12 @@ public class CurrentExtentTool extends ButtonTool {
 		VectorFeature extentFeature = new VectorFeature(bounds.toGeometry());
 		WKT wktFormat = new WKT();
 		String wktResult = wktFormat.write(extentFeature);
+		CurrentExtentBean model = new CurrentExtentBean();
+		model.setWkt(wktResult);
+		
+		currentExtentDialog.setModel(model);
+		currentExtentDialog.setModal(true);
+		currentExtentDialog.show();
 		
 //		
 		

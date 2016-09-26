@@ -41,10 +41,10 @@ import com.sencha.gxt.widget.core.client.form.TextArea;
 @ApplicationScoped
 public class CurrentExtentDialog extends Dialog {
 	private TextArea wktTextArea;
-	@Inject
+	
 	private CurrentExtentBean model;
 	
-	private CurrentExtentDialog() {
+	public CurrentExtentDialog() {
 		setHideOnButtonClick(true);
 		setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
 				
@@ -65,13 +65,18 @@ public class CurrentExtentDialog extends Dialog {
 
 		return container;
 	}
+	
+	public void setModel(CurrentExtentBean model) {
+		this.model = model;
+		wktTextArea.setText(model.getWkt());
+	}
 
 	private TextArea getTextPanel() {
 		wktTextArea = new TextArea();
 		wktTextArea.setBorders(true);
 		
 		wktTextArea.setSize("300px", "250px");
-		wktTextArea.setText(model.getWkt());
+		
 
 		return wktTextArea;
 	}

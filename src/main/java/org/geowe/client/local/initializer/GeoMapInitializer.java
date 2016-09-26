@@ -204,7 +204,7 @@ public class GeoMapInitializer {
 				final JSONObject jsonObject = jsonValue.isObject();
 
 				if (jsonObject.containsKey("words")) {
-					final String wordsW3W = jsonObject.get("words").toString();
+					final String wordsW3W = jsonObject.get("words").isString().stringValue();
 										
 //					W3W v1.0 [obsolete]
 //					final JSONArray jsonWords = jsonObject.get("words").isArray();

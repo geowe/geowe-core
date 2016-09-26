@@ -345,5 +345,13 @@ public interface ImageProvider extends ClientBundle {
 	@Source("images/ic_validation-16.png")
 	ImageResource validation16();
 	
+	@Source("images/ic_github-32.png")
+	ImageResource github32();
+	
+	@Source("images/ic_github-24.png")
+	ImageResource github24();
+		
+	@Source("images/ic_map_legend-24.png")
+	ImageResource mapLegend24();
 	
 }

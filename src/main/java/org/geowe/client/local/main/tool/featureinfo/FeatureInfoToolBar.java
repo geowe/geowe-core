@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
-import org.geowe.client.local.layermanager.tool.export.FileExporter;
+import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.edition.DeleteFeatureListenerManager;
 import org.geowe.client.local.main.tool.info.DeleteFeatureListener;

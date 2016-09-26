@@ -211,6 +211,10 @@ public class VectorLayerStyleWidget implements IsWidget,
 		return colorThemingStyleTab.isEnableTheming();
 	}
 
+	public Boolean isEnableLegend() {
+		return colorThemingStyleTab.isEnableLegend();
+	}
+
 	public TextButton getApplyButton() {
 		return applyButton;
 	}

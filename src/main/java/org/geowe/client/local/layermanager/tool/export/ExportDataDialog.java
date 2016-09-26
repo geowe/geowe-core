@@ -43,6 +43,7 @@ import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutP
 public class ExportDataDialog extends Dialog {
 
 	private TextButton downloadFileButton;
+	private TextButton gitHubButton;
 	private VectorFormatComboBox vectorFormatCombo;
 	private ProjectionComboBox epsgCombo;
 
@@ -56,7 +57,7 @@ public class ExportDataDialog extends Dialog {
 		getBody().addClassName("pad-text");
 		setHideOnButtonClick(true);
 		setResizable(false);
-		setWidth(350);
+		setWidth(450);
 
 		add(createPanel());
 		addKeyShortcuts();
@@ -77,9 +78,9 @@ public class ExportDataDialog extends Dialog {
 	public TextButton getDownloadFileButton() {
 		return downloadFileButton;
 	}
-
-	public void setDownloadFileButton(TextButton downloadFileButton) {
-		this.downloadFileButton = downloadFileButton;
+	
+	public TextButton getGitHubButton() {
+		return gitHubButton;
 	}
 
 	public VectorFormat getSelectedFormat() {
@@ -97,12 +98,18 @@ public class ExportDataDialog extends Dialog {
 		vectorFormatCombo = new VectorFormatComboBox(comboWidth,
 				VectorFormat.getAllFormat());
 		vectorFormatCombo.addSelectionHandler(getVectorComboSelectionHandler());
+		vectorFormatCombo.setValue(VectorFormat.GEO_JSON_FORMAT);
 		epsgCombo = new ProjectionComboBox(comboWidth);
 
 		downloadFileButton = new TextButton(
 				UIMessages.INSTANCE.downloadfileText());
 		downloadFileButton.setIcon(ImageProvider.INSTANCE.download32());
 		downloadFileButton.setIconAlign(IconAlign.TOP);
+		
+		gitHubButton = new TextButton(
+				"GitHub");
+		gitHubButton.setIcon(ImageProvider.INSTANCE.github32());
+		gitHubButton.setIconAlign(IconAlign.TOP);
 
 		HorizontalPanel horizontalGroup = new HorizontalPanel();
 		horizontalGroup.getElement().getStyle().setBackgroundColor("#E0ECF8");
@@ -115,6 +122,8 @@ public class ExportDataDialog extends Dialog {
 
 		horizontalGroup.add(vPanel);
 		horizontalGroup.add(downloadFileButton);
+		horizontalGroup.add(gitHubButton);
+		
 
 		return horizontalGroup;
 	}

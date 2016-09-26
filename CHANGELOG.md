@@ -7,7 +7,26 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.2.0]Beta - 2016-09-23
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added simple theming legend.
+- Added simple map layer legend.
+- Added GitHub integration to save vector layer.
+- A random color is assigned to each new/loaded layer.
+
+### Fixed
+- issue [#123](https://github.com/geowe/geowe-core/issues/123)
+- issue [#170](https://github.com/geowe/geowe-core/issues/170)
+- issue [#176](https://github.com/geowe/geowe-core/issues/176)
+- issue [#177](https://github.com/geowe/geowe-core/issues/177)
+- issue [#178](https://github.com/geowe/geowe-core/issues/178)
+- issue [#181](https://github.com/geowe/geowe-core/issues/181)
+- issue [#182](https://github.com/geowe/geowe-core/issues/182)
+- issue [#184](https://github.com/geowe/geowe-core/issues/184)
+
 ## [1.1.2]Beta - 2016-09-13
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Make startup layer configurable from property file
 - updated what3words api v2
@@ -17,7 +36,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#174](https://github.com/geowe/geowe-core/issues/174)
 
 ## [1.1.1]Beta - 2016-09-09
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added "Recintos SIGPAC 2016 Andalucía" to catalog
 - Added "Parcelas SIGPAC 2016 Andalucía" to catalog

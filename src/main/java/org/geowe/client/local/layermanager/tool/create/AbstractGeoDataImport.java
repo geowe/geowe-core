@@ -40,8 +40,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public abstract class AbstractGeoDataImport extends ButtonTool {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(AbstractGeoDataImport.class.getName());
+//	private static final Logger LOG = LoggerFactory
+//			.getLogger(AbstractGeoDataImport.class.getName());
 	
 	private final GeoDataImportDialog geoDataImportDialog;
 	private final LayerManagerWidget layerManager;
@@ -93,7 +93,6 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 			layer = VectorLayerFactory
 					.createVectorLayerFromGeoData(layerConfig);
 		} catch (Exception e) {
-			LOG.info("Creation of VectorLayer failed: " + layerConfig);
 			showAlert(UIMessages.INSTANCE.warning(),
 					UIMessages.INSTANCE.gditAlertMessage());
 		}

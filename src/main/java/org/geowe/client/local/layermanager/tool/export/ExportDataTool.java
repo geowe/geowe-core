@@ -340,19 +340,19 @@ public class ExportDataTool extends LayerTool implements
 					}
 				});
 		messageBox.show();
-	}
-
+	}	
+	
 	private VectorFeature[] getTransformedFeatures(Vector layer) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
-
-		for (VectorFeature feature : layer.getFeatures()) {
-			VectorFeature featureToExport = feature.clone();
-			featureToExport.getGeometry().transform(
-					new Projection(geoMap.getMap().getProjection()),
-					new Projection(exportDataDialog.getSelectedEpsg()));
-			transformedFeatures.add(featureToExport);
+		if (layer.getFeatures() != null) {
+			for (VectorFeature feature : layer.getFeatures()) {
+				VectorFeature featureToExport = feature.clone();
+				featureToExport.getGeometry().transform(
+						new Projection(geoMap.getMap().getProjection()),
+						new Projection(exportDataDialog.getSelectedEpsg()));
+				transformedFeatures.add(featureToExport);
+			}
 		}
-
 		VectorFeature[] transArray = new VectorFeature[transformedFeatures
 				.size()];
 		return transformedFeatures.toArray(transArray);

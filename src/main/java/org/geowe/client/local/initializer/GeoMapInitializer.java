@@ -198,24 +198,12 @@ public class GeoMapInitializer {
 					w3wTool.addElementToW3wLayer(internalLonlat, wordsW3W);
 					return;
 				}
-
-				LOG.debug("W3WService response: " + response);
+				
 				final JSONValue jsonValue = JSONParser.parseLenient(response);
 				final JSONObject jsonObject = jsonValue.isObject();
 
 				if (jsonObject.containsKey("words")) {
-					final String wordsW3W = jsonObject.get("words").isString().stringValue();
-										
-//					W3W v1.0 [obsolete]
-//					final JSONArray jsonWords = jsonObject.get("words").isArray();
-//					final String[] words = new String[3];
-//					words[0] = jsonWords.get(0).isString().stringValue();
-//					words[1] = jsonWords.get(1).isString().stringValue();
-//					words[2] = jsonWords.get(2).isString().stringValue();
-//
-//					final String wordsW3W = words[0] + "." + words[1] + "."
-//							+ words[2];
-					
+					final String wordsW3W = jsonObject.get("words").isString().stringValue();					
 					w3wTool.set3Words(wordsW3W);
 					w3wTool.addElementToW3wLayer(internalLonlat, wordsW3W);
 

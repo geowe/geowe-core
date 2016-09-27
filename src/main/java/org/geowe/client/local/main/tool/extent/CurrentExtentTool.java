@@ -27,12 +27,13 @@ import javax.enterprise.context.ApplicationScoped;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
-import org.geowe.client.local.main.tool.spatial.EnvelopeTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.Bounds;
 import org.gwtopenmaps.openlayers.client.LonLat;
+import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.WKT;
+import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
@@ -50,36 +51,60 @@ public class CurrentExtentTool extends ButtonTool {
 	private CurrentExtentDialog currentExtentDialog;
 	@Inject
 	public CurrentExtentTool(GeoMap geoMap) {		
-		super(UIMessages.INSTANCE.zoomToFullExtendToolText(),
-				ImageProvider.INSTANCE.zoomToMaxExtend32());
+		super("Current Extent",
+				ImageProvider.INSTANCE.currentExtent24());
 		this.geoMap = geoMap;
 		setToolTipConfig(createTooltipConfig(
-				UIMessages.INSTANCE.zoomToFullExtendToolText(),
-				UIMessages.INSTANCE.zoomToFullExtendToolTip(), Side.LEFT));
+				"Current Extent",
+				"The extent of current map viewport ", Side.LEFT));
 	}
 
 	@Override
 	protected void onRelease() {
-		Bounds bounds = geoMap.getMap().getExtent();
+		Bounds bounds = geoMap.getMap().getExtent();		
+		LonLat center = transformToWGS84(bounds.getCenterLonLat());
 		
-		LonLat center = bounds.getCenterLonLat();
-		double lowerLeftX = bounds.getLowerLeftX();
-		double lowerLeftY = bounds.getLowerLeftY();
-		double upperRightX = bounds.getUpperRightX();
-		double upperRightY = bounds.getUpperRightY();
+		LonLat lower = new LonLat(bounds.getLowerLeftX(), bounds.getLowerLeftY());
+		LonLat upper = new LonLat(bounds.getUpperRightX(), bounds.getUpperRightY());
 		
-		String bboxText = bounds.toBBox(null);
-		VectorFeature extentFeature = new VectorFeature(bounds.toGeometry());
-		WKT wktFormat = new WKT();
-		String wktResult = wktFormat.write(extentFeature);
-		CurrentExtentBean model = new CurrentExtentBean();
-		model.setWkt(wktResult);
+		lower = transformToWGS84(lower);
+		upper = transformToWGS84(upper);
+		
+		CurrentExtentInfo model = new CurrentExtentInfo();
+		model.setCenter(center.lat() + ", " + center.lon());
+		model.setLowerLeftX(lower.lon());
+		model.setLowerLeftY(lower.lat());
+		model.setUpperRightX(upper.lon());
+		model.setUpperRightY(upper.lat());
+		
+		model.setBounds(bounds);		
+		model.setWkt(getWKT(bounds));
+		model.setWktWGS84(getWKTToWGS84(bounds));
 		
 		currentExtentDialog.setModel(model);
 		currentExtentDialog.setModal(true);
-		currentExtentDialog.show();
-		
-//		
-		
+		currentExtentDialog.show();		
 	}
+	
+	
+	private String getWKTToWGS84(Bounds bounds) {
+		Geometry geom = bounds.toGeometry().clone();
+		geom.transform(new Projection(geoMap.getMap().getProjection()), new Projection("EPSG:4326"));
+		VectorFeature extentFeature = new VectorFeature(geom);
+		WKT wktFormat = new WKT();
+		return wktFormat.write(extentFeature);
+	}
+	
+	private String getWKT(Bounds bounds) {
+		Geometry geom = bounds.toGeometry();		
+		VectorFeature extentFeature = new VectorFeature(geom);
+		WKT wktFormat = new WKT();
+		return wktFormat.write(extentFeature);
+	}
+	
+	private LonLat transformToWGS84(final LonLat lonLat) {
+		lonLat.transform(geoMap.getMap().getProjection(), "EPSG:4326");
+		return lonLat;
+	}
+	
 }

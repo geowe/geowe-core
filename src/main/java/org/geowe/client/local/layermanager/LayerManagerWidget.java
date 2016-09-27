@@ -255,6 +255,7 @@ public class LayerManagerWidget implements IsWidget {
 	}
 
 	public void addVector(final Layer layer) {
+		layer.setName(getName(layer.getName()));
 		final DivideTool divideTool = IOC.getBeanManager()
 				.lookupBean(DivideTool.class).getInstance();
 		((Vector) layer).addVectorFeatureAddedListener(divideTool
@@ -265,6 +266,26 @@ public class LayerManagerWidget implements IsWidget {
 		for (final AddLayerListener listener : addLayerListeners) {
 			listener.onAddLayer(layerTrees.get(VECTOR_TAB).getLayers());
 		}
+	}
+	
+	private String getName(String name) {
+		String newName = name;
+		for(int cont=1; cont<100; cont++) {
+	 		if(!existVectorLayer(newName)) {
+				break;
+			}
+	 		newName = name + "[" + cont + "]";
+		}
+		
+		return name;
+	}		
+	
+	private boolean existVectorLayer(final String layerName) {
+		boolean exist = true;
+		if (getVector(layerName) == null) {
+			exist = false;
+		}
+		return exist;
 	}
 
 	private int getItemsCount(final String tabName) {

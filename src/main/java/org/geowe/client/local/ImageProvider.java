@@ -354,4 +354,7 @@ public interface ImageProvider extends ClientBundle {
 	@Source("images/ic_map_legend-24.png")
 	ImageResource mapLegend24();
 	
+	
+	@Source("images/ic_earth_extension-24.png")
+	ImageResource currentExtent24();
 }

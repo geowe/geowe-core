@@ -155,6 +155,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 
 	@Override
 	public void onRelease() {
+		
 		geoDataImportDialog.initialize(dialogTitle, layerName, projection);
 		geoDataImportDialog.show();
 	}

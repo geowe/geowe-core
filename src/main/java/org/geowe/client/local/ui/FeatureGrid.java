@@ -64,7 +64,8 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		this.setBorders(true);						
 		this.getView().setStripeRows(true);
 		this.getView().setColumnLines(true);		
-		this.setColumnReordering(true);		
+		this.setColumnReordering(true);	
+		this.setLoadMask(true);
 		
 		this.setWidth(width);
 		this.setHeight(height);	
@@ -122,7 +123,7 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		this.getStore().clear();
 	}
 	
-	private ColumnModel<VectorFeature> createColumnList() {
+	protected ColumnModel<VectorFeature> createColumnList() {
 		List<ColumnConfig<VectorFeature, ?>> columns = new ArrayList<ColumnConfig<VectorFeature, ?>>();
 		
 		if(this.getStore().size() > 0) {

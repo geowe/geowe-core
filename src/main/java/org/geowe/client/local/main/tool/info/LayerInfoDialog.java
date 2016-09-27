@@ -37,7 +37,7 @@ import org.geowe.client.local.layermanager.tool.CopyLayerTool;
 import org.geowe.client.local.main.tool.edition.DeleteFeatureListenerManager;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
-import org.geowe.client.local.ui.FeatureGrid;
+import org.geowe.client.local.ui.PagingFeatureGrid;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
@@ -48,11 +48,14 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 
 /**
  * Layer info dialog. Responsible to show layer info and features list.
@@ -65,6 +68,7 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
 @ApplicationScoped
 public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		RemoveLayerListener, ChangeSelectedLayerListener {
+	public static final int FEATURES_PER_PAGE = 50;
 
 	@Inject
 	private LayerInfoToolBar layerInfoToolBar;
@@ -82,7 +86,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private TextField numElementsField;
 
 	private VectorLayer selectedLayer;		
-	private FeatureGrid featureGrid;	
+	private PagingFeatureGrid featureGrid;	
+	private PagingToolBar toolBar;
 
 	private TextButton renameLayerbutton;
 	private TextButton applyRenameLayerbutton;
@@ -189,8 +194,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private HorizontalLayoutContainer createBottomPanel() {
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 		hPanel.setSize("490px", "200px");
-		
-		featureGrid = new FeatureGrid();
+						
+		featureGrid = new PagingFeatureGrid();
 		featureGrid.getSelectionModel().addSelectionChangedHandler(
 				new SelectionChangedHandler<VectorFeature>() {
 					@Override
@@ -200,7 +205,17 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 					}
 				});
 		
-		hPanel.add(featureGrid);
+		toolBar = new PagingToolBar(FEATURES_PER_PAGE);
+		toolBar.setBorders(false);
+		toolBar.bind(featureGrid.getLoader());
+		
+		VerticalLayoutContainer gridContainer = new VerticalLayoutContainer();
+		gridContainer.setWidth(430);
+		gridContainer.setHeight(200);
+		gridContainer.add(featureGrid, new VerticalLayoutData(1, 1));
+		gridContainer.add(toolBar, new VerticalLayoutData(1, -1));
+		
+		hPanel.add(gridContainer);
 		hPanel.add(layerInfoToolBar);
 		return hPanel;
 	}

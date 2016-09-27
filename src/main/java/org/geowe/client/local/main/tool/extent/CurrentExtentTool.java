@@ -62,7 +62,7 @@ public class CurrentExtentTool extends ButtonTool {
 	@Override
 	protected void onRelease() {
 		Bounds bounds = geoMap.getMap().getExtent();		
-		LonLat center = transformToWGS84(bounds.getCenterLonLat());
+		LonLat center = bounds.getCenterLonLat();//transformToWGS84(bounds.getCenterLonLat());
 		
 		LonLat lower = new LonLat(bounds.getLowerLeftX(), bounds.getLowerLeftY());
 		LonLat upper = new LonLat(bounds.getUpperRightX(), bounds.getUpperRightY());

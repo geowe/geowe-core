@@ -397,7 +397,9 @@ public class GeoDataImportDialog extends Dialog {
 			@Override
 			public void onChange(ChangeEvent event) {
 				setAutoFormat(file.getValue());
-				layerName.setText(file.getValue().substring(0, file.getValue().lastIndexOf(".")));
+				String name = file.getValue().substring(0, file.getValue().lastIndexOf("."));
+				name = name.substring(file.getValue().lastIndexOf("\\") +1);
+				layerName.setText(name);
 			}
 		});
 

@@ -270,14 +270,14 @@ public class LayerManagerWidget implements IsWidget {
 	
 	private String getName(String name) {
 		String newName = name;
-		for(int cont=1; cont<100; cont++) {
+		for(int cont=1; cont<500; cont++) {
 	 		if(!existVectorLayer(newName)) {
-				break;
+	 			break;			
 			}
-	 		newName = name + "[" + cont + "]";
+	 		newName = name + "[" + cont + "]";	
 		}
 		
-		return name;
+		return newName;
 	}		
 	
 	private boolean existVectorLayer(final String layerName) {

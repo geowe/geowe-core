@@ -97,9 +97,13 @@ public class CurrentExtentDialog extends Dialog {
 
 			@Override
 			public void onSelect(SelectEvent event) {
-				MapOptions mapOptions = geoMap.getMapOptions();
-				mapOptions.setMaxExtent(model.getBounds());
-				geoMap.getMap().setOptions(mapOptions);
+//				MapOptions mapOptions = geoMap.getMapOptions();
+//				mapOptions.setMaxExtent(model.getBounds());
+//				mapOptions.setRestrictedExtent(model.getBounds());
+//				geoMap.getMap().setOptions(mapOptions);
+				
+				geoMap.getMap().setRestrictedExtent(model.getBounds());
+				geoMap.getMap().setMaxExtent(model.getBounds());
 				geoMap.getMap().zoomToMaxExtent();
 			}
 			
@@ -114,11 +118,12 @@ public class CurrentExtentDialog extends Dialog {
 		String fieldWidth = "225px";
 		VerticalLayoutContainer container = new VerticalLayoutContainer();
 		container.setScrollMode(ScrollMode.AUTO);
-		container.setSize("450px", "460px");
+		container.setSize("450px", "360px");
 
 		container.add(new Label("Center of map"));
 		centerField = new TextField();
 		centerField.setEnabled(false);
+		centerField.setAllowTextSelection(true);
 		centerField.setWidth("450px");
 		container.add(centerField);
 
@@ -163,6 +168,7 @@ public class CurrentExtentDialog extends Dialog {
 		container.add(new Label("bbox (lowerLeftX, lowerLeftY, upperRigthX, upperRigthY)"));
 		bboxField = new TextField();
 		bboxField.setEnabled(false);
+		bboxField.setAllowTextSelection(true);
 		bboxField.setWidth("450px");
 		container.add(bboxField);
 		

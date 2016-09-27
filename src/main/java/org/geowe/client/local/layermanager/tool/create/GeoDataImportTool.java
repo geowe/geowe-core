@@ -217,8 +217,9 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 							}
 
 							private boolean isValid(final String activeTab) {
-								boolean valid = isLayerNameValid(geoDataImportDialog
-										.getLayerName());
+//								boolean valid = isLayerNameValid(geoDataImportDialog
+//										.getLayerName());
+								boolean valid = true;
 								if (valid
 										&& UIMessages.INSTANCE.url().equals(
 												activeTab)) {

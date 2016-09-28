@@ -88,7 +88,7 @@ public class GeoMap implements ChangeSelectedLayerListener{
 		mapOptions.setDisplayProjection(this.displayProjection);
 		mapOptions.setNumZoomLevels(numZoomLevels);
 		mapOptions.setUnits(units);
-		mapOptions.setMaxExtent(getMapBound());
+		mapOptions.setMaxExtent(getDefaultMapBound());
 		mapOptions.setMaxResolution(appClientProperties.getFloatValue("maxResolution"));
 		getMap().setOptions(mapOptions);
 		getMap().setMinMaxZoomLevel(0, 50);
@@ -98,7 +98,7 @@ public class GeoMap implements ChangeSelectedLayerListener{
  		return mapOptions;
  	}
  	
- 	private Bounds getMapBound() {
+ 	public Bounds getDefaultMapBound() {
  		final double lowerLeftX = appClientProperties.getFloatValue("lowerLeftX");
  		final double lowerLeftY = appClientProperties.getFloatValue("lowerLeftY");
  		final double upperRightX = appClientProperties.getFloatValue("upperRightX");

@@ -357,4 +357,13 @@ public interface ImageProvider extends ClientBundle {
 	
 	@Source("images/ic_earth_extension-24.png")
 	ImageResource currentExtent24();
+	
+	@Source("images/ic_earth_extension-locked-24.png")
+	ImageResource lockedExtension24();
+	
+	@Source("images/ic_earth_extension-unlocked-24.png")
+	ImageResource unlockedExtension24();
+			
+	@Source("images/ic_earth_extension_custom-24.png")
+	ImageResource customExtension24();
 }

@@ -258,8 +258,7 @@ public class GeoDataImportDialog extends Dialog {
 		geoDataContainer.setWidth("280px");
 		geoDataContainer.setSpacing(3);
 
-		geoDataContainer.add(new Label(
-				"Dirección URL de descarga directa al fichero."));
+		geoDataContainer.add(new Label(UIMessages.INSTANCE.messageURLPanel()));
 
 		urlTextField = new TextField();
 		urlTextField.setBorders(true);

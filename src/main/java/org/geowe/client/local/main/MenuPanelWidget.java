@@ -47,6 +47,8 @@ import org.geowe.client.local.main.tool.edition.RotateTool;
 import org.geowe.client.local.main.tool.edition.SnappingTool;
 import org.geowe.client.local.main.tool.edition.UnionTool;
 import org.geowe.client.local.main.tool.extent.CurrentExtentTool;
+import org.geowe.client.local.main.tool.extent.CustomExtentTool;
+import org.geowe.client.local.main.tool.extent.LockCurrentExtentTool;
 import org.geowe.client.local.main.tool.info.WmsGetInfoTool;
 import org.geowe.client.local.main.tool.layer.AddLayerTool;
 import org.geowe.client.local.main.tool.layer.LayerInfoTool;
@@ -181,6 +183,10 @@ public class MenuPanelWidget implements IsWidget {
 	
 	@Inject
 	private CurrentExtentTool currentExtentTool;
+	@Inject
+	private LockCurrentExtentTool lockCurrentExtentTool;
+	@Inject
+	private CustomExtentTool customExtentTool;
 
 	private ContentPanel panel;
 
@@ -246,7 +252,7 @@ public class MenuPanelWidget implements IsWidget {
 		tabPanel.setPixelSize(300, 100);
 		tabPanel.add(getMapToolTab(), UIMessages.INSTANCE.mpMapLabel());
 		tabPanel.add(getViewToolTab(), UIMessages.INSTANCE.viewText());
-		tabPanel.add(getExtentGroupTools(), "Extent");
+		tabPanel.add(getExtentGroupTools(), UIMessages.INSTANCE.extentGroupTools());
 		
 		return tabPanel;
 	}
@@ -299,6 +305,9 @@ public class MenuPanelWidget implements IsWidget {
 				.setVerticalAlign(VerticalAlign.MIDDLE);
 
 		horizontalGroup.add(currentExtentTool);
+		horizontalGroup.add(customExtentTool);		
+		horizontalGroup.add(lockCurrentExtentTool);
+		
 		
 
 		return horizontalGroup;

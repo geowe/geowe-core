@@ -28,10 +28,11 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
-import org.gwtopenmaps.openlayers.client.MapOptions;
 import org.gwtopenmaps.openlayers.client.format.WKT;
 
+import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -61,9 +62,7 @@ public class CurrentExtentDialog extends Dialog {
 	private TextField upperRightXField;
 	private TextField upperRightYField;
 	private TextButton addToMapButton;
-	private TextButton setMaxExtentToMap;
-
-	private CurrentExtentInfo model;
+	private CurrentExtentInfo model;	
 
 	@Inject
 	public CurrentExtentDialog(final GeoMap geoMap, final LayerManagerWidget layerManager) {
@@ -73,74 +72,60 @@ public class CurrentExtentDialog extends Dialog {
 		setButtonAlign(BoxLayoutPack.CENTER);
 		setResizable(false);
 		setWidth(480);
-		setHeight(500);
-		setHeadingHtml("Extensión actúal del mapa (WGS84 - EPSG:4326)");
+		setHeight(390);
+		setHeadingHtml(UIMessages.INSTANCE.headCurrentExtentDialog());
 		add(createPanel());
 		
-		addToMapButton = new TextButton("Add to Map");
-		setMaxExtentToMap = new TextButton("Max Extent to Map");
-		
+		addToMapButton = new TextButton(UIMessages.INSTANCE.addToMapButton());
 		addToMapButton.addSelectHandler(new SelectHandler() {
 
 			@Override
 			public void onSelect(SelectEvent event) {
 				WKT wktFormat = new WKT();
 				VectorLayer extentLayer = new VectorLayer("BBox");
-				extentLayer.addFeatures(wktFormat.read(model.getWkt()));
-								
-				layerManager.addVector(extentLayer);				
-			}
-			
+				extentLayer.addFeatures(wktFormat.read(model.getWkt()));								
+				layerManager.addVector(extentLayer);	
+				geoMap.getMap().zoomToExtent(extentLayer.getDataExtent());
+			}			
 		});
-		
-		setMaxExtentToMap.addSelectHandler(new SelectHandler() {
-
-			@Override
-			public void onSelect(SelectEvent event) {
-//				MapOptions mapOptions = geoMap.getMapOptions();
-//				mapOptions.setMaxExtent(model.getBounds());
-//				mapOptions.setRestrictedExtent(model.getBounds());
-//				geoMap.getMap().setOptions(mapOptions);
-				
-				geoMap.getMap().setRestrictedExtent(model.getBounds());
-				geoMap.getMap().setMaxExtent(model.getBounds());
-				geoMap.getMap().zoomToMaxExtent();
-			}
-			
-		});
-		
 		
 		this.getButtonBar().add(addToMapButton);
-		this.getButtonBar().add(setMaxExtentToMap);
-	}
 
+	}
+	
 	private Widget createPanel() {
 		String fieldWidth = "225px";
 		VerticalLayoutContainer container = new VerticalLayoutContainer();
 		container.setScrollMode(ScrollMode.AUTO);
 		container.setSize("450px", "360px");
-
-		container.add(new Label("Center of map"));
+		Label centerLabel = new Label(UIMessages.INSTANCE.centerField());
+		centerLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		container.add(centerLabel);
 		centerField = new TextField();
-		centerField.setEnabled(false);
-		centerField.setAllowTextSelection(true);
+		centerField.setReadOnly(true);		
 		centerField.setWidth("450px");
 		container.add(centerField);
 
 		HorizontalPanel horizontalLowerPanel = new HorizontalPanel();
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.add(new Label("lower Left X"));
+		Label lowerLeftX = new Label(UIMessages.INSTANCE.lowerLeftXField());
+		lowerLeftX.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		
+		vPanel.add(lowerLeftX);
 		lowerLeftXField = new TextField();
-		lowerLeftXField.setEnabled(false);
+		lowerLeftXField.setReadOnly(true);
 		lowerLeftXField.setWidth(fieldWidth);
 		vPanel.add(lowerLeftXField);
 		horizontalLowerPanel.add(vPanel);
 		container.add(horizontalLowerPanel);
 
 		vPanel = new VerticalPanel();
-		vPanel.add(new Label("lower Left Y"));
+		Label lowerLeftY = new Label(UIMessages.INSTANCE.lowerLeftYField());
+		lowerLeftY.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		
+		vPanel.add(lowerLeftY);
 		lowerLeftYField = new TextField();
-		lowerLeftYField.setEnabled(false);
+		lowerLeftYField.setReadOnly(true);
 		lowerLeftYField.setWidth(fieldWidth);
 		vPanel.add(lowerLeftYField);
 		horizontalLowerPanel.add(vPanel);
@@ -148,31 +133,41 @@ public class CurrentExtentDialog extends Dialog {
 				
 		horizontalLowerPanel = new HorizontalPanel();
 		vPanel = new VerticalPanel();
-		vPanel.add(new Label("upper Right X"));
+		Label upperRightX = new Label(UIMessages.INSTANCE.upperRightXField());
+		upperRightX.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		
+		vPanel.add(upperRightX);
 		upperRightXField = new TextField();
-		upperRightXField.setEnabled(false);
+		upperRightXField.setReadOnly(true);
 		upperRightXField.setWidth(fieldWidth);
 		vPanel.add(upperRightXField);
 		horizontalLowerPanel.add(vPanel);
 		container.add(horizontalLowerPanel);
 
 		vPanel = new VerticalPanel();
-		vPanel.add(new Label("upper Right Y"));
+		
+		Label upperRightY = new Label(UIMessages.INSTANCE.upperRightYField());
+		upperRightY.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		
+		vPanel.add(upperRightY);
 		upperRightYField = new TextField();
-		upperRightYField.setEnabled(false);
+		upperRightYField.setReadOnly(true);
 		upperRightYField.setWidth(fieldWidth);
 		vPanel.add(upperRightYField);
 		horizontalLowerPanel.add(vPanel);
 		container.add(horizontalLowerPanel);
-				
-		container.add(new Label("bbox (lowerLeftX, lowerLeftY, upperRigthX, upperRigthY)"));
+		
+		Label bboxLabel = new Label("Bbox (" + UIMessages.INSTANCE.lowerLeftXField() + ", " + UIMessages.INSTANCE.lowerLeftYField() + 
+				", " + UIMessages.INSTANCE.upperRightXField() + ", " + UIMessages.INSTANCE.upperRightYField() + ")");
+		bboxLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);		
+		container.add(bboxLabel);
 		bboxField = new TextField();
-		bboxField.setEnabled(false);
-		bboxField.setAllowTextSelection(true);
+		bboxField.setReadOnly(true);		
 		bboxField.setWidth("450px");
 		container.add(bboxField);
-		
-		container.add(new Label("BBOX WKT WGS84"));
+		Label wktLabel = new Label("Bbox WKT WGS84");
+		wktLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		container.add(wktLabel);
 		container.add(getTextPanel());
 
 		return container;
@@ -191,11 +186,10 @@ public class CurrentExtentDialog extends Dialog {
 
 	private TextArea getTextPanel() {
 		wktTextArea = new TextArea();
-		wktTextArea.setEnabled(false);
+		wktTextArea.setReadOnly(true);
 		wktTextArea.setBorders(true);
 		wktTextArea.setSize("450px", "100px");
 
 		return wktTextArea;
 	}
-
 }

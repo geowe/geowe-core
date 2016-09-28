@@ -27,7 +27,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
-import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.Bounds;
 import org.gwtopenmaps.openlayers.client.LonLat;
 import org.gwtopenmaps.openlayers.client.Projection;
@@ -44,46 +43,25 @@ import com.sencha.gxt.core.client.Style.Side;
  *
  */
 @ApplicationScoped
-public class CurrentExtentTool extends ButtonTool {
+public class CustomExtentTool extends ButtonTool {
 	
 	private final GeoMap geoMap;
 	@Inject
-	private CurrentExtentDialog currentExtentDialog;
+	private CustomExtentDialog customExtentDialog;
 	@Inject
-	public CurrentExtentTool(GeoMap geoMap) {		
-		super(UIMessages.INSTANCE.currentExtentTool(),
-				ImageProvider.INSTANCE.currentExtent24());
+	public CustomExtentTool(GeoMap geoMap) {		
+		super("Custom",
+				ImageProvider.INSTANCE.customExtension24());
 		this.geoMap = geoMap;
 		setToolTipConfig(createTooltipConfig(
-				UIMessages.INSTANCE.currentExtentTooltipTitle(),
-				UIMessages.INSTANCE.currentExtentTooltipDescription(), Side.LEFT));
+				"Custom Extent",
+				"Restricción de extensión máxima personalizada", Side.LEFT));
 	}
 
 	@Override
 	protected void onRelease() {
-		Bounds bounds = geoMap.getMap().getExtent();		
-		LonLat center = bounds.getCenterLonLat();
-		
-		LonLat lower = new LonLat(bounds.getLowerLeftX(), bounds.getLowerLeftY());
-		LonLat upper = new LonLat(bounds.getUpperRightX(), bounds.getUpperRightY());
-		
-		lower = transformToWGS84(lower);
-		upper = transformToWGS84(upper);
-		
-		CurrentExtentInfo model = new CurrentExtentInfo();
-		model.setCenter(center.lat() + ", " + center.lon());
-		model.setLowerLeftX(lower.lon());
-		model.setLowerLeftY(lower.lat());
-		model.setUpperRightX(upper.lon());
-		model.setUpperRightY(upper.lat());
-		
-		model.setBounds(bounds);		
-		model.setWkt(getWKT(bounds));
-		model.setWktWGS84(getWKTToWGS84(bounds));
-		
-		currentExtentDialog.setModel(model);
-		currentExtentDialog.setModal(true);
-		currentExtentDialog.show();		
+		customExtentDialog.setModal(true);
+		customExtentDialog.show();		
 	}
 	
 	

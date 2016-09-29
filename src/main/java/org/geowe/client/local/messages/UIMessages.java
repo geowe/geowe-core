@@ -767,4 +767,28 @@ public interface UIMessages extends Messages {
 	
 	String messageURLPanel();
 
+	String headCustomExtentDialog();
+	
+	String bboxFieldCustomExtent();
+	
+	String nameCustomExtentTool();
+	
+	String titleCustomExtentToolTip();
+	
+	String descriptionCustomExtentToolTip();
+	
+	String insertCoordinatesCustomExtent();
+	
+	String incorrectCoordinatesCustomExtent();
+	
+	String nameLockCurrentExtentTool();
+	
+	String titleLockCurrentExtentToolTip();
+	
+	String descriptionLockCurrentExtentToolTip();
+	
+	String confirmSetMaxExtent();
+	
+	String confirmClearMaxExtent();
+	
 }

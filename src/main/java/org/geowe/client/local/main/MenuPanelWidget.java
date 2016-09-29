@@ -252,7 +252,7 @@ public class MenuPanelWidget implements IsWidget {
 		tabPanel.setPixelSize(300, 100);
 		tabPanel.add(getMapToolTab(), UIMessages.INSTANCE.mpMapLabel());
 		tabPanel.add(getViewToolTab(), UIMessages.INSTANCE.viewText());
-		tabPanel.add(getExtentGroupTools(), UIMessages.INSTANCE.extentGroupTools());
+		tabPanel.add(getExtentToolTab(), UIMessages.INSTANCE.extentGroupTools());
 		
 		return tabPanel;
 	}
@@ -296,6 +296,13 @@ public class MenuPanelWidget implements IsWidget {
 		horizontalGroup.add(graticuleTool);
 
 		return horizontalGroup;
+	}
+	
+	private VerticalLayoutContainer getExtentToolTab() {
+		VerticalLayoutContainer verticalLayoutContainer = new VerticalLayoutContainer();
+		verticalLayoutContainer.add(getExtentGroupTools());
+
+		return verticalLayoutContainer;
 	}
 	
 	private HorizontalPanel getExtentGroupTools() {

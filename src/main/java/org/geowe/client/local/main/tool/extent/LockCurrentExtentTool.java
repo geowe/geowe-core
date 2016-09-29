@@ -59,14 +59,14 @@ public class LockCurrentExtentTool extends ToggleButton {
 	
 	@Inject
 	public LockCurrentExtentTool(GeoMap geoMap) {
-		super("Bloquear");
+		super(UIMessages.INSTANCE.nameLockCurrentExtentTool());
 		setIconAlign(IconAlign.TOP);
 		setSize(WIDTH, HEIGHT);
 		setIcon(ImageProvider.INSTANCE.unlockedExtension24());		
 		this.geoMap = geoMap;
 		setToolTipConfig(createTooltipConfig(
-				"Bloquear extensión",
-				"Establecer la restricción de máxima extensión al marco actual del mapa", Side.LEFT));
+				UIMessages.INSTANCE.titleLockCurrentExtentToolTip(),
+				UIMessages.INSTANCE.descriptionLockCurrentExtentToolTip(), Side.LEFT));
 	}
 	
 	private ToolTipConfig createTooltipConfig(String title, String body,
@@ -91,20 +91,20 @@ public class LockCurrentExtentTool extends ToggleButton {
 			@Override
 			public void onValueChange(final ValueChangeEvent<Boolean> event) {
 
-				if (event.getValue()) {
-					confirmSetMaxExtent();					
+				if (event.getValue()) {					
+					confirmSetMaxExtent(event.getValue());					
 				} else {
-					confirmClearMaxExtent();
+					confirmClearMaxExtent(event.getValue());					
 				}
 			}
 		};
 	}
 	
-	private void confirmSetMaxExtent() {
+	private void confirmSetMaxExtent(final boolean value) {
 
 		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(
 				UIMessages.INSTANCE.edtAlertDialogTitle(),
-				"Se va a establecer la restricción de máxima extensión del mapa. ¿Está seguro?",
+				UIMessages.INSTANCE.confirmSetMaxExtent(),
 				ImageProvider.INSTANCE.currentExtent24());
 		messageBox.getButton(PredefinedButton.YES).addSelectHandler(
 				new SelectHandler() {
@@ -113,19 +113,26 @@ public class LockCurrentExtentTool extends ToggleButton {
 						geoMap.getMap().setRestrictedExtent(geoMap.getMap().getExtent());
 						geoMap.getMap().setMaxExtent(geoMap.getMap().getExtent());
 						geoMap.getMap().zoomToMaxExtent();
-						setIcon(ImageProvider.INSTANCE.lockedExtension24());
-						messageDialogBuilder.createInfo("Atención", "Se ha establecido nueva restricción de extensión máxima del mapa").show();
+						setText("Desbloquear");
+						setIcon(ImageProvider.INSTANCE.lockedExtension24());						
 					}
 				});
 		
+		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						setValue(!value);
+					}
+				});
 		messageBox.show();
 	}	
 	
-	private void confirmClearMaxExtent() {
+	private void confirmClearMaxExtent(final boolean value) {
 
 		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(
 				UIMessages.INSTANCE.edtAlertDialogTitle(),
-				"Se va a eliminar la restricción de máxima extensión del mapa. ¿Está seguro?",
+				UIMessages.INSTANCE.confirmClearMaxExtent(),
 				ImageProvider.INSTANCE.currentExtent24());
 		messageBox.getButton(PredefinedButton.YES).addSelectHandler(
 				new SelectHandler() {
@@ -134,8 +141,16 @@ public class LockCurrentExtentTool extends ToggleButton {
 						Bounds defaultBounds = geoMap.getDefaultMapBound();
 						geoMap.getMap().setRestrictedExtent(defaultBounds);
 						geoMap.getMap().setMaxExtent(defaultBounds);
-						setIcon(ImageProvider.INSTANCE.unlockedExtension24());
-						messageDialogBuilder.createInfo("Atención", "Se ha eliminado la restricción de extensión máxima del mapa").show();
+						setText("Bloquear");
+						setIcon(ImageProvider.INSTANCE.unlockedExtension24());						
+					}
+				});
+		
+		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						setValue(!value);						
 					}
 				});
 		

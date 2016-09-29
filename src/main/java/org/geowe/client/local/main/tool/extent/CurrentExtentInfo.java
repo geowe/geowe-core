@@ -100,7 +100,7 @@ public class CurrentExtentInfo {
 	}
 
 	public String getBbox() {
-		return lowerLeftX + ", " + lowerLeftX + ", " + upperRightX + ", " + upperRightY;
+		return lowerLeftX + ", " + lowerLeftY + ", " + upperRightX + ", " + upperRightY;
 	}
 	
 	public String getWkt() {

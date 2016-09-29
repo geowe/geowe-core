@@ -24,15 +24,8 @@
 package org.geowe.client.local.main.tool.extent;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.geowe.client.local.layermanager.LayerManagerWidget;
-import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.VectorLayer;
-import org.geowe.client.local.ui.MessageDialogBuilder;
-import org.gwtopenmaps.openlayers.client.Bounds;
-import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.user.client.ui.Label;
@@ -42,8 +35,6 @@ import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
@@ -53,14 +44,11 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  */
 @ApplicationScoped
 public class CustomExtentDialog extends Dialog {
-	@Inject
-	private MessageDialogBuilder messageDialogBuilder;
+	
 	private TextField bboxField;	
 	private TextButton addToMapButton;
 		
-
-	@Inject
-	public CustomExtentDialog(final GeoMap geoMap, final LayerManagerWidget layerManager) {
+	public CustomExtentDialog() {
 		setHideOnButtonClick(true);
 		setPredefinedButtons(PredefinedButton.CLOSE);
 
@@ -68,43 +56,25 @@ public class CustomExtentDialog extends Dialog {
 		setResizable(false);
 		setWidth(480);
 		setHeight(190);
-		setHeadingHtml("Extensión máxima personalizada");
+		setHeadingHtml(UIMessages.INSTANCE.headCustomExtentDialog());
 		add(createPanel());
 		
-		addToMapButton = new TextButton(UIMessages.INSTANCE.addToMapButton());
-		addToMapButton.addSelectHandler(new SelectHandler() {
-
-			@Override
-			public void onSelect(SelectEvent event) {
-				String bbox = bboxField.getText();
-				if(bbox.isEmpty()) {
-					messageDialogBuilder.createError("Atención", "Inserta las coordenadas").show();
-					return;
-				}
-				
-				
-				String[] coordinates = bbox.split("\\,");
-				if(coordinates.length != 4) {
-					messageDialogBuilder.createError("Atención", "Las coordenadas no son correctas").show();
-					return;
-				}
-				
-				double lowerLeftX = Double.parseDouble(coordinates[0]);
-				double lowerLeftY = Double.parseDouble(coordinates[1]);
-				double upperRightX = Double.parseDouble(coordinates[2]);
-				double upperRightY = Double.parseDouble(coordinates[3]);
-				
-				Bounds bounds = new Bounds(lowerLeftX, lowerLeftY, upperRightX, upperRightY);
-				VectorFeature vf = new VectorFeature(bounds.toGeometry());
-				VectorLayer bboxLayer = new VectorLayer("CustomBBox");
-				bboxLayer.addFeature(vf);
-				layerManager.addVector(bboxLayer);
-				geoMap.getMap().zoomToExtent(bboxLayer.getDataExtent());	
-			}			
-		});
-		
+		addToMapButton = new TextButton(UIMessages.INSTANCE.addToMapButton());		
 		this.getButtonBar().add(addToMapButton);
-
+	}
+	
+	public void initialize() {
+		bboxField.clear();
+		setModal(true);
+		show();		
+	}
+	
+	public TextButton getAddToMapButton() {
+		return addToMapButton;
+	}
+	
+	public String getBbox() {
+		return bboxField.getText();
 	}
 	
 	private Widget createPanel() {
@@ -118,7 +88,7 @@ public class CustomExtentDialog extends Dialog {
 		bboxLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);		
 		container.add(bboxLabel);
 		bboxField = new TextField();
-		bboxField.setEmptyText("Intoduce las coordenadas separadas por ,");		
+		bboxField.setEmptyText(UIMessages.INSTANCE.bboxFieldCustomExtent());		
 		bboxField.setWidth("450px");
 		container.add(bboxField);	
 		return container;

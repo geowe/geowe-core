@@ -22,20 +22,25 @@
  */
 package org.geowe.client.local.main.tool.extent;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
+import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Bounds;
-import org.gwtopenmaps.openlayers.client.LonLat;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
-import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * 
@@ -44,44 +49,63 @@ import com.sencha.gxt.core.client.Style.Side;
  */
 @ApplicationScoped
 public class CustomExtentTool extends ButtonTool {
-	
-	private final GeoMap geoMap;
+	@Inject
+	private MessageDialogBuilder messageDialogBuilder;	
 	@Inject
 	private CustomExtentDialog customExtentDialog;
 	@Inject
-	public CustomExtentTool(GeoMap geoMap) {		
-		super("Custom",
+	private LayerManagerWidget layerManager;
+	@Inject
+	private GeoMap geoMap;
+	
+	public CustomExtentTool() {		
+		super(UIMessages.INSTANCE.nameCustomExtentTool(),
 				ImageProvider.INSTANCE.customExtension24());
-		this.geoMap = geoMap;
+		
 		setToolTipConfig(createTooltipConfig(
-				"Custom Extent",
-				"Restricción de extensión máxima personalizada", Side.LEFT));
+				UIMessages.INSTANCE.titleCustomExtentToolTip(),
+				UIMessages.INSTANCE.descriptionCustomExtentToolTip(), Side.LEFT));
+	}
+	
+	@PostConstruct
+	private void initialize() {
+		
+		customExtentDialog.getAddToMapButton().addSelectHandler(new SelectHandler() {
+
+			@Override
+			public void onSelect(SelectEvent event) {
+				String bbox = customExtentDialog.getBbox();
+				if(bbox.isEmpty()) {
+					messageDialogBuilder.createError("Atención", UIMessages.INSTANCE.insertCoordinatesCustomExtent()).show();
+					return;
+				}
+				
+				String[] coordinates = bbox.split("\\,");
+				if(coordinates.length != 4) {
+					messageDialogBuilder.createError("Atención", UIMessages.INSTANCE.incorrectCoordinatesCustomExtent()).show();
+					return;
+				}
+				
+				double lowerLeftX = Double.parseDouble(coordinates[0]);
+				double lowerLeftY = Double.parseDouble(coordinates[1]);
+				double upperRightX = Double.parseDouble(coordinates[2]);
+				double upperRightY = Double.parseDouble(coordinates[3]);
+				
+				Bounds bounds = new Bounds(lowerLeftX, lowerLeftY, upperRightX, upperRightY);
+				Geometry geom = bounds.toGeometry();
+				geom.transform(new Projection("EPSG:4326"), new Projection(geoMap.getMap().getProjection()));
+				VectorFeature vf = new VectorFeature(geom);
+				VectorLayer bboxLayer = new VectorLayer("CustomBBox");
+				bboxLayer.addFeature(vf);
+				layerManager.addVector(bboxLayer);
+				geoMap.getMap().zoomToExtent(bboxLayer.getDataExtent());	
+			}			
+		});
+		
 	}
 
 	@Override
-	protected void onRelease() {
-		customExtentDialog.setModal(true);
-		customExtentDialog.show();		
-	}
-	
-	
-	private String getWKTToWGS84(Bounds bounds) {
-		Geometry geom = bounds.toGeometry().clone();
-		geom.transform(new Projection(geoMap.getMap().getProjection()), new Projection("EPSG:4326"));
-		VectorFeature extentFeature = new VectorFeature(geom);
-		WKT wktFormat = new WKT();
-		return wktFormat.write(extentFeature);
-	}
-	
-	private String getWKT(Bounds bounds) {
-		Geometry geom = bounds.toGeometry();		
-		VectorFeature extentFeature = new VectorFeature(geom);
-		WKT wktFormat = new WKT();
-		return wktFormat.write(extentFeature);
-	}
-	
-	private LonLat transformToWGS84(final LonLat lonLat) {
-		lonLat.transform(geoMap.getMap().getProjection(), "EPSG:4326");
-		return lonLat;
-	}	
+	protected void onRelease() {		
+		customExtentDialog.initialize();		
+	}		
 }

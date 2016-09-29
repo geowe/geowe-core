@@ -209,18 +209,17 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		selectedLayer = layer;
 		updateData();
 	}
-
+	
 	private void updateData() {
 		layerNameField.setText(selectedLayer.getName());
 		layerNameField.setToolTip(selectedLayer.getName());
 		projectionField.setText(selectedLayer.getProjection()
 				.getProjectionCode());
-		numElementsField.setText("Raster");
+		numElementsField.setText("0");
 
-		if (selectedLayer instanceof Vector) {
+		if (selectedLayer.getFeatures() != null) {
 			numElementsField.setText(Integer.toString(((Vector) selectedLayer)
 					.getNumberOfFeatures()));
-
 			featureGrid.rebuild(selectedLayer.getFeatures());
 		} else {
 			featureGrid.rebuild(new ArrayList<VectorFeature>());

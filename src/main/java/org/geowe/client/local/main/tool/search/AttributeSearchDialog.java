@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.search;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -300,12 +301,17 @@ public class AttributeSearchDialog extends Dialog {
 		layerNameField.setText(selectedLayer.getName());
 				
 		//Initilize the featureGrid for the new layer
-		featureGrid.rebuild(layer.getFeatures());
+		featureGrid.rebuild(getFeatures(layer));
 		featureGrid.clear();
 		updateLayerAttributes();
 				
 		numElementsField.clear();
 		valueAttributeField.clear();
+	}
+
+	private VectorFeature[] getFeatures(VectorLayer layer) {
+		return (layer.getFeatures() != null) ? layer.getFeatures()
+				: new ArrayList<VectorFeature>().toArray(new VectorFeature[0]);
 	}
 
 	private void updateLayerAttributes() {
@@ -322,7 +328,7 @@ public class AttributeSearchDialog extends Dialog {
 					e);
 		}
 	}
-
+	
 	private void setSelectedElements() {
 		List<VectorFeature> selectedElements = featureGrid.getSelectionModel()
 				.getSelectedItems();

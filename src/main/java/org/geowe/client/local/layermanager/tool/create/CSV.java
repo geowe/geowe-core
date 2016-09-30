@@ -42,15 +42,18 @@ public class CSV {
 	}
 
 	public String write(VectorLayer layer) {
-		return write(new ArrayList<VectorFeature>(Arrays.asList(layer
-				.getFeatures())));
+		String csvContent = "undefined";
+		if (layer != null && layer.getFeatures() != null) {
+			csvContent = write(new ArrayList<VectorFeature>(Arrays.asList(layer
+					.getFeatures())));
+		}
+		return csvContent;
 	}
 
 	public String write(List<VectorFeature> selectedFeatures) {
 		StringBuffer csv = new StringBuffer(
 				getColumnName(selectedFeatures.get(0)));
 
-		;
 		for (VectorFeature vectorFeature : selectedFeatures) {
 			VectorFeature transformedFeature = getTransformedFeatures(vectorFeature);
 			for (String attributeValue : transformedFeature.getAttributes()

@@ -64,7 +64,8 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		this.setBorders(true);						
 		this.getView().setStripeRows(true);
 		this.getView().setColumnLines(true);		
-		this.setColumnReordering(true);		
+		this.setColumnReordering(true);
+		this.setLoadMask(true);
 		
 		this.setWidth(width);
 		this.setHeight(height);	

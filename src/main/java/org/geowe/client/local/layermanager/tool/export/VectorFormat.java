@@ -58,7 +58,7 @@ public class VectorFormat {
 		final List<VectorFormat> allFormats = getAllFormat();
 		
 		for(final VectorFormat vectorFormat : allFormats) {
-			if(vectorFormat.getName().equals(format)) {
+			if(vectorFormat.getName().toLowerCase().equals(format.toLowerCase())) {
 				return vectorFormat; 
 			}
 		}

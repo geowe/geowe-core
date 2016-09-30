@@ -7,6 +7,23 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More spatial tools
 
+## [1.3.0]Beta - 2016-09-30
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added support for work with extent.
+- issue [#171](https://github.com/geowe/geowe-core/issues/171)
+- issue [#172](https://github.com/geowe/geowe-core/issues/172)
+- issue [#188](https://github.com/geowe/geowe-core/issues/188)
+- issue [#189](https://github.com/geowe/geowe-core/issues/189)
+
+### Fixed
+- issue [#191](https://github.com/geowe/geowe-core/issues/191)
+- issue [#192](https://github.com/geowe/geowe-core/issues/192)
+- issue [#193](https://github.com/geowe/geowe-core/issues/193)
+- issue [#194](https://github.com/geowe/geowe-core/issues/194)
+- issue [#195](https://github.com/geowe/geowe-core/issues/195)
+- issue [#196](https://github.com/geowe/geowe-core/issues/196)
+
 ## [1.2.0]Beta - 2016-09-23
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

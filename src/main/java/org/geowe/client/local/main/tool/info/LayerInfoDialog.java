@@ -194,8 +194,11 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private HorizontalLayoutContainer createBottomPanel() {
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 		hPanel.setSize("490px", "200px");
-						
-		featureGrid = new PagingFeatureGrid();
+				
+		toolBar = new PagingToolBar(FEATURES_PER_PAGE);
+		toolBar.setBorders(false);
+		
+		featureGrid = new PagingFeatureGrid(toolBar);
 		featureGrid.getSelectionModel().addSelectionChangedHandler(
 				new SelectionChangedHandler<VectorFeature>() {
 					@Override
@@ -204,11 +207,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 						setSelectedElement();
 					}
 				});
-		
-		toolBar = new PagingToolBar(FEATURES_PER_PAGE);
-		toolBar.setBorders(false);
-		toolBar.bind(featureGrid.getLoader());
-		
+				
 		VerticalLayoutContainer gridContainer = new VerticalLayoutContainer();
 		gridContainer.setWidth(430);
 		gridContainer.setHeight(200);
@@ -236,9 +235,9 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 			numElementsField.setText(Integer.toString(((Vector) selectedLayer)
 					.getNumberOfFeatures()));
 
-			featureGrid.rebuild(selectedLayer.getFeatures());
+			featureGrid.rebuild(selectedLayer.getFeatures());			
 		} else {
-			featureGrid.rebuild(new ArrayList<VectorFeature>());
+			featureGrid.rebuild(new ArrayList<VectorFeature>());			
 		}
 	}
 

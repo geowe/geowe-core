@@ -376,7 +376,7 @@ public interface UIMessages extends Messages {
 	String lrasterdAlertMessageBoxTitle();
 
 	String lrasterdAlertMessageBoxLabel(String wrongfield);
-	
+
 	String lrasterdMatrixSetField();
 
 	// CatalogDialog
@@ -684,60 +684,111 @@ public interface UIMessages extends Messages {
 	String greater();
 
 	String smaller();
-	
+
 	String noGeoprocessSpecify();
-	
+
 	String noVectorLayerSpecify();
-	
+
 	String emptyVectorLayer();
-	
+
 	String noInputDataSpecified();
-	
+
 	String zoomWarning(int zoomLevel, String googleSatellite);
-	
+
 	String zoomLevelText(int zoomLevel);
-	
+
 	String currentZoomLevelText();
-	
+
 	String gitHubSavedSucsessfully(String link);
-	
+
 	String gitHubResponseTitle();
-	
+
 	String gitHubExportDialogTitle();
-	
+
 	String gitHubConfirmUpdate(String file, String userName);
-	
+
 	String gitHubColumNameRepo();
-    
+
 	String gitHubColumDescriptionRepo();
-	
+
 	String gitHubTitleListRepo();
-	
+
 	String gitHubCreateButton();
-	
+
 	String gitHubUpdateButton();
-	
+
 	String gitHubRepositoryNameField();
-	
+
 	String gitHubPathNameField();
-	
+
 	String gitHubFileNameField();
-	
+
 	String gitHubMessageCommitField();
-	
+
 	String gitHubUserNameField();
-	
+
 	String gitHubPasswordField();
-	
+
 	String gitHubCheckAllFields();
-	
+
 	String gitHubUserNameCheckField();
-	
+
 	String colorThemingShowLegend();
-	
+
 	String statusPanelTile();
-	
+
 	String mapLegendTitle();
-	
+
 	String gitHubResponseNotUpdate();
+	
+	String extentGroupTools();
+
+	String currentExtentTool();
+
+	String currentExtentTooltipTitle();
+
+	String currentExtentTooltipDescription();
+
+	String headCurrentExtentDialog();
+
+	String addToMapButton();
+
+	String setMaxExtentToMap();
+
+	String centerField();
+
+	String lowerLeftXField();
+
+	String lowerLeftYField();
+
+	String upperRightXField();
+
+	String upperRightYField();
+	
+	String messageURLPanel();
+
+	String headCustomExtentDialog();
+	
+	String bboxFieldCustomExtent();
+	
+	String nameCustomExtentTool();
+	
+	String titleCustomExtentToolTip();
+	
+	String descriptionCustomExtentToolTip();
+	
+	String insertCoordinatesCustomExtent();
+	
+	String incorrectCoordinatesCustomExtent();
+	
+	String nameLockCurrentExtentTool();
+	
+	String titleLockCurrentExtentToolTip();
+	
+	String descriptionLockCurrentExtentToolTip();
+	
+	String confirmSetMaxExtent();
+	
+	String confirmClearMaxExtent();
+	
 }

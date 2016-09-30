@@ -39,8 +39,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.Anchor;
@@ -78,7 +82,7 @@ public class GeoDataImportDialog extends Dialog {
 	private Logger logger;
 	@Inject
 	WfsImportTab wfsImportTab;
-	
+
 	private TextField urlTextField;
 	private TextArea geoDataTextArea;
 	private TextField layerName;
@@ -100,7 +104,6 @@ public class GeoDataImportDialog extends Dialog {
 		this.setPixelSize(550, 350);
 		this.setModal(true);
 		this.setResizable(false);
-
 	}
 
 	@PostConstruct
@@ -114,7 +117,9 @@ public class GeoDataImportDialog extends Dialog {
 		this.layerName.setText(layerName);
 		this.projectionName.setValue(epsg);
 		this.vectorFormatCombo.setValue(null);
+		this.urlTextField.clear();
 		this.geoDataTextArea.clear();
+		this.file.clear();
 	}
 
 	public String getUrl() {
@@ -253,6 +258,8 @@ public class GeoDataImportDialog extends Dialog {
 		geoDataContainer.setWidth("280px");
 		geoDataContainer.setSpacing(3);
 
+		geoDataContainer.add(new Label(UIMessages.INSTANCE.messageURLPanel()));
+
 		urlTextField = new TextField();
 		urlTextField.setBorders(true);
 		urlTextField.setEmptyText("http://");
@@ -272,7 +279,44 @@ public class GeoDataImportDialog extends Dialog {
 		urlShared.setVisible(false);
 		geoDataContainer.add(urlShared);
 
+		urlTextField.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				setAutoFormat(event.getValue());
+			}
+
+		});
+
+		urlTextField.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				setAutoFormat(urlTextField.getText());
+			}
+
+		});
+
+		urlTextField.addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				setAutoFormat(urlTextField.getText());
+			}
+
+		});
+
 		return geoDataContainer;
+	}
+
+	private void setAutoFormat(String url) {
+		vectorFormatCombo.setValue(null);
+
+		if (!url.isEmpty()) {
+			String extension = url.substring(url.lastIndexOf(".") + 1);
+			VectorFormat vectorFormat = VectorFormat.getFromName(extension);
+			vectorFormatCombo.setValue(vectorFormat);
+		}
 	}
 
 	private Widget createUrlToShareAnchor() {
@@ -301,14 +345,15 @@ public class GeoDataImportDialog extends Dialog {
 				urlShared.setVisible(true);
 			}
 
-		private String getHref() {
+			private String getHref() {
 				String baseUrl = GWT.getHostPageBaseURL();
-				
-				baseUrl +=  "?layerUrl=" +  URL.encodeQueryString(urlTextField.getValue())
+
+				baseUrl += "?layerUrl="
+						+ URL.encodeQueryString(urlTextField.getValue())
 						+ "&layerName=" + getLayerName() + "&layerProj="
 						+ getProjectionName() + "&layerFormat="
 						+ getDataFormat();
-				
+
 				return baseUrl;
 			}
 		};
@@ -346,14 +391,17 @@ public class GeoDataImportDialog extends Dialog {
 		VerticalLayoutContainer layoutContainer = new VerticalLayoutContainer();
 
 		file = new FileUploadField();
-		file.addChangeHandler(new ChangeHandler() {
 
+		file.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				// file.getValue()
-
+				setAutoFormat(file.getValue());
+				String name = file.getValue().substring(0, file.getValue().lastIndexOf("."));
+				name = name.substring(file.getValue().lastIndexOf("\\") +1);
+				layerName.setText(name);
 			}
 		});
+
 		file.setName(UIMessages.INSTANCE.gdidFileUploadFieldText());
 		file.setAllowBlank(false);
 

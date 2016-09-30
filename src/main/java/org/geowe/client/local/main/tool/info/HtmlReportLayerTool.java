@@ -136,9 +136,13 @@ public class HtmlReportLayerTool extends LayerTool {
 
 	public HTML getHtmlReport() {
 		VectorLayerTemplate template = GWT.create(VectorLayerTemplate.class);
+		VectorFeature[] features = getSelectedVectorLayer().getFeatures();
+		if (features == null) {
+			features = new ArrayList<VectorFeature>()
+					.toArray(new VectorFeature[0]);
+		}
 		return new HTML(template.renderTemplate(UIMessages.INSTANCE,
-				getSelectedVectorLayer(),
-				getAttributesValue(getSelectedVectorLayer().getFeatures()),
+				getSelectedVectorLayer(), getAttributesValue(features),
 				getAttributeNames()));
 	}
 	

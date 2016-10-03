@@ -42,9 +42,9 @@ import org.geowe.client.local.main.tool.search.searcher.StartSearcher;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureAttributeDef;
 import org.geowe.client.local.model.vector.VectorLayer;
-import org.geowe.client.local.ui.FeatureGrid;
 import org.geowe.client.local.ui.KeyShortcutHandler;
 import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.geowe.client.local.ui.PagingFeatureGrid;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.slf4j.Logger;
 
@@ -63,7 +63,9 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.TextField;
@@ -72,6 +74,7 @@ import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 
 /**
  * Diálogo para la búsqueda de elementos, por atributo, de la capa seleccionada
@@ -81,6 +84,7 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
  */
 @ApplicationScoped
 public class AttributeSearchDialog extends Dialog {
+	public static final int FEATURES_PER_PAGE = 50;
 
 	@Inject
 	private Logger logger;
@@ -95,7 +99,7 @@ public class AttributeSearchDialog extends Dialog {
 	private TextButton searchButton;
 
 	private VectorLayer selectedLayer;
-	private FeatureGrid featureGrid;
+	private PagingFeatureGrid featureGrid;
 
 	private ComboBox<FeatureAttributeDef> attributeCombo;
 
@@ -156,7 +160,10 @@ public class AttributeSearchDialog extends Dialog {
 
 		listPanel.add(new Label(UIMessages.INSTANCE.asdFeaturesListLabel()));
 		
-		featureGrid = new FeatureGrid(225, 200);
+		PagingToolBar toolBar = new PagingToolBar(FEATURES_PER_PAGE);
+		toolBar.setBorders(false);
+		
+		featureGrid = new PagingFeatureGrid(225, 200, toolBar);
 		featureGrid.getSelectionModel().addSelectionChangedHandler(
 				new SelectionChangedHandler<VectorFeature>() {
 					@Override
@@ -166,7 +173,13 @@ public class AttributeSearchDialog extends Dialog {
 					}
 				});
 		
-		listPanel.add(featureGrid);
+		VerticalLayoutContainer gridContainer = new VerticalLayoutContainer();
+		gridContainer.setWidth(225);
+		gridContainer.setHeight(245);
+		gridContainer.add(featureGrid, new VerticalLayoutData(1, 1));
+		gridContainer.add(toolBar, new VerticalLayoutData(1, -1));
+		
+		listPanel.add(gridContainer);
 
 		hPanel.add(infoPanel);
 		hPanel.add(listPanel);

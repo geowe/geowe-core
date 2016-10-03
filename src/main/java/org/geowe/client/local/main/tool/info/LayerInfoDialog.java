@@ -86,8 +86,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private TextField numElementsField;
 
 	private VectorLayer selectedLayer;		
-	private PagingFeatureGrid featureGrid;	
-	private PagingToolBar toolBar;
+	private PagingFeatureGrid featureGrid;		
 
 	private TextButton renameLayerbutton;
 	private TextButton applyRenameLayerbutton;
@@ -195,7 +194,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 		hPanel.setSize("490px", "200px");
 				
-		toolBar = new PagingToolBar(FEATURES_PER_PAGE);
+		PagingToolBar toolBar = new PagingToolBar(FEATURES_PER_PAGE);
 		toolBar.setBorders(false);
 		
 		featureGrid = new PagingFeatureGrid(toolBar);

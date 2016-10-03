@@ -83,6 +83,10 @@ public class PagingFeatureGrid extends FeatureGrid {
 	public PagingFeatureLoader getLoader() {
 		return loader;
 	}
+	
+	public PagingToolBar getToolBar() {
+		return toolBar;
+	}
 
 	private class PagingFeatureLoader extends
 			PagingLoader<PagingLoadConfig, PagingLoadResult<VectorFeature>> {

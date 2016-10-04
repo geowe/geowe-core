@@ -12,12 +12,15 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - Added pagging grid support in layer info dialog and search dialog.
 - Show bounds locked 
+- improve performance
 
 ### Fixed
 - issue [#198](https://github.com/geowe/geowe-core/issues/198)
 - issue [#199](https://github.com/geowe/geowe-core/issues/199)
 - issue [#200](https://github.com/geowe/geowe-core/issues/200)
 - issue [#201](https://github.com/geowe/geowe-core/issues/201)
+- issue [#202](https://github.com/geowe/geowe-core/issues/202)
+- issue [#203](https://github.com/geowe/geowe-core/issues/203)
 
 ## [1.3.0]Beta - 2016-09-30
 version deployed for testing [map.geowe.org](http://map.geowe.org)

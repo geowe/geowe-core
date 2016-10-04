@@ -22,84 +22,72 @@
  */
 package org.geowe.client.local.main.tool.extent;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.tool.ToggleTool;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Bounds;
+import org.gwtopenmaps.openlayers.client.Style;
+import org.gwtopenmaps.openlayers.client.StyleMap;
+import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
-import com.sencha.gxt.cell.core.client.ButtonCell.IconAlign;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
-import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
 /**
+ * Lock/unlock map current map extent
  * 
  * @author jose@geowe.org
- *
+ * @since 03-10-2016
+ * @author rafa@geowe.org Revolved issue 198
  */
 @ApplicationScoped
-public class LockCurrentExtentTool extends ToggleButton {
-	private static final String WIDTH = "80px";
-	private static final String HEIGHT = "80px";
-	
+public class LockCurrentExtentTool extends ToggleTool {
+
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
-	private final GeoMap geoMap;
-	
+
+	private VectorLayer layer;
+
 	@Inject
-	public LockCurrentExtentTool(GeoMap geoMap) {
-		super(UIMessages.INSTANCE.nameLockCurrentExtentTool());
-		setIconAlign(IconAlign.TOP);
-		setSize(WIDTH, HEIGHT);
-		setIcon(ImageProvider.INSTANCE.unlockedExtension24());		
-		this.geoMap = geoMap;
+	public LockCurrentExtentTool(GeoMap geoMap, LayerManagerWidget layerManager) {
+		super(UIMessages.INSTANCE.nameLockCurrentExtentTool(),
+				ImageProvider.INSTANCE.unlockedExtension24(), geoMap,
+				layerManager);
+
 		setToolTipConfig(createTooltipConfig(
 				UIMessages.INSTANCE.titleLockCurrentExtentToolTip(),
-				UIMessages.INSTANCE.descriptionLockCurrentExtentToolTip(), Side.LEFT));
-	}
-	
-	private ToolTipConfig createTooltipConfig(String title, String body,
-			Side position) {
-		ToolTipConfig toolTipconfig = new ToolTipConfig();
-		toolTipconfig.setTitleHtml(title);
-		toolTipconfig.setBodyHtml(body);
-		toolTipconfig.setMouseOffsetX(0);
-		toolTipconfig.setMouseOffsetY(0);
-		toolTipconfig.setAnchor(position);
-
-		return toolTipconfig;
+				UIMessages.INSTANCE.descriptionLockCurrentExtentToolTip(),
+				Side.LEFT));
 	}
 
-	@PostConstruct
-	private void registerValueChangeHandler() {
-		addValueChangeHandler(getSelectChangeHandler());
-	}
-
+	@Override
 	protected ValueChangeHandler<Boolean> getSelectChangeHandler() {
 		return new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(final ValueChangeEvent<Boolean> event) {
 
-				if (event.getValue()) {					
-					confirmSetMaxExtent(event.getValue());					
+				if (event.getValue()) {
+					confirmSetMaxExtent(event.getValue());
 				} else {
-					confirmClearMaxExtent(event.getValue());					
+					confirmClearMaxExtent(event.getValue());
 				}
 			}
 		};
 	}
-	
+
 	private void confirmSetMaxExtent(final boolean value) {
 
 		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(
@@ -110,24 +98,42 @@ public class LockCurrentExtentTool extends ToggleButton {
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						geoMap.getMap().setRestrictedExtent(geoMap.getMap().getExtent());
-						geoMap.getMap().setMaxExtent(geoMap.getMap().getExtent());
-						geoMap.getMap().zoomToMaxExtent();
-						setText("Desbloquear");
-						setIcon(ImageProvider.INSTANCE.lockedExtension24());						
+						getGeoMap().getMap().setRestrictedExtent(
+								getGeoMap().getMap().getExtent());
+						getGeoMap().getMap().setMaxExtent(
+								getGeoMap().getMap().getExtent());
+						setText(UIMessages.INSTANCE.nameUnlockCurrentExtentTool());
+						setIcon(ImageProvider.INSTANCE.lockedExtension24());
+						createVectorLayer(getGeoMap().getMap().getExtent());
 					}
 				});
-		
+
 		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						setValue(!value);
-					}
-				});
+				getNoSelectHandler(value));
 		messageBox.show();
-	}	
-	
+	}
+
+	private void createVectorLayer(Bounds bounds) {
+		if (layer == null) {
+			layer = new VectorLayer("LockedBBox");
+			layer.setStyleMap(new StyleMap(createStyle()));
+		}
+		layer.removeAllFeatures();
+		Geometry geom = bounds.toGeometry();
+		VectorFeature vf = new VectorFeature(geom);
+		layer.addFeature(vf);
+		getGeoMap().getMap().addLayer(layer);
+	}
+
+	private Style createStyle() {
+		Style style = new Style();
+		style.setStrokeColor("#FF0000");
+		style.setStrokeWidth(2);
+		style.setStrokeDashstyle("longdash");
+		style.setFill(false);
+		return style;
+	}
+
 	private void confirmClearMaxExtent(final boolean value) {
 
 		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(
@@ -138,23 +144,31 @@ public class LockCurrentExtentTool extends ToggleButton {
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						Bounds defaultBounds = geoMap.getDefaultMapBound();
-						geoMap.getMap().setRestrictedExtent(defaultBounds);
-						geoMap.getMap().setMaxExtent(defaultBounds);
-						setText("Bloquear");
-						setIcon(ImageProvider.INSTANCE.unlockedExtension24());						
+
+						Bounds defaultBounds = getGeoMap().getDefaultMapBound();
+						getGeoMap().getMap().setRestrictedExtent(defaultBounds);
+						getGeoMap().getMap().setMaxExtent(defaultBounds);
+						setText(UIMessages.INSTANCE.nameLockCurrentExtentTool());
+						setIcon(ImageProvider.INSTANCE.unlockedExtension24());
+
+						getGeoMap().getMap().zoomToExtent(
+								layer.getDataExtent(), true);
+
+						getGeoMap().getMap().removeLayer(layer);
 					}
 				});
-		
+
 		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						setValue(!value);						
-					}
-				});
-		
+				getNoSelectHandler(value));
 		messageBox.show();
-	}	
-	
+	}
+
+	private SelectHandler getNoSelectHandler(final boolean value){
+		return new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				setValue(!value);
+			}
+		};
+	}
 }

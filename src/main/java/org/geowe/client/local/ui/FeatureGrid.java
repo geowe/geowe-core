@@ -64,7 +64,7 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		this.setBorders(true);						
 		this.getView().setStripeRows(true);
 		this.getView().setColumnLines(true);		
-		this.setColumnReordering(true);
+		this.setColumnReordering(true);					
 		this.setLoadMask(true);
 		
 		this.setWidth(width);
@@ -82,7 +82,7 @@ public class FeatureGrid extends Grid<VectorFeature> {
 	 */
 	public void rebuild(List<VectorFeature> features) {
 		update(features);
-		this.reconfigure(this.getStore(), createColumnList());
+		this.reconfigure(this.getStore(), createColumnList(features));
 	}
 	
 	/**
@@ -123,11 +123,11 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		this.getStore().clear();
 	}
 	
-	private ColumnModel<VectorFeature> createColumnList() {
+	protected ColumnModel<VectorFeature> createColumnList(List<VectorFeature> features) {
 		List<ColumnConfig<VectorFeature, ?>> columns = new ArrayList<ColumnConfig<VectorFeature, ?>>();
 		
-		if(this.getStore().size() > 0) {
-			VectorFeature feature = this.getStore().get(0);
+		if(features != null && features.size() > 0) {
+			VectorFeature feature = features.get(0);
 
 			if(feature.getAttributes() != null) {
 				for(String attributeName : feature.getAttributes().getAttributeNames()) {	

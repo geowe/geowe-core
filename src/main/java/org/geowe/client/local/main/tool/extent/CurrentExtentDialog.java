@@ -28,9 +28,11 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
-import org.gwtopenmaps.openlayers.client.format.WKT;
+import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.VectorLayerFactory;
 
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -50,6 +52,8 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 /**
  * 
  * @author jose@geowe.org
+ * @since 03-10-2016
+ * @author rafa@geowe.org Create layer from VectorLayerFactory.
  *
  */
 @ApplicationScoped
@@ -81,18 +85,23 @@ public class CurrentExtentDialog extends Dialog {
 
 			@Override
 			public void onSelect(SelectEvent event) {
-				WKT wktFormat = new WKT();
-				VectorLayer extentLayer = new VectorLayer("BBox");
-				extentLayer.addFeatures(wktFormat.read(model.getWkt()));								
+				VectorLayer extentLayer = VectorLayerFactory
+						.createVectorLayerFromGeoData(createBBoxLayerConfig());
 				layerManager.addVector(extentLayer);	
-				geoMap.getMap().zoomToExtent(extentLayer.getDataExtent());
 			}			
 		});
 		
 		this.getButtonBar().add(addToMapButton);
-
 	}
 	
+	private VectorLayerConfig createBBoxLayerConfig() {
+		VectorLayerConfig layerConfig = new VectorLayerConfig();
+		layerConfig.setLayerName("BBox");
+		layerConfig.setGeoDataFormat(VectorLayerDef.WKT);
+		layerConfig.setGeoDataString(model.getWkt());
+		layerConfig.setEpsg(GeoMap.INTERNAL_EPSG);
+		return layerConfig;
+	}
 	private Widget createPanel() {
 		String fieldWidth = "225px";
 		VerticalLayoutContainer container = new VerticalLayoutContainer();

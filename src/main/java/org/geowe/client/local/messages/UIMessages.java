@@ -783,6 +783,8 @@ public interface UIMessages extends Messages {
 	
 	String nameLockCurrentExtentTool();
 	
+	String nameUnlockCurrentExtentTool();
+	
 	String titleLockCurrentExtentToolTip();
 	
 	String descriptionLockCurrentExtentToolTip();

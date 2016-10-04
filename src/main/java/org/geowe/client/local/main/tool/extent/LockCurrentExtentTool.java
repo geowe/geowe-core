@@ -102,8 +102,7 @@ public class LockCurrentExtentTool extends ToggleTool {
 								getGeoMap().getMap().getExtent());
 						getGeoMap().getMap().setMaxExtent(
 								getGeoMap().getMap().getExtent());
-						// TODO: meter en UIMessages
-						setText("Desbloquear");
+						setText(UIMessages.INSTANCE.nameUnlockCurrentExtentTool());
 						setIcon(ImageProvider.INSTANCE.lockedExtension24());
 						createVectorLayer(getGeoMap().getMap().getExtent());
 					}

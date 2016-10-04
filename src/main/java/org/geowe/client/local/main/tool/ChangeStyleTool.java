@@ -35,10 +35,8 @@ import org.geowe.client.local.style.SimpleThemingVerticalLegend;
 import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 import org.geowe.client.local.ui.ProgressBarDialog;
-import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
-import org.slf4j.Logger;
 
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.core.client.Style.Side;
@@ -62,8 +60,6 @@ public class ChangeStyleTool extends ButtonTool {
 	private ClientTaskManager taskManager;
 
 	private SimpleThemingVerticalLegend legendPanel;
-	@Inject
-	private Logger logger;
 
 	@Inject
 	public ChangeStyleTool(final GeoMap geoMap) {
@@ -119,15 +115,6 @@ public class ChangeStyleTool extends ButtonTool {
 				final VectorLayer selectedLayer = vectorLayerStyleWidget
 						.getSelectedLayer();
 
-				if (vectorLayerStyleWidget.isEnableTheming()) {
-					for (final VectorFeature feature : selectedLayer.getFeatures()) {
-						final String attValue = feature.getAttributes()
-								.getAttributeAsString(
-										vectorLayerStyleWidget
-												.getAttributeTheming());
-					}
-				}
-
 				/**
 				 * Antes de nada, si se ha activado el color tematico, se debe
 				 * aplicar este como primera operacion, ya que conlleva la
@@ -163,11 +150,8 @@ public class ChangeStyleTool extends ButtonTool {
 
 	private void applyLengendVisibility(VectorLayer selectedLayer) {
 		if (vectorLayerStyleWidget.isEnableLegend()) {
-			logger.info("Legend 1: habilitado "
-					+ vectorLayerStyleWidget.isEnableLegend());
 			if (legendPanel != null) {
-				RootPanel.get().remove(legendPanel);
-				logger.info("Legend 1.1: remove del rootpane");
+				RootPanel.get().remove(legendPanel);				
 			}
 			legendPanel = new SimpleThemingVerticalLegend(selectedLayer,
 					vectorLayerStyleWidget.getAttributeTheming());
@@ -175,9 +159,7 @@ public class ChangeStyleTool extends ButtonTool {
 			RootPanel.get().add(legendPanel);
 			legendPanel.getElement().<FxElement> cast().fadeToggle();
 			legendPanel.setVisible(true);
-		} else {
-			logger.info("Legend 2: VLSW "
-					+ vectorLayerStyleWidget.isEnableLegend());
+		} else {			
 			hideLegendPanel();
 		}
 	}

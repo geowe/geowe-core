@@ -176,13 +176,15 @@ public class StatusPanelWidget implements IsWidget,
 			}
 		});
 
-		layerCombo
-				.addValueChangeHandler(new ValueChangeHandler<VectorLayerInfo>() {
+		layerCombo.addValueChangeHandler(new ValueChangeHandler<VectorLayerInfo>() {
 					@Override
 					public void onValueChange(
 							ValueChangeEvent<VectorLayerInfo> event) {
 						VectorLayer layer = (VectorLayer) layerManagerWidget
 								.getSelectedLayer(LayerManagerWidget.VECTOR_TAB);
+						if (layer == null) {
+							layer = (VectorLayer) event.getValue().getLayer();
+						}
 						new SelectFeature(layer).unselectAll(null);
 						layerManagerWidget.setSelectedLayer(
 								LayerManagerWidget.VECTOR_TAB, layerCombo

@@ -31,6 +31,8 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Bounds;
 import org.gwtopenmaps.openlayers.client.Projection;
@@ -43,69 +45,102 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
+ * Show map current extent
  * 
  * @author jose@geowe.org
+ * @since 03-10-2016
+ * @author rafa@geowe.org Create layer from VectorLayerFactory.
  *
  */
 @ApplicationScoped
 public class CustomExtentTool extends ButtonTool {
 	@Inject
-	private MessageDialogBuilder messageDialogBuilder;	
+	private MessageDialogBuilder messageDialogBuilder;
 	@Inject
 	private CustomExtentDialog customExtentDialog;
 	@Inject
 	private LayerManagerWidget layerManager;
 	@Inject
 	private GeoMap geoMap;
-	
-	public CustomExtentTool() {		
+
+	public CustomExtentTool() {
 		super(UIMessages.INSTANCE.nameCustomExtentTool(),
 				ImageProvider.INSTANCE.customExtension24());
-		
+
 		setToolTipConfig(createTooltipConfig(
 				UIMessages.INSTANCE.titleCustomExtentToolTip(),
 				UIMessages.INSTANCE.descriptionCustomExtentToolTip(), Side.LEFT));
 	}
-	
+
 	@PostConstruct
 	private void initialize() {
-		
-		customExtentDialog.getAddToMapButton().addSelectHandler(new SelectHandler() {
 
-			@Override
-			public void onSelect(SelectEvent event) {
-				String bbox = customExtentDialog.getBbox();
-				if(bbox.isEmpty()) {
-					messageDialogBuilder.createError("Atención", UIMessages.INSTANCE.insertCoordinatesCustomExtent()).show();
-					return;
-				}
-				
-				String[] coordinates = bbox.split("\\,");
-				if(coordinates.length != 4) {
-					messageDialogBuilder.createError("Atención", UIMessages.INSTANCE.incorrectCoordinatesCustomExtent()).show();
-					return;
-				}
-				
-				double lowerLeftX = Double.parseDouble(coordinates[0]);
-				double lowerLeftY = Double.parseDouble(coordinates[1]);
-				double upperRightX = Double.parseDouble(coordinates[2]);
-				double upperRightY = Double.parseDouble(coordinates[3]);
-				
-				Bounds bounds = new Bounds(lowerLeftX, lowerLeftY, upperRightX, upperRightY);
-				Geometry geom = bounds.toGeometry();
-				geom.transform(new Projection("EPSG:4326"), new Projection(geoMap.getMap().getProjection()));
-				VectorFeature vf = new VectorFeature(geom);
-				VectorLayer bboxLayer = new VectorLayer("CustomBBox");
-				bboxLayer.addFeature(vf);
-				layerManager.addVector(bboxLayer);
-				geoMap.getMap().zoomToExtent(bboxLayer.getDataExtent());	
-			}			
-		});
-		
+		customExtentDialog.getAddToMapButton().addSelectHandler(
+				new SelectHandler() {
+
+					@Override
+					public void onSelect(SelectEvent event) {
+						if (!isBBoxEmpty() && has4Coordinates()) {
+							Bounds bounds = getBounds();
+
+							Geometry geom = bounds.toGeometry();
+							geom.transform(new Projection("EPSG:4326"),
+									new Projection(geoMap.getMap()
+											.getProjection()));
+							VectorFeature vf = new VectorFeature(geom);
+
+							VectorLayer bboxLayer = VectorLayerFactory
+									.createEmptyVectorLayer(createBBoxLayerConfig());
+							bboxLayer.addFeature(vf);
+
+							layerManager.addVector(bboxLayer);
+						}
+					}
+				});
+	}
+
+	private boolean isBBoxEmpty() {
+		boolean isEmpty = false;
+		String bbox = customExtentDialog.getBbox();
+		if (bbox.isEmpty()) {
+			messageDialogBuilder.createError(UIMessages.INSTANCE.warning(),
+					UIMessages.INSTANCE.insertCoordinatesCustomExtent()).show();
+			isEmpty = true;
+		}
+		return isEmpty;
+	}
+
+	private boolean has4Coordinates() {
+		boolean has4coordinates = true;
+		String[] coordinates = customExtentDialog.getBbox().split("\\,");
+		if (coordinates.length != 4) {
+			messageDialogBuilder.createError(UIMessages.INSTANCE.warning(),
+					UIMessages.INSTANCE.incorrectCoordinatesCustomExtent())
+					.show();
+			has4coordinates = false;
+		}
+		return has4coordinates;
+	}
+
+	private Bounds getBounds() {
+		String[] coordinates = customExtentDialog.getBbox().split("\\,");
+		double lowerLeftX = Double.parseDouble(coordinates[0]);
+		double lowerLeftY = Double.parseDouble(coordinates[1]);
+		double upperRightX = Double.parseDouble(coordinates[2]);
+		double upperRightY = Double.parseDouble(coordinates[3]);
+
+		return new Bounds(lowerLeftX, lowerLeftY, upperRightX, upperRightY);
+	}
+
+	private VectorLayerConfig createBBoxLayerConfig() {
+		VectorLayerConfig layerConfig = new VectorLayerConfig();
+		layerConfig.setLayerName("BBox");
+		layerConfig.setEpsg(GeoMap.INTERNAL_EPSG);
+		return layerConfig;
 	}
 
 	@Override
-	protected void onRelease() {		
-		customExtentDialog.initialize();		
-	}		
+	protected void onRelease() {
+		customExtentDialog.initialize();
+	}
 }

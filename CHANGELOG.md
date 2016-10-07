@@ -8,7 +8,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - More tools
 
 ## [1.3.1]Beta - 2016-10-04
-
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Added pagging grid support in layer info dialog and search dialog.
 - Show bounds locked 
@@ -23,7 +23,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#203](https://github.com/geowe/geowe-core/issues/203)
 
 ## [1.3.0]Beta - 2016-09-30
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Added support for work with extent.
 - issue [#171](https://github.com/geowe/geowe-core/issues/171)
@@ -40,7 +40,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 - issue [#196](https://github.com/geowe/geowe-core/issues/196)
 
 ## [1.2.0]Beta - 2016-09-23
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Added simple theming legend.
 - Added simple map layer legend.

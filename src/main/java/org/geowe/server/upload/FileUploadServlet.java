@@ -52,6 +52,8 @@ public class FileUploadServlet extends HttpServlet {
 			throws ServletException, IOException {
 		final ServletFileUpload upload = new ServletFileUpload();
 		response.setContentType("text/plain; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		upload.setFileSizeMax(MAX_FILE_SIZE);
 		upload.setSizeMax(MAX_FILE_SIZE);
 

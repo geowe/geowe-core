@@ -323,8 +323,8 @@ public class AttributeSearchDialog extends Dialog {
 	}
 
 	private VectorFeature[] getFeatures(VectorLayer layer) {
-		return (layer.getFeatures() != null) ? layer.getFeatures()
-				: new ArrayList<VectorFeature>().toArray(new VectorFeature[0]);
+		return (layer.getFeatures() == null) ? new ArrayList<VectorFeature>()
+				.toArray(new VectorFeature[0]) : layer.getFeatures();
 	}
 
 	private void updateLayerAttributes() {

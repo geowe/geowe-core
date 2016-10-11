@@ -26,6 +26,7 @@ package org.geowe.client.local.main.tool.extent;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.gwtopenmaps.openlayers.client.Bounds;
+
 /**
  * 
  * @author jose@geowe.org
@@ -33,9 +34,16 @@ import org.gwtopenmaps.openlayers.client.Bounds;
  */
 @ApplicationScoped
 public class CurrentExtentInfo {
-		
+
 	private String wkt;
 	private String wktWGS84;
+	private String center;
+	private double lowerLeftX;
+	private double lowerLeftY;
+	private double upperRightX;
+	private double upperRightY;
+	private Bounds bounds;
+
 	public String getWktWGS84() {
 		return wktWGS84;
 	}
@@ -44,13 +52,6 @@ public class CurrentExtentInfo {
 		this.wktWGS84 = wktWGS84;
 	}
 
-	private String center;
-	private double lowerLeftX;
-	private double lowerLeftY;
-	private double upperRightX;
-	private double upperRightY;
-	private Bounds bounds;
-	
 	public Bounds getBounds() {
 		return bounds;
 	}
@@ -100,14 +101,15 @@ public class CurrentExtentInfo {
 	}
 
 	public String getBbox() {
-		return lowerLeftX + ", " + lowerLeftY + ", " + upperRightX + ", " + upperRightY;
+		return lowerLeftX + ", " + lowerLeftY + ", " + upperRightX + ", "
+				+ upperRightY;
 	}
-	
+
 	public String getWkt() {
 		return wkt;
 	}
 
 	public void setWkt(String wkt) {
 		this.wkt = wkt;
-	}		
+	}
 }

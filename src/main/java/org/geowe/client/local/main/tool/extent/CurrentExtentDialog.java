@@ -65,11 +65,11 @@ public class CurrentExtentDialog extends Dialog {
 	private TextField lowerLeftYField;
 	private TextField upperRightXField;
 	private TextField upperRightYField;
-	private TextButton addToMapButton;
-	private CurrentExtentInfo model;	
+	private CurrentExtentInfo model;
 
 	@Inject
-	public CurrentExtentDialog(final GeoMap geoMap, final LayerManagerWidget layerManager) {
+	public CurrentExtentDialog(final GeoMap geoMap,
+			final LayerManagerWidget layerManager) {
 		setHideOnButtonClick(true);
 		setPredefinedButtons(PredefinedButton.CLOSE);
 
@@ -79,21 +79,22 @@ public class CurrentExtentDialog extends Dialog {
 		setHeight(390);
 		setHeadingHtml(UIMessages.INSTANCE.headCurrentExtentDialog());
 		add(createPanel());
-		
-		addToMapButton = new TextButton(UIMessages.INSTANCE.addToMapButton());
+
+		TextButton addToMapButton = new TextButton(
+				UIMessages.INSTANCE.addToMapButton());
 		addToMapButton.addSelectHandler(new SelectHandler() {
 
 			@Override
 			public void onSelect(SelectEvent event) {
 				VectorLayer extentLayer = VectorLayerFactory
 						.createVectorLayerFromGeoData(createBBoxLayerConfig());
-				layerManager.addVector(extentLayer);	
-			}			
+				layerManager.addVector(extentLayer);
+			}
 		});
-		
+
 		this.getButtonBar().add(addToMapButton);
 	}
-	
+
 	private VectorLayerConfig createBBoxLayerConfig() {
 		VectorLayerConfig layerConfig = new VectorLayerConfig();
 		layerConfig.setLayerName("BBox");
@@ -102,6 +103,7 @@ public class CurrentExtentDialog extends Dialog {
 		layerConfig.setEpsg(GeoMap.INTERNAL_EPSG);
 		return layerConfig;
 	}
+
 	private Widget createPanel() {
 		String fieldWidth = "225px";
 		VerticalLayoutContainer container = new VerticalLayoutContainer();
@@ -111,7 +113,7 @@ public class CurrentExtentDialog extends Dialog {
 		centerLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 		container.add(centerLabel);
 		centerField = new TextField();
-		centerField.setReadOnly(true);		
+		centerField.setReadOnly(true);
 		centerField.setWidth("450px");
 		container.add(centerField);
 
@@ -119,7 +121,7 @@ public class CurrentExtentDialog extends Dialog {
 		VerticalPanel vPanel = new VerticalPanel();
 		Label lowerLeftX = new Label(UIMessages.INSTANCE.lowerLeftXField());
 		lowerLeftX.getElement().getStyle().setFontWeight(FontWeight.BOLD);
-		
+
 		vPanel.add(lowerLeftX);
 		lowerLeftXField = new TextField();
 		lowerLeftXField.setReadOnly(true);
@@ -131,7 +133,7 @@ public class CurrentExtentDialog extends Dialog {
 		vPanel = new VerticalPanel();
 		Label lowerLeftY = new Label(UIMessages.INSTANCE.lowerLeftYField());
 		lowerLeftY.getElement().getStyle().setFontWeight(FontWeight.BOLD);
-		
+
 		vPanel.add(lowerLeftY);
 		lowerLeftYField = new TextField();
 		lowerLeftYField.setReadOnly(true);
@@ -139,12 +141,12 @@ public class CurrentExtentDialog extends Dialog {
 		vPanel.add(lowerLeftYField);
 		horizontalLowerPanel.add(vPanel);
 		container.add(horizontalLowerPanel);
-				
+
 		horizontalLowerPanel = new HorizontalPanel();
 		vPanel = new VerticalPanel();
 		Label upperRightX = new Label(UIMessages.INSTANCE.upperRightXField());
 		upperRightX.getElement().getStyle().setFontWeight(FontWeight.BOLD);
-		
+
 		vPanel.add(upperRightX);
 		upperRightXField = new TextField();
 		upperRightXField.setReadOnly(true);
@@ -154,10 +156,10 @@ public class CurrentExtentDialog extends Dialog {
 		container.add(horizontalLowerPanel);
 
 		vPanel = new VerticalPanel();
-		
+
 		Label upperRightY = new Label(UIMessages.INSTANCE.upperRightYField());
 		upperRightY.getElement().getStyle().setFontWeight(FontWeight.BOLD);
-		
+
 		vPanel.add(upperRightY);
 		upperRightYField = new TextField();
 		upperRightYField.setReadOnly(true);
@@ -165,13 +167,16 @@ public class CurrentExtentDialog extends Dialog {
 		vPanel.add(upperRightYField);
 		horizontalLowerPanel.add(vPanel);
 		container.add(horizontalLowerPanel);
-		
-		Label bboxLabel = new Label("Bbox (" + UIMessages.INSTANCE.lowerLeftXField() + ", " + UIMessages.INSTANCE.lowerLeftYField() + 
-				", " + UIMessages.INSTANCE.upperRightXField() + ", " + UIMessages.INSTANCE.upperRightYField() + ")");
-		bboxLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);		
+
+		Label bboxLabel = new Label("Bbox ("
+				+ UIMessages.INSTANCE.lowerLeftXField() + ", "
+				+ UIMessages.INSTANCE.lowerLeftYField() + ", "
+				+ UIMessages.INSTANCE.upperRightXField() + ", "
+				+ UIMessages.INSTANCE.upperRightYField() + ")");
+		bboxLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);
 		container.add(bboxLabel);
 		bboxField = new TextField();
-		bboxField.setReadOnly(true);		
+		bboxField.setReadOnly(true);
 		bboxField.setWidth("450px");
 		container.add(bboxField);
 		Label wktLabel = new Label("Bbox WKT WGS84");
@@ -188,9 +193,9 @@ public class CurrentExtentDialog extends Dialog {
 		centerField.setText(model.getCenter());
 		bboxField.setText(model.getBbox());
 		lowerLeftXField.setText(Double.toString(model.getLowerLeftX()));
-		lowerLeftYField.setText(Double.toString(model.getLowerLeftY()));		
+		lowerLeftYField.setText(Double.toString(model.getLowerLeftY()));
 		upperRightXField.setText(Double.toString(model.getUpperRightX()));
-		upperRightYField.setText(Double.toString(model.getUpperRightY()));		
+		upperRightYField.setText(Double.toString(model.getUpperRightY()));
 	}
 
 	private TextArea getTextPanel() {

@@ -146,7 +146,7 @@ public class HtmlReportLayerTool extends LayerTool {
 				getAttributeNames()));
 	}
 	
-	private List<List<String>> getAttributesValue(VectorFeature[] features) {
+	private List<List<String>> getAttributesValue(VectorFeature... features) {
 		List<List<String>> attrValues = new ArrayList<List<String>>();
 		for (VectorFeature feature : features) {
 			attrValues.add(feature.getAttributes().getAttributeValues());

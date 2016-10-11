@@ -62,14 +62,14 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 @ApplicationScoped
 public class HtmlReportLayerTool extends LayerTool {
 
+	@Inject
+	private ClientTaskManager taskManager;
+	
 	public interface VectorLayerTemplate extends XTemplates {
 		@XTemplate(source = "LayerInfoTemplate.html")
 		public SafeHtml renderTemplate(UIMessages uimessages, VectorLayer data,
 				List<List<String>> attrValues, List<String> attrNames);
 	}
-
-	@Inject
-	private ClientTaskManager taskManager;
 
 	@Inject
 	public HtmlReportLayerTool(LayerManagerWidget layerManagerWidget,

@@ -45,8 +45,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SimpleThemingVerticalLegend extends VerticalLegend {
 
-	private String attributeName;
-	private VectorLayer selectedLayer;
+	private final String attributeName;
+	private final VectorLayer selectedLayer;
 
 	public SimpleThemingVerticalLegend(VectorLayer selectedLayer,
 			String attributeName) {

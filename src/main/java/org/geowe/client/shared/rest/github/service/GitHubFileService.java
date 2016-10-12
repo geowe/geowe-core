@@ -45,8 +45,8 @@ public interface GitHubFileService {
 	
 	@GET
 	@Path("/contents/{path}/{fileName}")
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces("application/json; charset=utf-8")
+	@Consumes("application/json; charset=utf-8")
 	public GitHubContentResponse getFile(@PathParam("user") String user,
 			@PathParam("repository") String repository,
 			@PathParam("path") String path,
@@ -54,8 +54,9 @@ public interface GitHubFileService {
 	
 	@PUT
 	@Path("/contents/{path}/{fileName}")
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces("application/json; charset=utf-8")
+	@Consumes("application/json; charset=utf-8")
+	@GZIP
 	public GitHubResponse createFile(@PathParam("user") String user,
 			@PathParam("repository") String repository,
 			@PathParam("path") String path,
@@ -65,8 +66,9 @@ public interface GitHubFileService {
 	
 	@PUT
 	@Path("/contents/{path}/{fileName}")
-	@Produces("application/json")
-	@Consumes("application/json")
+	@Produces("application/json; charset=utf-8")
+	@Consumes("application/json; charset=utf-8")
+	@GZIP
 	public GitHubResponse updateFile(@PathParam("user") String user,
 			@PathParam("repository") String repository,
 			@PathParam("path") String path,

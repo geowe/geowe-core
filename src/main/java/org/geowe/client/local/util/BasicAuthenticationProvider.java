@@ -21,17 +21,28 @@
  * #L%
  */
 package org.geowe.client.local.util;
+
 /**
- *  Proporciona el valor de la autorización para una autenticación básica
+ * Proporciona el valor de la autorización para una autenticación básica
+ * 
  * @author jose@geowe.org
  *
  */
 public class BasicAuthenticationProvider {
+
 	private static final String AUTH_VALUE = "Basic";
-	
-	public static String getAuthorizationHeaderValue(final String userName, final String password) { 
+
+	/**
+	 * To prevent instantiation
+	 */
+	private BasicAuthenticationProvider() {
+	}
+
+	public static String getAuthorizationHeaderValue(final String userName,
+			final String password) {
 		final String usernameAndPassword = userName + ":" + password;
-        final String authorizationHeaderValue  = AUTH_VALUE + " " + Base64.encode(usernameAndPassword);
-        return authorizationHeaderValue;
-	}	
+		final String authorizationHeaderValue = AUTH_VALUE + " "
+				+ Base64.encode(usernameAndPassword);
+		return authorizationHeaderValue;
+	}
 }

@@ -96,7 +96,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.lidTitle());
 		this.setPredefinedButtons(PredefinedButton.CLOSE);
-		this.setPixelSize(500, 500);
+		this.setPixelSize(560, 500);
 		this.setModal(false);
 		this.setResizable(false);
 		this.setHideOnButtonClick(true);
@@ -150,7 +150,6 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 
 			@Override
 			public void onSelect(SelectEvent event) {
-				// selectedLayer.setName(layerNameField.getText());
 				layerNameField.setEnabled(false);
 				copyLayerTool.duplicate(selectedLayer, layerNameField.getText());
 				VectorLayer layer = copyLayerTool.duplicate(selectedLayer,
@@ -192,7 +191,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 
 	private HorizontalLayoutContainer createBottomPanel() {
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
-		hPanel.setSize("490px", "200px");
+		hPanel.setSize("510px", "200px");
 				
 		PagingToolBar toolBar = new PagingToolBar(FEATURES_PER_PAGE);
 		toolBar.setBorders(false);
@@ -208,7 +207,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 				});
 				
 		VerticalLayoutContainer gridContainer = new VerticalLayoutContainer();
-		gridContainer.setWidth(430);
+		gridContainer.setWidth(500);
 		gridContainer.setHeight(200);
 		gridContainer.add(featureGrid, new VerticalLayoutData(1, 1));
 		gridContainer.add(toolBar, new VerticalLayoutData(1, -1));
@@ -230,12 +229,12 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 				.getProjectionCode());
 		numElementsField.setText("0");
 
-		if (selectedLayer.getFeatures() != null) {
+		if (selectedLayer.getFeatures() == null) {
+			featureGrid.rebuild(new ArrayList<VectorFeature>());
+		} else {
 			numElementsField.setText(Integer.toString(((Vector) selectedLayer)
 					.getNumberOfFeatures()));
-			featureGrid.rebuild(selectedLayer.getFeatures());			
-		} else {
-			featureGrid.rebuild(new ArrayList<VectorFeature>());			
+			featureGrid.rebuild(selectedLayer.getFeatures());
 		}
 	}
 

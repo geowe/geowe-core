@@ -151,7 +151,7 @@ public class RasterInfoDialog extends Dialog implements RemoveLayerListener,
 				.getResolutions()));
 	}
 
-	private String asString(double[] values) {
+	private String asString(double... values) {
 		StringBuilder stringValues = new StringBuilder();
 		if (values != null) {
 			for (Double scale : values) {

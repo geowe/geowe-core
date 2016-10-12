@@ -6,7 +6,7 @@ import org.jboss.errai.ui.shared.JSONMap;
 
 @ApplicationScoped
 public class AppClientProperties {
-	private JSONMap props;
+	private final JSONMap props;
 	
 	public AppClientProperties() {
 	

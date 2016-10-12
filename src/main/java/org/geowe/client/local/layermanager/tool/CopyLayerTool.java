@@ -29,10 +29,12 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.VectorLayerFactory;
+import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -49,6 +51,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 @ApplicationScoped
 public class CopyLayerTool extends LayerTool {
 	
+	@Inject
+	private ClientTaskManager taskManager;
+
 	@Inject
 	public CopyLayerTool(final LayerManagerWidget layerManagerWidget, final GeoMap geoMap) {
 		super(layerManagerWidget, geoMap);
@@ -85,16 +90,29 @@ public class CopyLayerTool extends LayerTool {
 	}
 	
 	public VectorLayer duplicate(final VectorLayer layer, final String layerName) {
+		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false,
+				UIMessages.INSTANCE.processing());
+		autoMessageBox.show();
 		final VectorLayerConfig layerConfig = new VectorLayerConfig();
 		layerConfig.setLayerName(layerName);
 		layerConfig.setEpsg(layer.getProjection().getProjectionCode());
 		final VectorLayer newLayer = VectorLayerFactory.createEmptyVectorLayer(layerConfig);
 		
 		if (layer.getFeatures() != null) {
-			for (final VectorFeature vf : layer.getFeatures()) {
-				final VectorFeature vf2 = vf.clone();
-				newLayer.addFeature(vf2);
-			}
+
+			taskManager.execute(new Runnable() {
+
+				@Override
+				public void run() {
+
+					for (final VectorFeature vf : layer.getFeatures()) {
+						final VectorFeature vf2 = vf.clone();
+						newLayer.addFeature(vf2);
+					}
+					autoMessageBox.hide();
+				}
+			});
+
 		}
 		return newLayer;
 	}

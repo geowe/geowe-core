@@ -52,16 +52,15 @@ public class WmtsLayerDef extends WmsLayerDef {
 		
 		final WMTSOptions wmtsOptions = new WMTSOptions(getUrl(), getLayerName(),
                 "", getTileMatrixSet());
-        wmtsOptions.setName(getLayerName());
-        wmtsOptions.setIsBaseLayer(Boolean.FALSE);
-        wmtsOptions.setFormat(getFormat());
-        wmtsOptions.setDisplayOutsideMaxExtent(true);	
-        wmtsOptions.setNumZoomLevels(GeoMapInitializer.MAX_NUM_ZOOM_LEVEL);
-        wmtsOptions.setProjection(GeoMap.INTERNAL_EPSG);
-        wmtsOptions.setTransitionEffect(TransitionEffect.RESIZE);
-        wmtsOptions.setAttribution(getAttribution());
+        	wmtsOptions.setName(getLayerName());
+        	wmtsOptions.setIsBaseLayer(Boolean.FALSE);
+        	wmtsOptions.setFormat(getFormat());
+        	wmtsOptions.setDisplayOutsideMaxExtent(true);	
+        	wmtsOptions.setNumZoomLevels(GeoMapInitializer.MAX_NUM_ZOOM_LEVEL);
+        	wmtsOptions.setProjection(GeoMap.INTERNAL_EPSG);
+        	wmtsOptions.setTransitionEffect(TransitionEffect.RESIZE);
+	        wmtsOptions.setAttribution(getAttribution());
 
-        final WMTS wmtsLayer = new WMTS(wmtsOptions);		
-		return wmtsLayer;			
+        	return new WMTS(wmtsOptions);		
 	}
 }

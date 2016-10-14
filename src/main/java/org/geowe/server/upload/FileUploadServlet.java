@@ -43,7 +43,7 @@ public class FileUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1296384085403737411L;
 
-	private static final long MAX_FILE_SIZE = 1024 * 1024 * 15; // 1MB
+	private static final long MAX_FILE_SIZE = 1024 * 1024 * 2; //2MB 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(FileUploadServlet.class.getName());
 
@@ -52,6 +52,8 @@ public class FileUploadServlet extends HttpServlet {
 			throws ServletException, IOException {
 		final ServletFileUpload upload = new ServletFileUpload();
 		response.setContentType("text/plain; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		upload.setFileSizeMax(MAX_FILE_SIZE);
 		upload.setSizeMax(MAX_FILE_SIZE);
 

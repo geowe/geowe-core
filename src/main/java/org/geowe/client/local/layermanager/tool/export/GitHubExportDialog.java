@@ -51,8 +51,8 @@ public class GitHubExportDialog extends Dialog {
 	private TextField pathField;
 	private TextField fileNameField;
 	private TextField messageField;
-	private TextButton createButton;
-	private TextButton updateButton;
+	private final TextButton createButton;
+	private final TextButton updateButton;
 	private TextButton repositoriesButton;
 	
 	public String getUserName() {

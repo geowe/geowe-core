@@ -46,7 +46,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class CustomExtentDialog extends Dialog {
 	
 	private TextField bboxField;	
-	private TextButton addToMapButton;
+	private final TextButton addToMapButton;
 		
 	public CustomExtentDialog() {
 		setHideOnButtonClick(true);

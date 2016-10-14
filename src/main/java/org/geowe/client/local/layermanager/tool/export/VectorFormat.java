@@ -31,6 +31,10 @@ public class VectorFormat {
 	public static final VectorFormat GML_FORMAT = new VectorFormat(3, "GML", "gml+xml");
 	public static final VectorFormat WKT_FORMAT = new VectorFormat(4, "WKT", "x-wkt");
 	public static final VectorFormat CSV_FORMAT = new VectorFormat(5, "CSV", "text/plain");
+	public static final VectorFormat TOPO_JSON_FORMAT = new VectorFormat(6,
+			"TopoJSON", "x-topo+json");
+	public static final VectorFormat GPX_FORMAT = new VectorFormat(7, "GPX",
+			"application/gpx+xml");
 	
 	private final int id;
 	private final String name;
@@ -78,6 +82,14 @@ public class VectorFormat {
 		vectorFormats.add(KML_FORMAT);
 		vectorFormats.add(GML_FORMAT);
 		vectorFormats.add(WKT_FORMAT);
+		vectorFormats.add(TOPO_JSON_FORMAT);
+		vectorFormats.add(GPX_FORMAT);
+		return vectorFormats;
+	}
+
+	public static List<VectorFormat> getSupportedExportVectorFormat() {
+		final List<VectorFormat> vectorFormats = getAllFormat();
+		vectorFormats.remove(TOPO_JSON_FORMAT);
 		return vectorFormats;
 	}
 }

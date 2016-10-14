@@ -30,13 +30,14 @@ import org.gwtopenmaps.openlayers.client.util.JSObject;
  * @author rafa@geowe.org
  *
  */
-public class TopoJSON extends VectorFormat {
+public class GPX extends VectorFormat {
 
-	protected TopoJSON(JSObject topoJSONFormat) {
-		super(topoJSONFormat);
+	protected GPX(JSObject gpxFormat) {
+		super(gpxFormat);
 	}
 
-	public TopoJSON() {
-		this(TopoJSONImpl.create());
+	public GPX() {
+		this(GPXImpl.create());
 	}
+
 }

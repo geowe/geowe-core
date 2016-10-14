@@ -20,29 +20,19 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.util;
+package org.geowe.client.local.model.vector.format;
+
+import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 /**
- * Proporciona el valor de la autorización para una autenticación básica
  * 
- * @author jose@geowe.org, rafa@geowe.org
+ * @author rafa@geowe.org
  *
  */
-public final class BasicAuthenticationProvider {
+public class GPXImpl {
 
-	private static final String AUTH_VALUE = "Basic";
-
-	/**
-	 * To prevent instantiation
-	 */
-	private BasicAuthenticationProvider() {
-	}
-
-	public static String getAuthorizationHeaderValue(final String userName,
-			final String password) {
-		final String usernameAndPassword = userName + ":" + password;
-		final String authorizationHeaderValue = AUTH_VALUE + " "
-				+ Base64.encode(usernameAndPassword);
-		return authorizationHeaderValue;
-	}
+	public static native JSObject create()
+	/*-{
+		return new $wnd.OpenLayers.Format.GPX();
+	}-*/;
 }

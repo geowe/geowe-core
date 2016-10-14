@@ -25,10 +25,10 @@ package org.geowe.client.local.util;
 /**
  * Utility Class to get base64 hash
  * 
- * @author jose@geowe.org
+ * @author jose@geowe.org, rafa@geowe.org
  *
  */
-public class Base64 {
+public final class Base64 {
 
 	/**
 	 * To prevent instantiation

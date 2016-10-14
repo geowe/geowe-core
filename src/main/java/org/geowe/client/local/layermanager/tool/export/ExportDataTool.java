@@ -44,6 +44,7 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.model.vector.format.GPX;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
@@ -291,6 +292,13 @@ public class ExportDataTool extends LayerTool implements
 			format = new GeoJSON();
 		} else if (vectorFormat.getId() == VectorFormat.WKT_FORMAT.getId()) {
 			format = new WKT();
+		} else if (vectorFormat.getId() == VectorFormat.GPX_FORMAT
+				.getId()) {
+			// TODO: los atributos son los mismos para todos los features (no
+			// waypoints)
+			format = new GPX();
+			format.getJSObject().setProperty("creator", "geowe.org");
+
 		} else if (vectorFormat.getId() == VectorFormat.CSV_FORMAT.getId()) {
 			content = new CSV(exportDataDialog.getSelectedEpsg())
 					.write(selectedLayer);

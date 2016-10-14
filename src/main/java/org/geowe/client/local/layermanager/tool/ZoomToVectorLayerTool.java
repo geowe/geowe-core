@@ -29,21 +29,25 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
+import org.gwtopenmaps.openlayers.client.Bounds;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * Responsible for zoom to the maximum of a vector layer.
  * 
- * @author lotor
+ * @author rafa@geowe.org
+ * @since 14/10/2016 fix issue 208
  *
  */
 @ApplicationScoped
 public class ZoomToVectorLayerTool extends LayerTool {
 
 	@Inject
-	public ZoomToVectorLayerTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
+	public ZoomToVectorLayerTool(LayerManagerWidget layerTreeWidget,
+			GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
 	}
 
@@ -51,7 +55,7 @@ public class ZoomToVectorLayerTool extends LayerTool {
 	public String getName() {
 		return UIMessages.INSTANCE.zoomToVectorLayerToolText();
 	}
-	
+
 	@Override
 	public ImageResource getIcon() {
 		return ImageProvider.INSTANCE.zoomToLayer();
@@ -60,7 +64,11 @@ public class ZoomToVectorLayerTool extends LayerTool {
 	@Override
 	public void onClick() {
 		Vector layer = (Vector) getSelectedLayer();
-		geoMap.getMap().zoomToExtent(layer.getDataExtent());
+		Bounds layerExtent = layer.getDataExtent();
+		if (layerExtent == null) {
+			Info.display(UIMessages.INSTANCE.zoomToVectorLayerToolText(),
+					UIMessages.INSTANCE.emptyVectorLayer());
+		}
+		geoMap.getMap().zoomToExtent(layerExtent);
 	}
-
 }

@@ -25,10 +25,10 @@ package org.geowe.client.local.util;
 /**
  * Proporciona el valor de la autorización para una autenticación básica
  * 
- * @author jose@geowe.org
+ * @author jose@geowe.org, rafa@geowe.org
  *
  */
-public class BasicAuthenticationProvider {
+public final class BasicAuthenticationProvider {
 
 	private static final String AUTH_VALUE = "Basic";
 

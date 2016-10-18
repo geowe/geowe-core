@@ -61,7 +61,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 
 	protected final GeoDataImportDialog geoDataImportDialog;
 	protected final LayerManagerWidget layerManagerWidget;
-	
+
 	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
@@ -104,22 +104,22 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 						}
 
 						VectorLayerConfig layerConfig = null;
-						Layer layer = null; 
-						
+						Layer layer = null;
+
 						try {
 							layerConfig = new VectorLayerConfig();
 							layerConfig.setEpsg(geoDataImportDialog
-								.getProjectionName());
+									.getProjectionName());
 							layerConfig.setGeoDataFormat(geoDataImportDialog
-								.getDataFormat());
+									.getDataFormat());
 							layerConfig.setLayerName(geoDataImportDialog
-								.getLayerName());
+									.getLayerName());
 							layerConfig.setGeoDataString(contentFile);
 
 							layer = VectorLayerFactory
 									.createVectorLayerFromGeoData(layerConfig);
-							
-						} catch (Exception e) {							
+
+						} catch (Exception e) {
 							showAlert(UIMessages.INSTANCE.gditAlertMessage());
 						}
 
@@ -151,7 +151,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 
 	@Override
 	public void onRelease() {
-		
+
 		geoDataImportDialog.initialize(dialogTitle, layerName, projection);
 		geoDataImportDialog.show();
 	}
@@ -202,10 +202,12 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 									geoDataImportDialog.hide();
 
 									if (!geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.url())) {
+											.equals(UIMessages.INSTANCE.url())
+											&& !geoDataImportDialog.getActiveTab()
+											.equals(UIMessages.INSTANCE.wfs())) {
 										autoMessageBox.hide();
 									}
-								} else {									
+								} else {
 									showAlert(UIMessages.INSTANCE.warning(),
 											UIMessages.INSTANCE
 													.gditAlertMessage());

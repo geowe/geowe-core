@@ -27,6 +27,7 @@ import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.VectorLayerFactory;
+import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.shared.rest.URLFileRestService;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
@@ -36,9 +37,7 @@ import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 /**
  * Definicion de una capa vectorial que se construye a partir de unos geodatos
@@ -46,6 +45,8 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
  * servicio web, etc.
  * 
  * @author Atanasio Muñoz
+ * @since 18/10/2016
+ * @author rafa@geowe.org
  *
  */
 public class URLVectorLayerDef extends VectorLayerDef {
@@ -91,8 +92,9 @@ public class URLVectorLayerDef extends VectorLayerDef {
 						public boolean error(Request message,
 								Throwable throwable) {
 							autoMessageBox.hide();
-							showDialog("Error", message + ". "
-									+ UIMessages.INSTANCE.unexpectedError());
+
+							showDialog("Error",
+									UIMessages.INSTANCE.unexpectedError());
 							return false;
 						}
 					}, Response.SC_OK).getContent(getUrl());
@@ -106,16 +108,8 @@ public class URLVectorLayerDef extends VectorLayerDef {
 	}
 
 	private void showDialog(String title, String message) {
-		final Dialog messageDialog = new Dialog();
-		messageDialog.setModal(true);
-		messageDialog.setHeadingText(title);
-		messageDialog.setPredefinedButtons(PredefinedButton.CLOSE);
-		messageDialog.setBodyStyleName("pad-text");
-		messageDialog.add(new Label(message));
-		messageDialog.getBody().addClassName("pad-text");
-		messageDialog.setHideOnButtonClick(true);
-		messageDialog.setWidth(300);
-		messageDialog.setResizable(false);
-		messageDialog.show();
+		AlertMessageBox dialog = new MessageDialogBuilder().createError(title,
+				message);
+		dialog.show();
 	}
 }

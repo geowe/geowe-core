@@ -7,8 +7,19 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.1]Beta - 2016-10-04
+## [1.3.3]Beta - 2016-10-14
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added TopoJSON format support (only for Polygon, linestring and points)
+- Added GPX support (no waypoints info)
+- improve performance
+
+### Fixed
+- issue [#207](https://github.com/geowe/geowe-core/issues/207)
+- issue [#208](https://github.com/geowe/geowe-core/issues/208)
+
+## [1.3.1]Beta - 2016-10-04
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added pagging grid support in layer info dialog and search dialog.
 - Show bounds locked 

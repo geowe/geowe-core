@@ -202,9 +202,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 									geoDataImportDialog.hide();
 
 									if (!geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.url())
-											&& !geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.wfs())) {
+											.equals(UIMessages.INSTANCE.url())) {
 										autoMessageBox.hide();
 									}
 								} else {

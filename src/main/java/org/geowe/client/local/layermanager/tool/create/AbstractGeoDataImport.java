@@ -40,9 +40,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public abstract class AbstractGeoDataImport extends ButtonTool {
-//	private static final Logger LOG = LoggerFactory
-//			.getLogger(AbstractGeoDataImport.class.getName());
-	
+	private static final Logger LOG = LoggerFactory
+			.getLogger(AbstractGeoDataImport.class.getName());
+
 	private final GeoDataImportDialog geoDataImportDialog;
 	private final LayerManagerWidget layerManager;
 	private final MessageDialogBuilder messageDialogBuilder;
@@ -73,7 +73,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		} else if (UIMessages.INSTANCE.empty().equals(activeTab)) {
 			layer = createEmptyLayer();
 		} else if (UIMessages.INSTANCE.wfs().equals(activeTab)) {
-			layer = createWfsLayer();
+			createWfsLayer();
 		}
 
 		return layer;
@@ -82,7 +82,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	protected VectorLayer createLayerFromText() {
 		VectorLayer layer = null;
 		VectorLayerConfig layerConfig = null;
-		
+
 		try {
 			layerConfig = new VectorLayerConfig();
 			layerConfig.setEpsg(geoDataImportDialog.getProjectionName());
@@ -114,18 +114,23 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		geoDataImportDialog.getUploadPanel().submit();
 	}
 
-	protected VectorLayer createWfsLayer() {
-		WfsVectorLayerDef wfsLayer = new WfsVectorLayerDef();
-		wfsLayer.setName(geoDataImportDialog.getLayerName());
-		wfsLayer.setUrl(geoDataImportDialog.getWfsUrl());
-		wfsLayer.setNameSpace(geoDataImportDialog.getWfsNamespace());
-		wfsLayer.setFeatureType(geoDataImportDialog.getWfsFeatureType());
-		wfsLayer.setGeometryColumn(geoDataImportDialog.getGeomColumn());
-		wfsLayer.setFormat(geoDataImportDialog.getDataFormat());
-		wfsLayer.setEpsg(geoDataImportDialog.getProjectionName());
-		wfsLayer.setVersion(geoDataImportDialog.getVersion());
-
-		return (VectorLayer) wfsLayer.getLayer();
+	protected void createWfsLayer() {
+		WfsVectorLayerDef urlLayerDef = new WfsVectorLayerDef();
+		urlLayerDef.setType(LayerDef.VECTOR_TYPE);
+		urlLayerDef.setEpsg(geoDataImportDialog.getProjectionName());
+		urlLayerDef.setFormat(geoDataImportDialog.getDataFormat());
+		urlLayerDef.setName(geoDataImportDialog.getLayerName());
+		urlLayerDef.setServiceUrl(geoDataImportDialog.getWfsUrl());
+		urlLayerDef.setVersion(geoDataImportDialog.getWfsVersion());
+		urlLayerDef.setNameSpaceFeatureType(geoDataImportDialog
+				.getWfsNamespaceTypeName());
+		urlLayerDef.setMaxFeatures(geoDataImportDialog.getWfsMaxFeatures());
+		if (geoDataImportDialog.isBboxEnabled()) {
+			urlLayerDef.generateBbox();
+		}else{
+			urlLayerDef.setCql(geoDataImportDialog.getWfsCqlfilter());
+		}
+		urlLayerDef.load();
 	}
 
 	protected VectorLayer createEmptyLayer() {
@@ -169,7 +174,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 					}
 				});
 	}
-	
+
 	protected boolean isValidInputFile() {
 		boolean isValid = true;
 		if (geoDataImportDialog.getActiveTab().equals(
@@ -180,7 +185,6 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 			isValid = false;
 		}
-
 		return isValid;
 	}
 
@@ -194,7 +198,6 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 			isValid = false;
 		}
-
 		return isValid;
 	}
 
@@ -207,7 +210,6 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 			isValid = false;
 		}
-
 		return isValid;
 	}
 
@@ -216,11 +218,9 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		if (geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.wfs())
 				&& ((geoDataImportDialog.getWfsUrl() == null && geoDataImportDialog
-						.getWfsUrl().isEmpty())
-						|| (geoDataImportDialog.getWfsNamespace() == null && geoDataImportDialog
-								.getWfsNamespace().isEmpty()) || (geoDataImportDialog
-						.getWfsFeatureType() == null && geoDataImportDialog
-						.getWfsFeatureType().isEmpty()))) {
+						.getWfsUrl().isEmpty()) || (geoDataImportDialog
+						.getWfsNamespaceTypeName() == null && geoDataImportDialog
+						.getWfsNamespaceTypeName().isEmpty()))) {
 
 			isValid = false;
 		}

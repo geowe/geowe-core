@@ -42,16 +42,16 @@ import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 
 /**
  * Definicion de una capa vectorial que se construye a partir de unos geodatos
- * alojados en la nube, ya sea a través de un repositorio de ficheros, un 
+ * alojados en la nube, ya sea a través de un repositorio de ficheros, un
  * servicio web, etc.
  * 
  * @author Atanasio Muñoz
  *
  */
-public class URLVectorLayerDef extends VectorLayerDef {		
+public class URLVectorLayerDef extends VectorLayerDef {
 	private static final long serialVersionUID = 1L;
 	private static final String URL_BASE = "/gwtOpenLayersProxy";
-	private String url;	
+	private String url;
 
 	public String getUrl() {
 		return url;
@@ -62,26 +62,27 @@ public class URLVectorLayerDef extends VectorLayerDef {
 	}
 
 	@Override
-	public Layer getLayer() {	
+	public Layer getLayer() {
 		throw new RuntimeException("Not implemented yet!.");
 	}
-	
+
 	public void load() {
 		createLayerFromURL();
 	}
-	
-	private void createLayerFromURL() {
-		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false,UIMessages.INSTANCE.processing());
+
+	protected void createLayerFromURL() {
+		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false,
+				UIMessages.INSTANCE.processing());
 		try {
-			autoMessageBox.show();			
+			autoMessageBox.show();
 			RestClient.create(URLFileRestService.class, URL_BASE,
 					new RemoteCallback<String>() {
 						@Override
 						public void callback(String response) {
 							final VectorLayerConfig layerConfig = getVectorLayerConfig();
 							layerConfig.setGeoDataString(response);
-							VectorLayer layer = VectorLayerFactory.createVectorLayerFromGeoData(layerConfig);
-							//layer.setStyleMap(getStyle());							
+							VectorLayer layer = VectorLayerFactory
+									.createVectorLayerFromGeoData(layerConfig);
 							LayerLoader.load(layer);
 							autoMessageBox.hide();
 						}
@@ -90,17 +91,20 @@ public class URLVectorLayerDef extends VectorLayerDef {
 						public boolean error(Request message,
 								Throwable throwable) {
 							autoMessageBox.hide();
-							showDialog("Error",
-									message + ". " + throwable.getMessage());
+							showDialog("Error", message + ". "
+									+ UIMessages.INSTANCE.unexpectedError());
 							return false;
 						}
 					}, Response.SC_OK).getContent(getUrl());
-
 		} catch (Exception e) {
-			showDialog("Error", e.getMessage());
+			autoMessageBox.hide();
+			showDialog(
+					UIMessages.INSTANCE.errorLoadingLayer(getVectorLayerConfig()
+							.getLayerName()),
+					UIMessages.INSTANCE.unexpectedError());
 		}
 	}
-	
+
 	private void showDialog(String title, String message) {
 		final Dialog messageDialog = new Dialog();
 		messageDialog.setModal(true);

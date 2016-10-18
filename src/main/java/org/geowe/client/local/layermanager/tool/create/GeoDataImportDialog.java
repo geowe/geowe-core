@@ -74,6 +74,8 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * Represents the dialog to import layers
  * 
  * @author geowe
+ * @since 18/10/2016
+ * @author rafa@geowe.org WFS fix
  *
  */
 @ApplicationScoped
@@ -148,7 +150,6 @@ public class GeoDataImportDialog extends Dialog {
 		} else {
 			return this.vectorFormatCombo.getValue().getName();
 		}
-
 	}
 
 	public FormPanel getUploadPanel() {
@@ -159,20 +160,30 @@ public class GeoDataImportDialog extends Dialog {
 		return wfsImportTab.getWfsUrl();
 	}
 
-	public String getWfsNamespace() {
-		return wfsImportTab.getWfsNamespace();
+	public String getWfsNamespaceTypeName() {
+		return wfsImportTab.getWfsTypeName();
 	}
 
-	public String getWfsFeatureType() {
-		return wfsImportTab.getWfsFeatureType();
+	public int getWfsMaxFeatures() {
+		return (wfsImportTab.getWfsMaxFeaturesType() != null && !wfsImportTab
+				.getWfsMaxFeaturesType().isEmpty()) ? Integer
+				.parseInt(wfsImportTab.getWfsMaxFeaturesType()) : 0;
+	}
+
+	public String getWfsCqlfilter() {
+		return wfsImportTab.getCql();
 	}
 
 	public String getGeomColumn() {
-		return wfsImportTab.getGeomColumn();
+		return wfsImportTab.getCql();
 	}
 
-	public String getVersion() {
-		return wfsImportTab.getVersion();
+	public String getWfsVersion() {
+		return wfsImportTab.getWfsVersion();
+	}
+
+	public boolean isBboxEnabled() {
+		return wfsImportTab.isBboxEnabled();
 	}
 
 	private HorizontalLayoutContainer createLayout() {
@@ -436,5 +447,4 @@ public class GeoDataImportDialog extends Dialog {
 		p.appendChild(i);
 		i.onload = o;
 	}-*/;
-
 }

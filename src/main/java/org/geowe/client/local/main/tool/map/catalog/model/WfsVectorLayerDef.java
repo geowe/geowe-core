@@ -76,7 +76,7 @@ public class WfsVectorLayerDef extends URLVectorLayerDef {
 					+ bbox.getLowerLeftY() + "," + bbox.getUpperRightX() + ","
 					+ bbox.getUpperRightY());
 		} else {
-			url.append("&CQL_FILTER=" + cql);
+			url.append("&CQL_FILTER=" + URL.encodeQueryString(cql));
 		}
 		return url.toString();
 	}

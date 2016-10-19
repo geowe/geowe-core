@@ -84,7 +84,7 @@ public class WfsImportTab extends VerticalPanel {
 				.gdidWfsMaxFeaturesField()));
 
 		bbox = new CheckBox();
-		bbox.setBoxLabel("BBox");
+		bbox.setBoxLabel(UIMessages.INSTANCE.currentExtentTooltipTitle());
 		bbox.setValue(true);
 		bbox.addChangeHandler(new ChangeHandler() {
 			@Override

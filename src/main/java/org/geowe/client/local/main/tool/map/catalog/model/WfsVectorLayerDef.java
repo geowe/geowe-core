@@ -28,7 +28,7 @@ import org.gwtopenmaps.openlayers.client.Projection;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.google.gwt.http.client.URL;
 /**
  * Definicion de una capa vectorial de tipo WFS, es decir, que se construye en
  * base a una llamada a un servidor WFS.

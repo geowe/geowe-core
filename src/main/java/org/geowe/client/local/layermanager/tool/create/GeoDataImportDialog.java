@@ -251,6 +251,11 @@ public class GeoDataImportDialog extends Dialog {
 				} else {
 					dataFormatField.setVisible(true);
 				}
+				if (UIMessages.INSTANCE.wfs().equals(getActiveTab())) {
+					vectorFormatCombo.setValue(VectorFormat.GML_FORMAT);
+				} else {
+					vectorFormatCombo.setValue(null);
+				}
 			}
 		};
 	}

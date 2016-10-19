@@ -75,6 +75,7 @@ public class WfsImportTab extends VerticalPanel {
 				.gdidWfsNameSpaceField()));
 		
 		versionField = createTextField(FIELD_WIDTH, true, "X.X.X");
+		versionField.setText("1.0.0");
 		this.add(new FieldLabel(versionField, UIMessages.INSTANCE
 				.gdidWfsVersionField()));
 

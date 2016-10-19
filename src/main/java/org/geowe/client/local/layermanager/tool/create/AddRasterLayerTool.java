@@ -47,7 +47,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * @author jose@geowe.org
  * @since 25/08/2016
  * @author rafa@geowe.org
- * @since 11/10/2016 fix issue 207
+ * @since 11/10/2016 fix issue 207 19/10/2016 fix issue 217
  */
 @ApplicationScoped
 public class AddRasterLayerTool extends LayerTool {
@@ -81,7 +81,7 @@ public class AddRasterLayerTool extends LayerTool {
 	}
 
 	@PostConstruct
-	private void setOKHandler() {
+	private void setButtonHandler() {
 		loadRasterLayerDialog.getButton(PredefinedButton.OK).addSelectHandler(
 				new SelectHandler() {
 					@Override
@@ -109,6 +109,15 @@ public class AddRasterLayerTool extends LayerTool {
 											.aRasterltAlertMessageBoxLabel());
 						}
 
+					}
+				});
+
+		loadRasterLayerDialog.getButton(PredefinedButton.CANCEL)
+				.addSelectHandler(new SelectHandler() {
+
+					@Override
+					public void onSelect(SelectEvent event) {
+						loadRasterLayerDialog.hide();
 					}
 				});
 	}

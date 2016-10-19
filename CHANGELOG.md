@@ -7,8 +7,19 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.3]Beta - 2016-10-14
+## [1.3.4]Beta - 2016-10-19
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added CQL support for WFS layers.
+- Added BBox query to WFS layers.
+
+### Fixed
+- issue [#31](https://github.com/geowe/geowe-core/issues/31)
+- issue [#215](https://github.com/geowe/geowe-core/issues/215)
+- issue [#217](https://github.com/geowe/geowe-core/issues/217)
+
+## [1.3.3]Beta - 2016-10-14
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added TopoJSON format support (only for Polygon, linestring and points)
 - Added GPX support (no waypoints info)

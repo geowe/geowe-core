@@ -369,7 +369,7 @@ public interface UIMessages extends Messages {
 
 	String lrasterdUrlField();
 
-	String lrasterdLayerNameField();
+	String lrasterdLayerNameField(String rasterType);
 
 	String lrasterdImageFormatField();
 

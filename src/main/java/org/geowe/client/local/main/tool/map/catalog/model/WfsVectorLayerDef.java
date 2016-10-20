@@ -26,8 +26,8 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.gwtopenmaps.openlayers.client.Bounds;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.google.gwt.http.client.URL;
 
 /**
  * Definicion de una capa vectorial de tipo WFS, es decir, que se construye en
@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class WfsVectorLayerDef extends URLVectorLayerDef {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(WfsVectorLayerDef.class.getName());
 
 	private static final long serialVersionUID = -7573399082120677088L;
 
@@ -105,7 +103,6 @@ public class WfsVectorLayerDef extends URLVectorLayerDef {
 		default:
 			break;
 		}
-		LOG.info(getFormat() + ": " + outputFormat);
 		return outputFormat;
 	}
 

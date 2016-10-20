@@ -7,6 +7,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+## [1.3.5]Beta - 2016-10-20
+### Added
+- WFS load: Permit no filter on CQL query for WFS layer.
+- WFS load: if maxFeatures  equals to 0 you get all elements.
+
 ## [1.3.4]Beta - 2016-10-19
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

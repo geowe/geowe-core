@@ -39,9 +39,7 @@ import com.google.gwt.http.client.URL;
  *
  */
 public class WfsVectorLayerDef extends URLVectorLayerDef {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(WfsVectorLayerDef.class.getName());
-
+	
 	private static final long serialVersionUID = -7573399082120677088L;
 
 	private String serviceUrl;
@@ -105,7 +103,6 @@ public class WfsVectorLayerDef extends URLVectorLayerDef {
 		default:
 			break;
 		}
-		LOG.info(getFormat() + ": " + outputFormat);
 		return outputFormat;
 	}
 

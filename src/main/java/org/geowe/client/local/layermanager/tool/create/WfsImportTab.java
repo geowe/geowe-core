@@ -74,13 +74,14 @@ public class WfsImportTab extends VerticalPanel {
 		this.add(new FieldLabel(typeNameField, UIMessages.INSTANCE
 				.gdidWfsNameSpaceField()));
 		
-		versionField = createTextField(FIELD_WIDTH, true, "X.X.X");
-		versionField.setText("1.0.0");
+		versionField = createTextField(FIELD_WIDTH, false, "X.X.X");
+		versionField.setValue("1.0.0");
 		this.add(new FieldLabel(versionField, UIMessages.INSTANCE
 				.gdidWfsVersionField()));
 
 		maxFeaturesField = createTextField(FIELD_WIDTH, false, "no limit");
-		maxFeaturesField.setText("100");
+		maxFeaturesField.setValue("100");
+		;
 		this.add(new FieldLabel(maxFeaturesField, UIMessages.INSTANCE
 				.gdidWfsMaxFeaturesField()));
 
@@ -95,7 +96,7 @@ public class WfsImportTab extends VerticalPanel {
 		});
 		this.add(bbox);
 
-		cqlFilterField = createTextField(FIELD_WIDTH, false, "no filter");
+		cqlFilterField = createTextField(FIELD_WIDTH, true, "no filter");
 		cqlFilterField.setEnabled(false);
 		this.add(new FieldLabel(cqlFilterField, UIMessages.INSTANCE
 				.gdidWfsCqlField()));

@@ -12,6 +12,9 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - WFS load: Permit no filter on CQL query for WFS layer.
 - WFS load: if maxFeatures  equals to 0 you get all elements.
 
+### Fixed
+- issue [#219](https://github.com/geowe/geowe-core/issues/219)
+
 ## [1.3.4]Beta - 2016-10-19
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

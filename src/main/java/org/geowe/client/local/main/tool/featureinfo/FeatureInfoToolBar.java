@@ -130,7 +130,7 @@ public class FeatureInfoToolBar extends ContentPanel {
 
 				for (FeatureAttributeBean featureAttributeBean : featureAttributes
 						.getAll()) {
-					csv.append(featureAttributeBean.getAttributeName() + ","
+					csv.append(featureAttributeBean.getAttributeName() + ";"
 							+ featureAttributeBean.getAttributeValue() + "\n");
 				}
 

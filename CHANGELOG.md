@@ -7,12 +7,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.6]Beta - 2016-10-31
+## [1.3.6]Beta - 2016-11-09
 ### Added
 - Added EPSG:25829
 
 ### Fixed
 - issue [#221](https://github.com/geowe/geowe-core/issues/221)
+- issue [#227](https://github.com/geowe/geowe-core/issues/227)
 
 ## [1.3.5]Beta - 2016-10-20
 version deployed for testing [map.geowe.org](http://map.geowe.org)

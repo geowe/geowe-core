@@ -58,7 +58,7 @@ public class CSV {
 			VectorFeature transformedFeature = getTransformedFeatures(vectorFeature);
 			for (String attributeValue : transformedFeature.getAttributes()
 					.getAttributeValues()) {
-				csv.append(attributeValue + ",");
+				csv.append(attributeValue + ";");
 			}
 			csv.append(getWkt(transformedFeature));
 			csv.append("\n");
@@ -69,7 +69,7 @@ public class CSV {
 	private String getColumnName(VectorFeature feature) {
 		StringBuffer columnName = new StringBuffer("");
 		for (String attributeName : feature.getAttributes().getAttributeNames()) {
-			columnName.append(attributeName + ",");
+			columnName.append(attributeName + ";");
 		}
 		columnName.append("WKT");
 		columnName.append("\n");

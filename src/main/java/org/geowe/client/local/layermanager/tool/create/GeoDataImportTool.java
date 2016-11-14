@@ -37,8 +37,6 @@ import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
@@ -60,12 +58,10 @@ import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitComplet
  */
 @ApplicationScoped
 public class GeoDataImportTool extends AbstractGeoDataImport {
-//	private static final Logger LOG = LoggerFactory
-//			.getLogger(GeoDataImportTool.class.getName());
 
 	protected final GeoDataImportDialog geoDataImportDialog;
 	protected final LayerManagerWidget layerManagerWidget;
-	
+
 	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
@@ -108,22 +104,22 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 						}
 
 						VectorLayerConfig layerConfig = null;
-						Layer layer = null; 
-						
+						Layer layer = null;
+
 						try {
 							layerConfig = new VectorLayerConfig();
 							layerConfig.setEpsg(geoDataImportDialog
-								.getProjectionName());
+									.getProjectionName());
 							layerConfig.setGeoDataFormat(geoDataImportDialog
-								.getDataFormat());
+									.getDataFormat());
 							layerConfig.setLayerName(geoDataImportDialog
-								.getLayerName());
+									.getLayerName());
 							layerConfig.setGeoDataString(contentFile);
 
 							layer = VectorLayerFactory
 									.createVectorLayerFromGeoData(layerConfig);
-							
-						} catch (Exception e) {							
+
+						} catch (Exception e) {
 							showAlert(UIMessages.INSTANCE.gditAlertMessage());
 						}
 
@@ -155,7 +151,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 
 	@Override
 	public void onRelease() {
-		
+
 		geoDataImportDialog.initialize(dialogTitle, layerName, projection);
 		geoDataImportDialog.show();
 	}
@@ -209,7 +205,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 											.equals(UIMessages.INSTANCE.url())) {
 										autoMessageBox.hide();
 									}
-								} else {									
+								} else {
 									showAlert(UIMessages.INSTANCE.warning(),
 											UIMessages.INSTANCE
 													.gditAlertMessage());
@@ -217,8 +213,6 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 							}
 
 							private boolean isValid(final String activeTab) {
-//								boolean valid = isLayerNameValid(geoDataImportDialog
-//										.getLayerName());
 								boolean valid = true;
 								if (valid
 										&& UIMessages.INSTANCE.url().equals(

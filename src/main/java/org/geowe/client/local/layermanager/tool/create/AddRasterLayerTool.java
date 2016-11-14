@@ -46,7 +46,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  *
  * @author jose@geowe.org
  * @since 25/08/2016
- *
+ * @author rafa@geowe.org
+ * @since 11/10/2016 fix issue 207 19/10/2016 fix issue 217
  */
 @ApplicationScoped
 public class AddRasterLayerTool extends LayerTool {
@@ -80,7 +81,7 @@ public class AddRasterLayerTool extends LayerTool {
 	}
 
 	@PostConstruct
-	private void setOKHandler() {
+	private void setButtonHandler() {
 		loadRasterLayerDialog.getButton(PredefinedButton.OK).addSelectHandler(
 				new SelectHandler() {
 					@Override
@@ -110,10 +111,19 @@ public class AddRasterLayerTool extends LayerTool {
 
 					}
 				});
+
+		loadRasterLayerDialog.getButton(PredefinedButton.CANCEL)
+				.addSelectHandler(new SelectHandler() {
+
+					@Override
+					public void onSelect(SelectEvent event) {
+						loadRasterLayerDialog.hide();
+					}
+				});
 	}
 
 	private void loadWMTS() {
-		if (existLayer(loadRasterLayerDialog.getLayerNameWMS())) {
+		if (existLayer(loadRasterLayerDialog.getLayerNameWMTS())) {
 			showAlert(UIMessages.INSTANCE.aRasterltAlertMessageBoxTitle(),
 					UIMessages.INSTANCE.layerAlreadyExist(loadRasterLayerDialog
 							.getLayerNameWMTS()));
@@ -125,6 +135,7 @@ public class AddRasterLayerTool extends LayerTool {
 			wmtsLayer.setName(loadRasterLayerDialog.getLayerNameWMTS());
 			wmtsLayer.setFormat(loadRasterLayerDialog.getFormatWMTS());
 			layerManagerWidget.addRaster(wmtsLayer.getLayer());
+			loadRasterLayerDialog.hide();
 		}		
 	}
 	
@@ -136,10 +147,10 @@ public class AddRasterLayerTool extends LayerTool {
 		} else {
 			TmsLayerDef tmsLayer = new TmsLayerDef();
 			tmsLayer.setUrl(loadRasterLayerDialog.getUrlTMS());
-//			tmsLayer.setLayerName(loadRasterLayerDialog.getNameTMS());			
 			tmsLayer.setName(loadRasterLayerDialog.getNameTMS());
 			tmsLayer.setFormat(loadRasterLayerDialog.getFormatTMS());
 			layerManagerWidget.addRaster(tmsLayer.getLayer());
+			loadRasterLayerDialog.hide();
 		}		
 	}
 
@@ -157,6 +168,7 @@ public class AddRasterLayerTool extends LayerTool {
 			newLayer.setEpsg(GeoMap.INTERNAL_EPSG);
 
 			layerManagerWidget.addRaster(newLayer.getLayer());
+			loadRasterLayerDialog.hide();
 		}
 	}
 
@@ -166,6 +178,5 @@ public class AddRasterLayerTool extends LayerTool {
 
 	private void showAlert(String title, String msg) {
 		messageDialogBuilder.createError(title, msg).show();
-
 	}
 }

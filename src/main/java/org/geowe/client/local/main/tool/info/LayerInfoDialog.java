@@ -229,12 +229,12 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 				.getProjectionCode());
 		numElementsField.setText("0");
 
-		if (selectedLayer.getFeatures() != null) {
+		if (selectedLayer.getFeatures() == null) {
+			featureGrid.rebuild(new ArrayList<VectorFeature>());
+		} else {
 			numElementsField.setText(Integer.toString(((Vector) selectedLayer)
 					.getNumberOfFeatures()));
-			featureGrid.rebuild(selectedLayer.getFeatures());			
-		} else {
-			featureGrid.rebuild(new ArrayList<VectorFeature>());			
+			featureGrid.rebuild(selectedLayer.getFeatures());
 		}
 	}
 

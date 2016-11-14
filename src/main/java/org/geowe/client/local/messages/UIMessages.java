@@ -339,11 +339,11 @@ public interface UIMessages extends Messages {
 
 	String gdidWfsUrlField();
 
-	String gdidWfsLayerField();
+	String gdidWfsMaxFeaturesField();
 
 	String gdidWfsLayerFieldStakeholder();
 
-	String gdidWfsGeomColumnField();
+	String gdidWfsCqlField();
 
 	String gdidWfsVersionField();
 
@@ -369,7 +369,7 @@ public interface UIMessages extends Messages {
 
 	String lrasterdUrlField();
 
-	String lrasterdLayerNameField();
+	String lrasterdLayerNameField(String rasterType);
 
 	String lrasterdImageFormatField();
 
@@ -793,4 +793,5 @@ public interface UIMessages extends Messages {
 	
 	String confirmClearMaxExtent();
 	
+	String unexpectedError();
 }

@@ -22,13 +22,26 @@
  */
 package org.geowe.client.local.util;
 
-public class Base64 {
+/**
+ * Utility Class to get base64 hash
+ * 
+ * @author jose@geowe.org, rafa@geowe.org
+ *
+ */
+public final class Base64 {
+
+	/**
+	 * To prevent instantiation
+	 */
+	private Base64() {
+	}
+
 
 	public static native String decode(String a) /*-{
-	  return window.atob(a);	  	  
+		return window.atob(a);
 	}-*/;
 	
 	public static native String encode(String a) /*-{
-	  return window.btoa(a);	  
+		return window.btoa(a);
 	}-*/;
 }

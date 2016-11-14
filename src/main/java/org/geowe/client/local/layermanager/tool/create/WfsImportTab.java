@@ -27,10 +27,13 @@ import javax.enterprise.context.ApplicationScoped;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
@@ -38,10 +41,11 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class WfsImportTab extends VerticalPanel {
 	private static final String FIELD_WIDTH = "170px";
 	private final TextField wfsUrlField;
-	private final TextField wfsNameSpaceField;
-	private final TextField wfsFeatureTypeField;
-	private final TextField geomColumnField;
+	private final TextField typeNameField;
+	private final TextField maxFeaturesField;
+	private final TextField cqlFilterField;
 	private final TextField versionField;
+	private CheckBox bbox;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	
@@ -64,42 +68,39 @@ public class WfsImportTab extends VerticalPanel {
 			}
 		});
 
-		wfsNameSpaceField = createTextField(FIELD_WIDTH, false, null);
-		this.add(new FieldLabel(wfsNameSpaceField, UIMessages.INSTANCE
+		typeNameField = createTextField(FIELD_WIDTH, false,
+				UIMessages.INSTANCE
+				.gdidWfsLayerFieldStakeholder());
+		this.add(new FieldLabel(typeNameField, UIMessages.INSTANCE
 				.gdidWfsNameSpaceField()));
 		
-		wfsFeatureTypeField = createTextField(FIELD_WIDTH, false, null);
-		this.add(new FieldLabel(wfsFeatureTypeField, UIMessages.INSTANCE
-				.gdidWfsLayerField()));		
-
-		geomColumnField = createTextField(FIELD_WIDTH, true, null);
-		this.add(new FieldLabel(geomColumnField, UIMessages.INSTANCE
-				.gdidWfsGeomColumnField()));
-
-		versionField = createTextField(FIELD_WIDTH, true, "X.X.X");
+		versionField = createTextField(FIELD_WIDTH, false, "X.X.X");
+		versionField.setValue("1.0.0");
 		this.add(new FieldLabel(versionField, UIMessages.INSTANCE
 				.gdidWfsVersionField()));
-	}
 
-	public String getWfsUrl() {
-		return wfsUrlField.getText();
-	}
+		maxFeaturesField = createTextField(FIELD_WIDTH, false, "no limit");
+		maxFeaturesField.setValue("100");
+		;
+		this.add(new FieldLabel(maxFeaturesField, UIMessages.INSTANCE
+				.gdidWfsMaxFeaturesField()));
 
-	public String getWfsNamespace() {
-		return wfsNameSpaceField.getText();
-	}
+		bbox = new CheckBox();
+		bbox.setBoxLabel(UIMessages.INSTANCE.currentExtentTooltipTitle());
+		bbox.setValue(true);
+		bbox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				cqlFilterField.setEnabled(!bbox.getValue());
+			}
+		});
+		this.add(bbox);
 
-	public String getWfsFeatureType() {
-		return wfsFeatureTypeField.getText();
+		cqlFilterField = createTextField(FIELD_WIDTH, true, "no filter");
+		cqlFilterField.setEnabled(false);
+		this.add(new FieldLabel(cqlFilterField, UIMessages.INSTANCE
+				.gdidWfsCqlField()));
 	}
-
-	public String getGeomColumn() {
-		return geomColumnField.getText();
-	}
-
-	public String getVersion() {
-		return versionField.getText();
-	}	
 	
 	private TextField createTextField(final String width, final boolean allowBlank,
 			final String stakeHolder) {
@@ -114,4 +115,28 @@ public class WfsImportTab extends VerticalPanel {
 
 		return newTextField;
 	}	
+
+	public String getWfsUrl() {
+		return wfsUrlField.getText();
+	}
+
+	public String getWfsTypeName() {
+		return typeNameField.getText();
+	}
+
+	public String getWfsMaxFeaturesType() {
+		return maxFeaturesField.getText();
+	}
+
+	public String getCql() {
+		return cqlFilterField.getText();
+	}
+
+	public String getWfsVersion() {
+		return versionField.getText();
+	}	
+	
+	public boolean isBboxEnabled() {
+		return bbox.getValue();
+	}
 }

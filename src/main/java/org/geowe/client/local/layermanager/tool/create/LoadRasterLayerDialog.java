@@ -42,23 +42,32 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * Represents a dialog to load a layer on the map from a Web Map Service (WMS) and Web Map Tile Service
+ * Represents a dialog to load a layer on the map from a Web Map Service (WMS)
+ * and Web Map Tile Service
  * 
  * @author jose@geowe.org
- * @since 24/08/2016
+ * @since 19/10/2016
+ * @author rafa@geowe.org fix issue 215
  */
 @ApplicationScoped
 public class LoadRasterLayerDialog extends Dialog {
 	private static final String FIELD_WIDTH = "300px";
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
-	
+
 	private TextField urlWMSField;
 	private TextField nameWMSField;
 	private TextField formatWMSField;
 	private TextField urlTMSField;
 	private TextField nameTMSField;
-	private TextField formatTMSField;	
+	private TextField formatTMSField;
+	private TextField urlWMTSField;
+	private TextField nameWMTSField;
+	private TextField formatWMTSField;
+	private TextField tileMatrixSetField;
+
+	private PlainTabPanel tabPanel;
+
 	public String getUrlTMS() {
 		return urlTMSField.getText();
 	}
@@ -83,62 +92,56 @@ public class LoadRasterLayerDialog extends Dialog {
 		this.formatTMSField.setText(formatTMS);
 	}
 
-	private TextField urlWMTSField;	
-	private TextField nameWMTSField;
-	private TextField formatWMTSField;
-	private TextField tileMatrixSetField;
-	
-	private PlainTabPanel tabPanel;
 	public LoadRasterLayerDialog() {
 		super();
 		this.setHeadingText(UIMessages.INSTANCE.lrasterdTitle());
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layerIcon());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(350, 350);		
+		this.setPixelSize(350, 350);
 		this.setModal(true);
-		this.setHideOnButtonClick(true);
+		this.setHideOnButtonClick(false);
 		add(createPanel());
-		
+
 	}
-	
+
 	private Widget createPanel() {
 		final VerticalPanel panel = new VerticalPanel();
-		
+
 		panel.setSpacing(10);
 		panel.add(createTabPanel());
 		createGetcapabilitiesbutton();
-//		addKeyShortcuts();
 		return panel;
 	}
-	
+
 	private void createGetcapabilitiesbutton() {
 		final ToolButton tButton = new ToolButton(ToolButton.SEARCH);
 		tButton.setToolTip(UIMessages.INSTANCE.showCapabilitiesText());
 		addCapabilitiesSelectHandler(tButton);
 		getHeader().addTool(tButton);
 	}
-	
+
 	private void addCapabilitiesSelectHandler(final ToolButton tButton) {
 		tButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(final SelectEvent event) {
-				final String capabilitiesSufix = "?SERVICE=" + getActiveTab() + "&version=1.1.1&request=GetCapabilities";
+				final String capabilitiesSufix = "?SERVICE=" + getActiveTab()
+						+ "&version=1.1.1&request=GetCapabilities";
 				String url = "";
-				
-				if ("WMS".equals(getActiveTab()) && urlWMSField.isValid()) {					
-					 url = getUrlWMS() + capabilitiesSufix;
-				}
-				else if ("WMTS".equals(getActiveTab()) && urlWMTSField.isValid()) {					
+
+				if ("WMS".equals(getActiveTab()) && urlWMSField.isValid()) {
+					url = getUrlWMS() + capabilitiesSufix;
+				} else if ("WMTS".equals(getActiveTab())
+						&& urlWMTSField.isValid()) {
 					url = getUrlWMTS() + capabilitiesSufix;
 				}
-				
-				if(!url.isEmpty()) {
+
+				if (!url.isEmpty()) {
 					Window.open(url, "_blank", null);
-				}				
+				}
 			}
 		});
 	}
-	
+
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
 		tabPanel.setPixelSize(350, 250);
@@ -146,14 +149,13 @@ public class LoadRasterLayerDialog extends Dialog {
 		tabPanel.add(getWMSPanel(), "WMS");
 		tabPanel.add(getWMTSPanel(), "WMTS");
 		tabPanel.add(getTMSPanel(), "TMS");
-		
+
 		return tabPanel;
 	}
-	
+
 	private VerticalPanel getTMSPanel() {
 		final VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("350px");
-		//panel.setHeight("20px");
 		panel.setSpacing(10);
 
 		urlTMSField = new TextField();
@@ -164,7 +166,7 @@ public class LoadRasterLayerDialog extends Dialog {
 		panel.add(urlTMSField);
 
 		nameTMSField = new TextField();
-		nameTMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameTMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField(""));
 		nameTMSField.setAllowBlank(false);
 		nameTMSField.setWidth(FIELD_WIDTH);
 		panel.add(nameTMSField);
@@ -177,13 +179,10 @@ public class LoadRasterLayerDialog extends Dialog {
 
 		return panel;
 	}
-	
-	
-	
+
 	private VerticalPanel getWMSPanel() {
 		final VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("350px");
-		//panel.setHeight("20px");
 		panel.setSpacing(10);
 
 		urlWMSField = new TextField();
@@ -194,7 +193,8 @@ public class LoadRasterLayerDialog extends Dialog {
 		panel.add(urlWMSField);
 
 		nameWMSField = new TextField();
-		nameWMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMSField
+				.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField("WMS"));
 		nameWMSField.setAllowBlank(false);
 		nameWMSField.setWidth(FIELD_WIDTH);
 		panel.add(nameWMSField);
@@ -207,11 +207,10 @@ public class LoadRasterLayerDialog extends Dialog {
 
 		return panel;
 	}
-	
+
 	private VerticalPanel getWMTSPanel() {
 		final VerticalPanel panel = new VerticalPanel();
 		panel.setWidth("350px");
-		//panel.setHeight("250px");
 		panel.setSpacing(10);
 
 		urlWMTSField = new TextField();
@@ -222,26 +221,29 @@ public class LoadRasterLayerDialog extends Dialog {
 		panel.add(urlWMTSField);
 
 		nameWMTSField = new TextField();
-		nameWMTSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMTSField.setTitle(UIMessages.INSTANCE
+				.lrasterdLayerNameField("WMTS"));
 		nameWMTSField.setAllowBlank(false);
 		nameWMTSField.setWidth(FIELD_WIDTH);
 		panel.add(nameWMTSField);
 
 		formatWMTSField = new TextField();
-		formatWMTSField.setTitle(UIMessages.INSTANCE.lrasterdImageFormatField());
+		formatWMTSField
+				.setTitle(UIMessages.INSTANCE.lrasterdImageFormatField());
 		formatWMTSField.setAllowBlank(false);
 		formatWMTSField.setWidth(FIELD_WIDTH);
 		panel.add(formatWMTSField);
-		
+
 		tileMatrixSetField = new TextField();
-		tileMatrixSetField.setTitle(UIMessages.INSTANCE.lrasterdMatrixSetField());
+		tileMatrixSetField.setTitle(UIMessages.INSTANCE
+				.lrasterdMatrixSetField());
 		tileMatrixSetField.setAllowBlank(false);
 		tileMatrixSetField.setWidth(FIELD_WIDTH);
 		panel.add(tileMatrixSetField);
-		
+
 		return panel;
 	}
-	
+
 	public String getUrlWMS() {
 		return urlWMSField.getText();
 	}
@@ -265,7 +267,7 @@ public class LoadRasterLayerDialog extends Dialog {
 	public void setFormatWMS(final String format) {
 		this.formatWMSField.setText(format);
 	}
-	
+
 	public String getUrlWMTS() {
 		return urlWMTSField.getText();
 	}
@@ -297,7 +299,7 @@ public class LoadRasterLayerDialog extends Dialog {
 	public void setTileMatrixSetField(String tileMatrixSetField) {
 		this.tileMatrixSetField.setText(tileMatrixSetField);
 	}
-	
+
 	public boolean isCorrectFilledTMS() {
 		boolean isCorrect = true;
 		StringBuffer error = new StringBuffer("");
@@ -309,7 +311,8 @@ public class LoadRasterLayerDialog extends Dialog {
 			error.append(" Layer Name, ");
 			isCorrect = false;
 		}
-		if (formatTMSField.getText() == null || formatTMSField.getText().isEmpty()) {
+		if (formatTMSField.getText() == null
+				|| formatTMSField.getText().isEmpty()) {
 			error.append(" Image format. ");
 			isCorrect = false;
 		}
@@ -331,7 +334,8 @@ public class LoadRasterLayerDialog extends Dialog {
 			error.append(" Layer Name, ");
 			isCorrect = false;
 		}
-		if (formatWMSField.getText() == null || formatWMSField.getText().isEmpty()) {
+		if (formatWMSField.getText() == null
+				|| formatWMSField.getText().isEmpty()) {
 			error.append(" Image format. ");
 			isCorrect = false;
 		}
@@ -341,7 +345,7 @@ public class LoadRasterLayerDialog extends Dialog {
 		}
 		return isCorrect;
 	}
-	
+
 	public boolean isCorrectFilledWMTS() {
 		boolean isCorrect = true;
 		StringBuffer error = new StringBuffer("");
@@ -349,16 +353,19 @@ public class LoadRasterLayerDialog extends Dialog {
 			error.append(" URL, ");
 			isCorrect = false;
 		}
-		if (nameWMTSField.getText() == null || nameWMTSField.getText().isEmpty()) {
+		if (nameWMTSField.getText() == null
+				|| nameWMTSField.getText().isEmpty()) {
 			error.append(" Layer Name, ");
 			isCorrect = false;
 		}
-		if (formatWMTSField.getText() == null || formatWMTSField.getText().isEmpty()) {
+		if (formatWMTSField.getText() == null
+				|| formatWMTSField.getText().isEmpty()) {
 			error.append(" Image format. ");
 			isCorrect = false;
 		}
-		
-		if (tileMatrixSetField.getText() == null || tileMatrixSetField.getText().isEmpty()) {
+
+		if (tileMatrixSetField.getText() == null
+				|| tileMatrixSetField.getText().isEmpty()) {
 			error.append(" Tile Matrix Set. ");
 			isCorrect = false;
 		}
@@ -370,15 +377,18 @@ public class LoadRasterLayerDialog extends Dialog {
 	}
 
 	private boolean isUrlWMTSFieldCorrect() {
-		return (urlWMTSField.getText() != null && !urlWMTSField.getText().isEmpty());
+		return (urlWMTSField.getText() != null && !urlWMTSField.getText()
+				.isEmpty());
 	}
-	
+
 	private boolean isUrlWMSFieldCorrect() {
-		return (urlWMSField.getText() != null && !urlWMSField.getText().isEmpty());
+		return (urlWMSField.getText() != null && !urlWMSField.getText()
+				.isEmpty());
 	}
-	
+
 	private boolean isUrlTMSFieldCorrect() {
-		return (urlTMSField.getText() != null && !urlTMSField.getText().isEmpty());
+		return (urlTMSField.getText() != null && !urlTMSField.getText()
+				.isEmpty());
 	}
 
 	private void showAlert(String error) {
@@ -386,14 +396,15 @@ public class LoadRasterLayerDialog extends Dialog {
 				UIMessages.INSTANCE.lrasterdAlertMessageBoxTitle(),
 				UIMessages.INSTANCE.lrasterdAlertMessageBoxLabel(error)).show();
 	}
-	
+
 	public String getActiveTab() {
 		return tabPanel.getConfig(tabPanel.getActiveWidget()).getText();
 	}
-	
+
 	public void initializeWMSFields() {
 		urlWMSField.setEmptyText("http://...");
-		nameWMSField.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMSField.setEmptyText(UIMessages.INSTANCE
+				.lrasterdLayerNameField("WMS"));
 		formatWMSField.setEmptyText("image/png, image/jpg...");
 
 		urlWMSField.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -405,10 +416,11 @@ public class LoadRasterLayerDialog extends Dialog {
 			}
 		});
 	}
-	
+
 	public void initializeTMSFields() {
 		urlTMSField.setEmptyText("http://...");
-		nameTMSField.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameTMSField.setEmptyText(UIMessages.INSTANCE
+				.lrasterdLayerNameField(" "));
 		formatTMSField.setEmptyText("png, jpg...");
 
 		urlTMSField.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -420,10 +432,11 @@ public class LoadRasterLayerDialog extends Dialog {
 			}
 		});
 	}
-	
+
 	public void initializeWMTSFields() {
 		urlWMTSField.setEmptyText("http://...");
-		nameWMTSField.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMTSField.setEmptyText(UIMessages.INSTANCE
+				.lrasterdLayerNameField("WMTS"));
 		formatWMTSField.setEmptyText("image/png, image/jpg...");
 		tileMatrixSetField.setEmptyText("matrix set identifier");
 

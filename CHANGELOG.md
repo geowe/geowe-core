@@ -7,20 +7,62 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.1]Beta - 2016-10-04
+## [1.3.6]Beta - 2016-11-09
+### Added
+- Added EPSG:25829
 
+### Fixed
+- issue [#221](https://github.com/geowe/geowe-core/issues/221)
+- issue [#227](https://github.com/geowe/geowe-core/issues/227)
+
+## [1.3.5]Beta - 2016-10-20
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- WFS load: Permit no filter on CQL query for WFS layer.
+- WFS load: if maxFeatures  equals to 0 you get all elements.
+
+### Fixed
+- issue [#219](https://github.com/geowe/geowe-core/issues/219)
+
+## [1.3.4]Beta - 2016-10-19
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Added
+- Added CQL support for WFS layers.
+- Added BBox query to WFS layers.
+
+### Fixed
+- issue [#31](https://github.com/geowe/geowe-core/issues/31)
+- issue [#215](https://github.com/geowe/geowe-core/issues/215)
+- issue [#217](https://github.com/geowe/geowe-core/issues/217)
+
+## [1.3.3]Beta - 2016-10-14
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Added
+- Added TopoJSON format support (only for Polygon, linestring and points)
+- Added GPX support (no waypoints info)
+- improve performance
+
+### Fixed
+- issue [#207](https://github.com/geowe/geowe-core/issues/207)
+- issue [#208](https://github.com/geowe/geowe-core/issues/208)
+
+## [1.3.1]Beta - 2016-10-04
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added pagging grid support in layer info dialog and search dialog.
 - Show bounds locked 
+- improve performance
 
 ### Fixed
 - issue [#198](https://github.com/geowe/geowe-core/issues/198)
 - issue [#199](https://github.com/geowe/geowe-core/issues/199)
 - issue [#200](https://github.com/geowe/geowe-core/issues/200)
 - issue [#201](https://github.com/geowe/geowe-core/issues/201)
+- issue [#202](https://github.com/geowe/geowe-core/issues/202)
+- issue [#203](https://github.com/geowe/geowe-core/issues/203)
 
 ## [1.3.0]Beta - 2016-09-30
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Added support for work with extent.
 - issue [#171](https://github.com/geowe/geowe-core/issues/171)
@@ -37,7 +79,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 - issue [#196](https://github.com/geowe/geowe-core/issues/196)
 
 ## [1.2.0]Beta - 2016-09-23
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Added simple theming legend.
 - Added simple map layer legend.

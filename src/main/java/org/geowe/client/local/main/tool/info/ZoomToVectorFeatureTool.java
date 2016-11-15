@@ -34,13 +34,15 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 
 import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Herramienta para hacer zoon a la feature seleccionada en la lista de features de la capa
  * @author atamunoz
- *
+ * @author rafa@geowe.org
+ * fix issue 225
  */
 @ApplicationScoped
 public class ZoomToVectorFeatureTool extends LayerTool implements FeatureTool {
@@ -64,7 +66,12 @@ public class ZoomToVectorFeatureTool extends LayerTool implements FeatureTool {
 
 	@Override
 	public void onClick() {			
-		geoMap.getMap().zoomToExtent(selectedFeature.getGeometry().getBounds());		
+		Geometry geom = selectedFeature.getGeometry();
+		if(geom.getClassName().equals(Geometry.POINT_CLASS_NAME)){
+			geoMap.getMap().setCenter(geom.getBounds().getCenterLonLat(), 18);
+		}else{
+			geoMap.getMap().zoomToExtent(geom.getBounds());	
+		}
 	}
 
 	public VectorFeature getSelectedFeature() {

@@ -41,7 +41,8 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * Herramienta para hacer zoon a la feature seleccionada en la lista de features de la capa
  * @author atamunoz
- *
+ * @author rafa@geowe.org
+ * fix issue 225
  */
 @ApplicationScoped
 public class ZoomToVectorFeatureTool extends LayerTool implements FeatureTool {

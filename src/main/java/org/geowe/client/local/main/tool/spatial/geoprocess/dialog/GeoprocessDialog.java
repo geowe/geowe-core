@@ -28,16 +28,20 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.geowe.client.local.DisclaimerResourceProvider;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.main.VectorLayerInfo;
 import org.geowe.client.local.main.VectorLayerProperties;
+import org.geowe.client.local.main.tool.help.HelpMessages;
 import org.geowe.client.local.main.tool.spatial.geoprocess.BufferGeoprocess;
 import org.geowe.client.local.main.tool.spatial.geoprocess.Geoprocess;
 import org.geowe.client.local.main.tool.spatial.geoprocess.IGeoprocess;
 import org.geowe.client.local.main.tool.spatial.geoprocess.IInputGeoprocess;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
@@ -50,14 +54,20 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.dom.ScrollSupport;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToolButton;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
 /**
  * GeoprocessDialog representa al diálogo de análisis espacial encargado de
@@ -99,6 +109,8 @@ public class GeoprocessDialog extends Dialog {
 	private LayerManagerWidget layerManagerWidget;
 	@Inject
 	private IInputGeoprocess inputGeoprocess;
+	@Inject
+	private GeoprocessHelpDialog geoprocessHelpDialog;
 
 	@Inject
 	public GeoprocessDialog(final Geoprocesses spatialOperation) {
@@ -106,7 +118,7 @@ public class GeoprocessDialog extends Dialog {
 		this.setHeadingText(UIMessages.INSTANCE.sodHeadingText());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
 		this.setPixelSize(500, 350);
-		this.setModal(true);
+		this.setModal(false);
 		this.setResizable(false);
 		add(createPanel(spatialOperation));
 		this.spatialOperationComboBox.setValue(null);
@@ -115,10 +127,33 @@ public class GeoprocessDialog extends Dialog {
 					@Override
 					public void onSelect(SelectEvent event) {
 						GeoprocessDialog.this.hide();
+						geoprocessHelpDialog.hide();
 					}
 				});
-	}
+		
+		final ToolButton helpToolButton = new ToolButton(ToolButton.QUESTION);
+		setHelpToolTip(helpToolButton);
+		addHelpSelectHandler(helpToolButton);
 
+		getHeader().addTool(helpToolButton);
+
+	}
+	
+	private void setHelpToolTip(final ToolButton tButton) {
+		final ToolTipConfig helpToolTip = new ToolTipConfig();
+		helpToolTip.setTitleText(HelpMessages.INSTANCE.help());
+		tButton.setToolTipConfig(helpToolTip);
+	}
+	
+	private void addHelpSelectHandler(final ToolButton tButton) {
+		tButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(final SelectEvent event) {
+				geoprocessHelpDialog.show();
+			}
+		});
+	}
+	
 	public VectorLayer getLayer1() {
 		VectorLayer layer = null;
 		if (LAYER_COMBO_1.getValue() != null) {

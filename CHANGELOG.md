@@ -7,6 +7,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+## [1.3.7]Beta - 2016-11-16
+### Added
+- Added Help for Geoprocesses dialog.
+
+### Fixed
+- issue [#223](https://github.com/geowe/geowe-core/issues/223)
+- issue [#225](https://github.com/geowe/geowe-core/issues/225)
+
 ## [1.3.6]Beta - 2016-11-09
 ### Added
 - Added EPSG:25829

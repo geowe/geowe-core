@@ -33,4 +33,47 @@ public interface HelpMessages extends Messages {
 
 	String featureInfoDialogContent();
 
+	String geoprocessingDesc();
+
+	String geoprocessingStep1();
+
+	String geoprocessingStep2();
+
+	String geoprocessingStep3();
+
+	String geoprocessingExpectedResult();
+
+	String tip();
+
+	String intersectionDesc();
+
+	String intersectionResult();
+
+	String intersectsDesc();
+
+	String intersectsResult();
+
+	String differenceDesc();
+
+	String bufferDesc();
+
+	String bufferResult();
+
+	String bufferTip();
+
+	String differenceResult();
+
+	String unionDesc();
+
+	String unionResult();
+
+	String unionTip();
+
+	String symdifferenceDesc();
+
+	String symdifferenceResult();
+
+	String mergeDesc();
+
+	String mergeResult();
 }

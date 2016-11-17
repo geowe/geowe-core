@@ -59,7 +59,7 @@ public class VectorFormat {
 	}
 	
 	public static VectorFormat getFromName(final String format) {
-		final List<VectorFormat> allFormats = getAllFormat();
+		final List<VectorFormat> allFormats = getSupportedImportFormat();
 		
 		for(final VectorFormat vectorFormat : allFormats) {
 			if(vectorFormat.getName().toLowerCase().equals(format.toLowerCase())) {
@@ -70,13 +70,7 @@ public class VectorFormat {
 		return null;
 	}
 	
-	public static List<VectorFormat> getAllFormat() {
-		final List<VectorFormat> vectorFormats = getAllVectorFormat();
-		vectorFormats.add(CSV_FORMAT);
-		return vectorFormats;
-	}
-
-	public static List<VectorFormat> getAllVectorFormat() {
+	public static List<VectorFormat> getSupportedImportFormat() {
 		final List<VectorFormat> vectorFormats = new ArrayList<VectorFormat>();
 		vectorFormats.add(GEO_JSON_FORMAT);
 		vectorFormats.add(KML_FORMAT);
@@ -84,11 +78,13 @@ public class VectorFormat {
 		vectorFormats.add(WKT_FORMAT);
 		vectorFormats.add(TOPO_JSON_FORMAT);
 		vectorFormats.add(GPX_FORMAT);
+		vectorFormats.add(CSV_FORMAT);
 		return vectorFormats;
 	}
 
+
 	public static List<VectorFormat> getSupportedExportVectorFormat() {
-		final List<VectorFormat> vectorFormats = getAllFormat();
+		final List<VectorFormat> vectorFormats = getSupportedImportFormat();
 		vectorFormats.remove(TOPO_JSON_FORMAT);
 		return vectorFormats;
 	}

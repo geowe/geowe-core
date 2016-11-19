@@ -7,13 +7,16 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.7]Beta - 2016-11-16
+## [1.3.7]Beta - 2016-11-18
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Added Help for Geoprocesses dialog.
+- Import CSV files (with WKT column)
 
 ### Fixed
 - issue [#223](https://github.com/geowe/geowe-core/issues/223)
 - issue [#225](https://github.com/geowe/geowe-core/issues/225)
+- issue [#228](https://github.com/geowe/geowe-core/issues/228)
 
 ## [1.3.6]Beta - 2016-11-09
 ### Added
@@ -24,7 +27,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#227](https://github.com/geowe/geowe-core/issues/227)
 
 ## [1.3.5]Beta - 2016-10-20
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - WFS load: Permit no filter on CQL query for WFS layer.
 - WFS load: if maxFeatures  equals to 0 you get all elements.

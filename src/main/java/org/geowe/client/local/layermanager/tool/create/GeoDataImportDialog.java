@@ -212,7 +212,7 @@ public class GeoDataImportDialog extends Dialog {
 		layerDataContainer.add(padding);
 
 		vectorFormatCombo = new VectorFormatComboBox("120px",
-				VectorFormat.getAllVectorFormat());
+				VectorFormat.getSupportedImportFormat());
 		dataFormatField = new FieldLabel(vectorFormatCombo,
 				UIMessages.INSTANCE.gdidDataFormatLabel());
 

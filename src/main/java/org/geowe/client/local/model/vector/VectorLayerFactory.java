@@ -22,6 +22,9 @@
  */
 package org.geowe.client.local.model.vector;
 
+import java.util.List;
+
+import org.geowe.client.local.layermanager.tool.create.CSV;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
 import org.geowe.client.local.model.vector.format.GPX;
 import org.geowe.client.local.model.vector.format.TopoJSON;
@@ -78,6 +81,9 @@ public final class VectorLayerFactory {
 		case (VectorLayerDef.GPX):
 			layer = createGpxVectorLayer(layerConfig);
 			break;
+		case ("CSV"):
+			layer = createCsvVectorLayer(layerConfig);
+			break;
 		default:
 			LOG.info("GeoData Format not supported in this version");
 			break;
@@ -85,6 +91,7 @@ public final class VectorLayerFactory {
 
 		return layer;
 	}
+
 
 	public static VectorLayer createEmptyVectorLayer(
 			final VectorLayerConfig layerConfig) {
@@ -186,6 +193,14 @@ public final class VectorLayerFactory {
 		VectorFeature[] features = gpxReader.read(layerConfig
 				.getGeoDataString());
 		layerConfig.setFeatures(features);
+		return createVectorLayer(layerConfig);
+	}
+	
+	private static VectorLayer createCsvVectorLayer(VectorLayerConfig layerConfig) {
+		CSV csv = new CSV(layerConfig.getEpsg());
+		List<VectorFeature> features = csv.read(layerConfig.getGeoDataString());
+		
+		layerConfig.setFeatures(features.toArray(new VectorFeature[features.size()]));
 		return createVectorLayer(layerConfig);
 	}
 }

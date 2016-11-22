@@ -20,9 +20,8 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.layermanager.tool.export.exporter.github;
+package org.geowe.client.local.github.request;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,17 +30,15 @@ import javax.inject.Inject;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
-import org.geowe.client.shared.rest.github.service.GitHubRepositoryService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
-import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 
 /**
- * 
+ * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
  * 
  * 
  * @author jose@geowe.org
@@ -49,28 +46,19 @@ import com.google.gwt.http.client.Response;
  */
 
 @ApplicationScoped
-public class GitHubGetRepositoriesRequest<T>  {
-	private final static String URL_BASE = "https://api.github.com/users/";
+public abstract class AbstractGitHubGetListRequest <T> {
+	protected final static String URL_BASE = "https://api.github.com/";
 	@Inject
-	private MessageDialogBuilder messageDialogBuilder;
-	private ProgressBarDialog autoMessageBox;	
-	private List<GitHubListEventListener<T>> listener = new ArrayList<GitHubListEventListener<T>>();
+	protected MessageDialogBuilder messageDialogBuilder;
+	protected ProgressBarDialog autoMessageBox;	
+	protected GitHubListEventListener<T> listener;// = new ArrayList<GitHubListEventListener<T>>();
 	
-	public void send(String userName) {
-		autoMessageBox = new ProgressBarDialog(false,
-				UIMessages.INSTANCE.processing());
-		autoMessageBox.show();		
-				
-		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubRepositoryService.class, URL_BASE, getRemoteCallback(),
-				getErrorCallback(), Response.SC_OK).getRepositories(userName);
-	}
-	
-	public void addListener(GitHubListEventListener<T> event) {
-		listener.add(event);
+		
+	public void setListener(GitHubListEventListener<T> event) {
+		listener = event;
 	}
 
-	private RestErrorCallback getErrorCallback() {
+	protected RestErrorCallback getErrorCallback() {
 		return new RestErrorCallback() {
 
 			@Override
@@ -96,7 +84,7 @@ public class GitHubGetRepositoriesRequest<T>  {
 		};
 	}
 
-	private RemoteCallback<List<T>> getRemoteCallback() {
+	protected RemoteCallback<List<T>> getRemoteCallback() {
 		return new RemoteCallback<List<T>>() {
 
 			@Override
@@ -108,8 +96,8 @@ public class GitHubGetRepositoriesRequest<T>  {
 	}
 	
 	private void notifyListener(List<T> response) {
-		for(GitHubListEventListener<T> event: listener) {
-			event.onFinish(response);
-		}
+		//for(GitHubListEventListener<T> event: listener) {
+			listener.onFinish(response);			
+		//}
 	}
 }

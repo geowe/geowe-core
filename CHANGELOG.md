@@ -7,6 +7,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+## [1.3.8]Beta - 2016-11-25
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+
+### Fixed
+- issue [#186](https://github.com/geowe/geowe-core/issues/186)
+
+
 ## [1.3.7]Beta - 2016-11-18
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

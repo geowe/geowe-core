@@ -20,7 +20,7 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.layermanager.tool.export.exporter.github;
+package org.geowe.client.local.github.request;
 
 import java.util.ArrayList;
 import java.util.List;

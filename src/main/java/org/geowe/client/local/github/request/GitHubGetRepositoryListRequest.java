@@ -20,21 +20,18 @@
  * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.geowe.client.local.layermanager.tool.export.exporter;
+package org.geowe.client.local.github.request;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.geowe.client.local.github.request.GitHubParameter;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
-import org.geowe.client.local.util.Base64;
-import org.geowe.client.local.util.BasicAuthenticationProvider;
-import org.geowe.client.shared.rest.github.GitHubCreateFileRequest;
-import org.geowe.client.shared.rest.github.response.GitHubContentResponse;
-import org.geowe.client.shared.rest.github.response.GitHubResponse;
-import org.geowe.client.shared.rest.github.service.GitHubFileService;
+import org.geowe.client.shared.rest.github.service.GitHubRepositoryService;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.ResponseException;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
@@ -44,7 +41,7 @@ import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 
 /**
- * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
+ * 
  * 
  * 
  * @author jose@geowe.org
@@ -52,36 +49,25 @@ import com.google.gwt.http.client.Response;
  */
 
 @ApplicationScoped
-public class GitHubCreateFileExporter implements Exporter {
-	private final static String URL_BASE = "https://api.github.com/repos/";
-
+public class GitHubGetRepositoryListRequest<T>  {
+	private final static String URL_BASE = "https://api.github.com/users/";
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
-	private ProgressBarDialog autoMessageBox;
-
-	@Override
-	public void export(FileParameter fileParameter) {
+	private ProgressBarDialog autoMessageBox;	
+	private List<GitHubListEventListener<T>> listener = new ArrayList<GitHubListEventListener<T>>();
+	
+	public void send(String userName) {
 		autoMessageBox = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
-		autoMessageBox.show();
-		final String fileName = fileParameter.getFileName() + "."
-				+ fileParameter.getExtension();
-		final GitHubParameter gitHubParameter = (GitHubParameter) fileParameter;
-		final String userName = gitHubParameter.getUserName();
-		final String password = gitHubParameter.getPassword();
-		final String repository = gitHubParameter.getRepository();
-		final String path = gitHubParameter.getPath();
-		final String message = gitHubParameter.getMessageCommit();
-		final String authorizationHeaderValue = BasicAuthenticationProvider
-				.getAuthorizationHeaderValue(userName, password);
-		final GitHubCreateFileRequest content = new GitHubCreateFileRequest();
-		content.setContent(Base64.encode(fileParameter.getContent()));
-		content.setMessage(message);
-
+		autoMessageBox.show();		
+				
 		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
-				getErrorCallback(), Response.SC_CREATED).createFile(userName,
-				repository, path, fileName, authorizationHeaderValue, content);
+		RestClient.create(GitHubRepositoryService.class, URL_BASE, getRemoteCallback(),
+				getErrorCallback(), Response.SC_OK).getRepositories(userName);
+	}
+	
+	public void addListener(GitHubListEventListener<T> event) {
+		listener.add(event);
 	}
 
 	private RestErrorCallback getErrorCallback() {
@@ -110,17 +96,20 @@ public class GitHubCreateFileExporter implements Exporter {
 		};
 	}
 
-	private RemoteCallback<GitHubResponse> getRemoteCallback() {
-		return new RemoteCallback<GitHubResponse>() {
+	private RemoteCallback<List<T>> getRemoteCallback() {
+		return new RemoteCallback<List<T>>() {
 
 			@Override
-			public void callback(GitHubResponse response) {
+			public void callback(List<T> response) {
 				autoMessageBox.hide();
-				GitHubContentResponse content = response.getContent();
-				String url = content.getDownloadUrl();
-				//String html = "Guardado en GitHub correctamente. <br>Puedes acceder al fichero en la siguiente URL: <br><a href='"+ url + "'>descarga directa</a>";								
-				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(),UIMessages.INSTANCE.gitHubSavedSucsessfully(url)).show();
+				notifyListener(response);										
 			}
 		};
+	}
+	
+	private void notifyListener(List<T> response) {
+		for(GitHubListEventListener<T> event: listener) {
+			event.onFinish(response);
+		}
 	}
 }

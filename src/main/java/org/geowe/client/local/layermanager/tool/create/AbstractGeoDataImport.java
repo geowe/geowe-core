@@ -22,6 +22,8 @@
  */
 package org.geowe.client.local.layermanager.tool.create;
 
+import java.util.List;
+
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.main.tool.map.catalog.model.LayerDef;
@@ -32,6 +34,7 @@ import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.geowe.client.shared.rest.github.response.GitHubFileListAttributeBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +78,9 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		} else if (UIMessages.INSTANCE.wfs().equals(activeTab)) {
 			createWfsLayer();
 		}
+		else if (UIMessages.INSTANCE.gitHubResponseTitle().equals(activeTab)) {
+			createGitHubLayers();
+		}
 
 		return layer;
 	}
@@ -98,6 +104,17 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		}
 
 		return layer;
+	}
+	
+	
+	protected void createLayerFromURL(String url, String layerName) {
+		URLVectorLayerDef urlLayerDef = new URLVectorLayerDef();
+		urlLayerDef.setEpsg(geoDataImportDialog.getProjectionName());
+		urlLayerDef.setFormat(geoDataImportDialog.getDataFormat());
+		urlLayerDef.setName(layerName);
+		urlLayerDef.setUrl(url);
+		urlLayerDef.setType(LayerDef.VECTOR_TYPE);
+		urlLayerDef.load();
 	}
 
 	protected void createLayerFromURL() {
@@ -132,6 +149,19 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		}
 		urlLayerDef.load();
 	}
+	
+	
+	protected void createGitHubLayers() {
+		GitHubImportTab getGitHubImportTab = geoDataImportDialog.getGitHubImportTab();
+		List<GitHubFileListAttributeBean> files = getGitHubImportTab.getSelectedFiles();
+		
+		for(GitHubFileListAttributeBean file: files) {
+			createLayerFromURL(file.getAttributeUrl(), file.getAttributeName());
+		}
+		
+	}
+	
+	
 
 	protected VectorLayer createEmptyLayer() {
 

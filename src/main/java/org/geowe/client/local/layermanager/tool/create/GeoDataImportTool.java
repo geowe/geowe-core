@@ -173,10 +173,12 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 									autoMessageBox.clear();
 									autoMessageBox.center();
 									if (!geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.url())) {
+											.equals(UIMessages.INSTANCE.url()) &&
+											!geoDataImportDialog.getActiveTab()
+											.equals(UIMessages.INSTANCE.gitHubResponseTitle())) {
 										autoMessageBox.show();
 									}
-
+								
 									final Layer layer = getlayer(geoDataImportDialog
 											.getActiveTab());
 

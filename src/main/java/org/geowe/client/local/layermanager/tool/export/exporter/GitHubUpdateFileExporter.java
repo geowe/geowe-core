@@ -27,9 +27,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubEventListener;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubGetFileRequest;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubParameter;
+import org.geowe.client.local.github.request.GitHubEventListener;
+import org.geowe.client.local.github.request.GitHubGetFileRequest;
+import org.geowe.client.local.github.request.GitHubParameter;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;

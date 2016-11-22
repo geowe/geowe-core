@@ -56,6 +56,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -84,6 +85,8 @@ public class GeoDataImportDialog extends Dialog {
 	private Logger logger;
 	@Inject
 	WfsImportTab wfsImportTab;
+	@Inject
+	GitHubImportTab gitHubImportTab;
 
 	private TextField urlTextField;
 	private TextArea geoDataTextArea;
@@ -99,11 +102,14 @@ public class GeoDataImportDialog extends Dialog {
 	private Label urlLabel;
 	private HorizontalPanel urlPanel;
 	private CreateEmptyLayerTab createEmptyLayerTab;
+	
+	@Inject
+	private GitHubFileListDialog gitHubFileListDialog;
 
 	public GeoDataImportDialog() {
 		this.setHeadingText(UIMessages.INSTANCE.geoDataImportDialogTitle());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(550, 350);
+		this.setPixelSize(600, 350);
 		this.setModal(true);
 		this.setResizable(false);
 	}
@@ -112,6 +118,7 @@ public class GeoDataImportDialog extends Dialog {
 	private void createLayouts() {
 		this.add(createLayout());
 		addKeyShortcuts();
+		gitHubFileListDialog.setTargetURLTextField(urlTextField);
 	}
 
 	public void initialize(String title, String layerName, String epsg) {
@@ -229,13 +236,20 @@ public class GeoDataImportDialog extends Dialog {
 
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
-		tabPanel.setPixelSize(300, 250);
+		
+		tabPanel.setPixelSize(330, 270);//250
 		tabPanel.getElement().setId("tabPanel");
 		tabPanel.add(getEmptyPanel(), UIMessages.INSTANCE.empty());
 		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());
 		tabPanel.add(getTextPanel(), UIMessages.INSTANCE.text());
 		tabPanel.add(getFilePanel(), UIMessages.INSTANCE.file());
 		tabPanel.add(wfsImportTab, UIMessages.INSTANCE.wfs());
+				
+		TabItemConfig gitHubItenConfig = new TabItemConfig(UIMessages.INSTANCE.gitHubResponseTitle());
+		gitHubItenConfig.setIcon(ImageProvider.INSTANCE.github24());
+		
+		tabPanel.add(gitHubImportTab, gitHubItenConfig);
+		
 
 		tabPanel.addSelectionHandler(getTabPanelSelectionHandler());
 		return tabPanel;
@@ -255,6 +269,12 @@ public class GeoDataImportDialog extends Dialog {
 					vectorFormatCombo.setValue(VectorFormat.GML_FORMAT);
 				} else {
 					vectorFormatCombo.setValue(null);
+				}
+				
+				if (UIMessages.INSTANCE.gitHubResponseTitle().equals(getActiveTab())) {					
+					layerName.setEnabled(false);
+				} else {
+					layerName.setEnabled(true);
 				}
 			}
 		};
@@ -282,11 +302,22 @@ public class GeoDataImportDialog extends Dialog {
 		urlTextField.setWidth(270);
 		geoDataContainer.add(urlTextField);
 
+		HorizontalPanel horizontalContainer = new HorizontalPanel();
+		
 		TextButton createUrlButton = new TextButton(
 				UIMessages.INSTANCE.urlToShareButtonText());
+		
+		TextButton gitHubButton = new TextButton(
+				UIMessages.INSTANCE.gitHubResponseTitle());
+		
+		horizontalContainer.add(createUrlButton);
+		horizontalContainer.add(gitHubButton);
+		
 		createUrlButton.addSelectHandler(createUrlToShare(geoDataContainer));
+		gitHubButton.addSelectHandler(gitHubDialog());
 
-		geoDataContainer.add(createUrlButton);
+//		geoDataContainer.add(createUrlButton);
+		geoDataContainer.add(horizontalContainer);
 		geoDataContainer.add(createUrlToShareAnchor());
 
 		urlShared = new TextField();
@@ -374,6 +405,20 @@ public class GeoDataImportDialog extends Dialog {
 			}
 		};
 	}
+	
+	
+	//https://api.github.com/repos/jmmluna/geodata/contents/
+	private SelectHandler gitHubDialog() {
+		return new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				//https://developer.github.com/v3/repos/contents/#get-contents
+				gitHubFileListDialog.show();
+			}
+
+			
+		};
+	}
 
 	private VerticalPanel getTextPanel() {
 		VerticalPanel geoDataContainer = new VerticalPanel();
@@ -433,6 +478,10 @@ public class GeoDataImportDialog extends Dialog {
 		uploadPanel.setWidget(layoutContainer);
 
 		return uploadPanel;
+	}
+	
+	public GitHubImportTab getGitHubImportTab() {
+		return gitHubImportTab;
 	}
 
 	public FileUploadField getFileUploadField() {

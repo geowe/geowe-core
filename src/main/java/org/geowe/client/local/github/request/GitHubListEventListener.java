@@ -1,4 +1,4 @@
-package org.geowe.client.local.layermanager.tool.export.exporter.github;
+package org.geowe.client.local.github.request;
 
 import java.util.List;
 

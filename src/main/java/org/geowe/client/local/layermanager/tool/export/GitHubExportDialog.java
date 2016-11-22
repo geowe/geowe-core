@@ -23,8 +23,10 @@
 package org.geowe.client.local.layermanager.tool.export;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.layermanager.tool.create.GitHubPathListDialog;
 import org.geowe.client.local.messages.UIMessages;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -32,6 +34,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.PasswordField;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
@@ -55,6 +59,10 @@ public class GitHubExportDialog extends Dialog {
 	private final TextButton updateButton;
 	private TextButton repositoriesButton;
 	
+	@Inject
+	private GitHubPathListDialog pathListDialog;
+
+	
 	public String getUserName() {
 		return userNameField.getText();
 	}
@@ -73,6 +81,10 @@ public class GitHubExportDialog extends Dialog {
 	
 	public String getRepository() {
 		return repositoryField.getText();
+	}
+	
+	public TextField getRepositoryTextField() {
+		return repositoryField;
 	}
 
 	public void setRepository(String repository) {
@@ -162,25 +174,34 @@ public class GitHubExportDialog extends Dialog {
 		panel.setSpacing(10);		
 		
 		repositoriesButton = new TextButton("...");
-		final HorizontalPanel horizontalPanel = new HorizontalPanel();
+		repositoriesButton.setTitle(UIMessages.INSTANCE.gitHubTitleListRepo());
+		
+		
+		final HorizontalPanel repositoryPanel = new HorizontalPanel();
 		
 		repositoryField = new TextField();
 		repositoryField.setTitle(UIMessages.INSTANCE.gitHubRepositoryNameField());		
 		repositoryField.setEmptyText(UIMessages.INSTANCE.gitHubRepositoryNameField());
 		repositoryField.setWidth(FIELD_WIDTH);
 		
-		horizontalPanel.add(repositoryField);
+		repositoryPanel.add(repositoryField);		
+		repositoryPanel.add(repositoriesButton);
 		
-		repositoriesButton.setTitle(UIMessages.INSTANCE.gitHubTitleListRepo());
-		horizontalPanel.add(repositoriesButton);
-		
-		panel.add(horizontalPanel);		
+		panel.add(repositoryPanel);		
 		
 		pathField = new TextField();
 		pathField.setTitle(UIMessages.INSTANCE.gitHubPathNameField());		
 		pathField.setEmptyText(UIMessages.INSTANCE.gitHubPathNameField());
 		pathField.setWidth(FIELD_WIDTH);
-		panel.add(pathField);				
+		
+		TextButton pathButton = new TextButton("...");
+		pathButton.addSelectHandler(getPathEvent());
+		
+		HorizontalPanel pathPanel = new HorizontalPanel();
+		pathPanel.add(pathField);
+		pathPanel.add(pathButton);
+		
+		panel.add(pathPanel);				
 
 		return panel;
 	}
@@ -203,5 +224,17 @@ public class GitHubExportDialog extends Dialog {
 		panel.add(messageField);
 
 		return panel;
-	}		
+	}	
+	
+	private SelectHandler getPathEvent() {
+		return new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {				
+				
+				pathListDialog.setTargetTextField(pathField);
+				pathListDialog.load(userNameField.getText(), repositoryField.getText(), pathField.getText());
+			}
+
+		};
+	}
 }

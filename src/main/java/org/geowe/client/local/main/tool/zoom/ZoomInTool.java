@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.zoom;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
@@ -29,29 +30,50 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
+
 /**
  * Zoom in tool.
- * @author lotor
+ * 
+ * @author rafa@geowe.org
+ * @since 22-11-2016 Added key shortcut 'I'
  *
  */
 @ApplicationScoped
 public class ZoomInTool extends ButtonTool {
-	
+
 	private final GeoMap geoMap;
-	
+
 	@Inject
-	public ZoomInTool(GeoMap geoMap) {		
+	public ZoomInTool(GeoMap geoMap) {
 		super(UIMessages.INSTANCE.zoomInToolText(), ImageProvider.INSTANCE.zoomIn());
-		setToolTipConfig(createTooltipConfig(
-				UIMessages.INSTANCE.zoomInToolText(),
-				UIMessages.INSTANCE.zoomInToolTip(), Side.LEFT));
+		setToolTipConfig(createTooltipConfig(UIMessages.INSTANCE.zoomInToolText(), UIMessages.INSTANCE.zoomInToolTip(),
+				Side.LEFT));
 		this.geoMap = geoMap;
 	}
 
 	@Override
 	protected void onRelease() {
-		geoMap.getMap().zoomIn();		
+		geoMap.getMap().zoomIn();
+	}
+
+	@PostConstruct
+	private void setKeyHandler() {
+		addKeyHandler(createKeyHandler());
+	}
+
+	private KeyUpHandler createKeyHandler() {
+		return new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				if (KeyCodes.KEY_I == event.getNativeEvent().getKeyCode()) {
+					onRelease();
+				}
+			}
+		};
 	}
 }

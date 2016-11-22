@@ -26,7 +26,10 @@ import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.cell.core.client.ButtonCell.IconAlign;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -34,6 +37,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 
+/**
+ * Abstract Class for Button Tools
+ * @author geowe.org
+ *
+ */
 public abstract class ButtonTool extends TextButton implements ChangeSelectedLayerListener{
 
 	protected static final String width = "80px";
@@ -93,6 +101,10 @@ public abstract class ButtonTool extends TextButton implements ChangeSelectedLay
 		toolTipconfig.setAnchor(position);
 
 		return toolTipconfig;
+	}
+	
+	protected void addKeyHandler(KeyUpHandler handler){
+		RootPanel.get().addDomHandler(handler, KeyUpEvent.getType());
 	}
 	
 }

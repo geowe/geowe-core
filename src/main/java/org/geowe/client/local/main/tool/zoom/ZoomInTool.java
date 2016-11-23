@@ -40,7 +40,7 @@ import com.sencha.gxt.core.client.Style.Side;
  * Zoom in tool.
  * 
  * @author rafa@geowe.org
- * @since 22-11-2016 Added key shortcut 'I'
+ * @since 22-11-2016 Added key shortcut 'KEY_PAGEDOWN'
  *
  */
 @ApplicationScoped

@@ -29,8 +29,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubGetRepositoriesRequest;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubListEventListener;
+import org.geowe.client.local.github.request.GitHubGetRepositoryListRequest;
+import org.geowe.client.local.github.request.GitHubListEventListener;
 import org.geowe.client.local.layermanager.tool.export.github.GitHubRepositoryAttributeBeanProperties;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.shared.rest.github.response.GitHubRepositoryAttributeBean;
@@ -52,6 +52,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -68,11 +69,12 @@ import com.sencha.gxt.widget.core.client.info.Info;
 @ApplicationScoped
 public class GitHubRepositoryListDialog extends Dialog implements GitHubListEventListener<GitHubRepositoryAttributeBean> {	
 	@Inject
-	private GitHubGetRepositoriesRequest<GitHubRepositoryAttributeBean> gitHubGetRepositoriesRequest;
+	private GitHubGetRepositoryListRequest<GitHubRepositoryAttributeBean> gitHubGetRepositoriesRequest;
 	private Grid<GitHubRepositoryAttributeBean> grid;
 	private ListStore<GitHubRepositoryAttributeBean> repositoryStore;	
 	@Inject
 	private GitHubExportDialog gitHubExportDialog;
+	private TextField targetTextField;
 	
 	public GitHubRepositoryListDialog() {
 		super();
@@ -169,6 +171,7 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 		repositoryStore.clear();
 		repositoryStore.addAll(data);
 		setHeadingText(UIMessages.INSTANCE.gitHubTitleListRepo());
+		setModal(true);
 		show();
 	}
 
@@ -177,9 +180,14 @@ public class GitHubRepositoryListDialog extends Dialog implements GitHubListEven
 				new SelectHandler() {
 					@Override
 					public void onSelect(final SelectEvent event) {
-						gitHubExportDialog.setRepository(getSelectedRepository().getAttributeName());
+						//gitHubExportDialog.setRepository(getSelectedRepository().getAttributeName());-
+						targetTextField.setValue(getSelectedRepository().getAttributeName());
 					}
 				});		
+	}
+	
+	public void setTargetTextField(TextField target) {
+		this.targetTextField = target;
 	}
 
 	@Override

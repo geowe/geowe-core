@@ -67,13 +67,15 @@ public class ZoomInTool extends ButtonTool {
 	}
 
 	private KeyUpHandler createKeyHandler() {
-		return new KeyUpHandler() {
+		KeyUpHandler handler=  new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (KeyCodes.KEY_I == event.getNativeEvent().getKeyCode()) {
+				if (KeyCodes.KEY_PAGEDOWN == event.getNativeEvent().getKeyCode()) {
 					onRelease();
 				}
 			}
 		};
+		
+		return handler;
 	}
 }

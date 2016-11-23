@@ -11,7 +11,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ### Added
 - Import csv with X and Y column (point option).
-- Add keyboard shortcut for zoom in (I) and zoom out (O).
+- Add keyboard shortcut for zoom in (KEY_PAGEDOWN) and zoom out (KEY_PAGEUP).
 
 ### Fixed
 - issue [#186](https://github.com/geowe/geowe-core/issues/186)

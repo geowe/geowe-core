@@ -69,7 +69,7 @@ public class ZoomOutTool extends ButtonTool {
 		return new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (KeyCodes.KEY_O == event.getNativeEvent().getKeyCode()) {
+				if (KeyCodes.KEY_PAGEUP == event.getNativeEvent().getKeyCode()) {
 					onRelease();
 				}
 			}

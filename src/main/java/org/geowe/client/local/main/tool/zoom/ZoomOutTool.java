@@ -40,7 +40,7 @@ import com.sencha.gxt.core.client.Style.Side;
  * Zoom Out Tool
  * 
  * @author rafa@geowe.org
- * @since 22-11-2016 Added key shortcut 'O'
+ * @since 22-11-2016 Added key shortcut 'KEY_PAGEUP'
  */
 @ApplicationScoped
 public class ZoomOutTool extends ButtonTool {

@@ -55,6 +55,7 @@ import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.slf4j.Logger;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -68,7 +69,8 @@ import com.sencha.gxt.widget.core.client.info.Info;
  * Export GeoData Tool
  * 
  * @author geowe
- *
+ * @author rafa@geowe.org 
+ * fix issue 247
  */
 @ApplicationScoped
 public class ExportDataTool extends LayerTool implements
@@ -212,7 +214,6 @@ public class ExportDataTool extends LayerTool implements
 		taskManager.execute(new Runnable() {
 			@Override
 			public void run() {
-
 				if (isContentValid(fileParameter.getContent())) {
 					exporter.export(fileParameter);
 				}
@@ -347,6 +348,7 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
+						fileParameter.setContent(getContent((VectorLayer) getSelectedLayer()));
 						export();
 					}
 				});

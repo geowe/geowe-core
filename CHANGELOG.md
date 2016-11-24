@@ -8,7 +8,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - More tools
 
 ## [1.3.8]Beta - 2016-11-24
-
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Import csv with X and Y column (point option).
 - Add keyboard shortcut for zoom in (KEY_PAGEDOWN) and zoom out (KEY_PAGEUP).
@@ -18,10 +18,10 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#186](https://github.com/geowe/geowe-core/issues/186)
 - issue [#238](https://github.com/geowe/geowe-core/issues/238)
 - issue [#247](https://github.com/geowe/geowe-core/issues/247)
-
+- issue [#231](https://github.com/geowe/geowe-core/issues/231)
 
 ## [1.3.7]Beta - 2016-11-18
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Added Help for Geoprocesses dialog.
 - Import CSV files (with WKT column)

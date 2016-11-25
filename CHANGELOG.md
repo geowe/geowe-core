@@ -7,6 +7,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+## [1.3.9]Beta - 2016-11-25
+### Added
+- Added geolocation support for any projection. 
+
+### Fixed
+- issue [#240](https://github.com/geowe/geowe-core/issues/240)
+
 ## [1.3.8]Beta - 2016-11-24
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

@@ -42,8 +42,6 @@ import org.gwtopenmaps.openlayers.client.event.LocationFailedListener;
 import org.gwtopenmaps.openlayers.client.event.LocationUncapableListener;
 import org.gwtopenmaps.openlayers.client.event.LocationUpdateEvent;
 import org.gwtopenmaps.openlayers.client.event.LocationUpdateListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
@@ -76,12 +74,12 @@ import com.sencha.gxt.widget.core.client.menu.MenuItem;
  * Represents the geocoding panel
  * 
  * @author geowe
- *
+ * @since 25-11-2016
+ * @author rafa@geowe.org fix issue 240
  */
 @ApplicationScoped
 public class GeocodingPanelWidget implements IsWidget {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(GeocodingPanelWidget.class.getName());
+	
 	@Inject
 	private GeoMap geoMap;
 	@Inject
@@ -107,23 +105,18 @@ public class GeocodingPanelWidget implements IsWidget {
 			panel.setPosition(300, 0);
 			panel.getElement().getStyle().setPosition(Position.ABSOLUTE);
 
-			StyleInjector.inject(".statusBarStyle { " + "position: absolute; "
-					+ "bottom: 35 px;" + "background: #E0ECF8;"
-					+ "border-radius: 5px 10px;" + "opacity: 0.8}");
+			StyleInjector.inject(".statusBarStyle { " + "position: absolute; " + "bottom: 35 px;"
+					+ "background: #E0ECF8;" + "border-radius: 5px 10px;" + "opacity: 0.8}");
 			panel.setStyleName("geocodingPanelStyle");
 
 			final HorizontalPanel horizontalGroup = new HorizontalPanel();
-			horizontalGroup.getElement().getStyle()
-					.setVerticalAlign(VerticalAlign.MIDDLE);
-			horizontalGroup
-					.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+			horizontalGroup.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+			horizontalGroup.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 			horizontalGroup.setSpacing(5);
-			horizontalGroup.getElement().getStyle()
-					.setBackgroundColor("#E0ECF8");
+			horizontalGroup.getElement().getStyle().setBackgroundColor("#E0ECF8");
 
 			addressTextField.setWidth("320px");
-			addressTextField.setEmptyText(UIMessages.INSTANCE
-					.gcAddressTextField());
+			addressTextField.setEmptyText(UIMessages.INSTANCE.gcAddressTextField());
 			addressTextField.getElement().setId("autocompletar");
 
 			addressTextField.addKeyDownHandler(new KeyDownHandler() {
@@ -140,9 +133,7 @@ public class GeocodingPanelWidget implements IsWidget {
 			horizontalGroup.add(getW3WLocationButton());
 			horizontalGroup.add(getLocationMenuButton());
 			panel.setWidget(horizontalGroup);
-
-			panel.setVisible(false);			
-			
+			panel.setVisible(false);
 		}
 		return panel;
 	}
@@ -151,34 +142,28 @@ public class GeocodingPanelWidget implements IsWidget {
 	private void publishJS() {
 		bridge(this);
 		geolocate();
-		coordinateGeolocationDialog.getButton(PredefinedButton.OK)
-				.addSelectHandler(new SelectHandler() {
-					@Override
-					public void onSelect(final SelectEvent event) {
-						if (coordinateGeolocationDialog.isCorrectFilled()) {
-							startProgressBar();
-							final Double latitud = Double
-									.parseDouble(coordinateGeolocationDialog
-											.getLatitud());
-							final Double longitud = Double
-									.parseDouble(coordinateGeolocationDialog
-											.getLongitud());
-							updateMap(latitud, longitud, 20);
-						} else {
-							showDialog(UIMessages.INSTANCE.fail(),
-									UIMessages.INSTANCE.gcBadCoord());
-						}
-					}
-				});
+		coordinateGeolocationDialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(final SelectEvent event) {
+				if (coordinateGeolocationDialog.isCorrectFilled()) {
+					startProgressBar();
+					final Double latitud = Double.parseDouble(coordinateGeolocationDialog.getLatitud());
+					final Double longitud = Double.parseDouble(coordinateGeolocationDialog.getLongitud());
+
+					updateMap(latitud, longitud, 20, coordinateGeolocationDialog.getEPSG());
+				} else {
+					showDialog(UIMessages.INSTANCE.fail(), UIMessages.INSTANCE.gcBadCoord());
+				}
+			}
+		});
 	}
 
 	public void updateMap(final double lat, final double lon) {
-		updateMap(lat, lon, 15);
+		updateMap(lat, lon, 15, "EPSG:4326");
 	}
 
 	private void startProgressBar() {
-		progressBar = new ProgressBarDialog(false,
-				UIMessages.INSTANCE.processing());
+		progressBar = new ProgressBarDialog(false, UIMessages.INSTANCE.processing());
 		progressBar.auto();
 		progressBar.show();
 	}
@@ -187,18 +172,20 @@ public class GeocodingPanelWidget implements IsWidget {
 		progressBar.hide();
 	}
 
-	public void updateMap(final double lat, final double lon, final int zoom) {
+	public void updateMap(final double lat, final double lon, final int zoom, String epsg) {
 		finishProgressBar();
 		final LonLat lonLat = new LonLat(lon, lat);
-		transformToInternalProjection(lonLat);
+		transformToInternalProjection(lonLat, epsg);
 		geoMap.getMap().panTo(lonLat);
 		geoMap.getMap().setCenter(lonLat, zoom);
 	}
 
-	private void transformToInternalProjection(final LonLat lonLat) {
-		lonLat.transform("EPSG:4326", geoMap.getMap().getProjection());
+	private void transformToInternalProjection(final LonLat lonLat, String epsg) {
+		if (!epsg.equals(geoMap.getMap().getProjection())) {
+			lonLat.transform(epsg, geoMap.getMap().getProjection());
+		}
 	}
-	
+
 	public native void bridge(final GeocodingPanelWidget instance)/*-{
 		$wnd.updateMap = function(lat, lon) {
 			instance.@org.geowe.client.local.main.GeocodingPanelWidget::updateMap(DD)(lat,lon);
@@ -244,49 +231,43 @@ public class GeocodingPanelWidget implements IsWidget {
 
 	private Menu getLocationMenu() {
 		final Menu menu = new Menu();
-		menu.add(new MenuItem(
-				UIMessages.INSTANCE.gcCurrentLotationButtonText(),
-				new SelectionHandler<MenuItem>() {
+		menu.add(new MenuItem(UIMessages.INSTANCE.gcCurrentLotationButtonText(), new SelectionHandler<MenuItem>() {
 
-					@Override
-					public void onSelection(final SelectionEvent<MenuItem> event) {
-						geolocate.activate();
-					}
-				}));
+			@Override
+			public void onSelection(final SelectionEvent<MenuItem> event) {
+				geolocate.activate();
+			}
+		}));
 
-		menu.add(new MenuItem(UIMessages.INSTANCE
-				.gcCoordinateLocationbuttonText(),
-				new SelectionHandler<MenuItem>() {
+		menu.add(new MenuItem(UIMessages.INSTANCE.gcCoordinateLocationbuttonText(), new SelectionHandler<MenuItem>() {
 
-					@Override
-					public void onSelection(final SelectionEvent<MenuItem> event) {
-						coordinateGeolocationDialog.setLongitud("");
-						coordinateGeolocationDialog.setLatitud("");
-						coordinateGeolocationDialog.show();
-					}
+			@Override
+			public void onSelection(final SelectionEvent<MenuItem> event) {
+				coordinateGeolocationDialog.setLongitud("");
+				coordinateGeolocationDialog.setLatitud("");
+				coordinateGeolocationDialog.show();
+			}
 
-				}));
+		}));
 
 		return menu;
 	}
 
 	private TextButton getW3WLocationButton() {
 		final TextButton locationButton = new TextButton();
-		locationButton.setToolTip(UIMessages.INSTANCE
-				.gcW3WlocationButtonToolTip());
+		locationButton.setToolTip(UIMessages.INSTANCE.gcW3WlocationButtonToolTip());
 		locationButton.setIcon(ImageProvider.INSTANCE.w3w24());
 		locationButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(final SelectEvent event) {
-				final String text = addressTextField.getText().trim();				
+				final String text = addressTextField.getText().trim();
 
 				final String words[] = text.split("\\.");
 				if (words.length != 3) {
-					showDialog(UIMessages.INSTANCE.warning(),
-							UIMessages.INSTANCE.gcBadWords());
+					showDialog(UIMessages.INSTANCE.warning(), UIMessages.INSTANCE.gcBadWords());
 					return;
 				}
-								
+
 				getW3WPosition(text);
 			}
 		});
@@ -297,66 +278,47 @@ public class GeocodingPanelWidget implements IsWidget {
 	private void getW3WPosition(final String words) {
 		startProgressBar();
 
-		w3wServiceAsync.getPosition(words, w3wTool.getLocale(),
-				new AsyncCallback<String>() {
-					public void onFailure(final Throwable caught) {
-						finishProgressBar();
+		w3wServiceAsync.getPosition(words, w3wTool.getLocale(), new AsyncCallback<String>() {
+			public void onFailure(final Throwable caught) {
+				finishProgressBar();
 
-						final AlertMessageBox messageBox = new AlertMessageBox(
-								UIMessages.INSTANCE.warning(),
-								UIMessages.INSTANCE.w3wErrorText());
-						messageBox.show();
-					}
+				final AlertMessageBox messageBox = new AlertMessageBox(UIMessages.INSTANCE.warning(),
+						UIMessages.INSTANCE.w3wErrorText());
+				messageBox.show();
+			}
 
-					public void onSuccess(final String response) {
-						finishProgressBar();
-						if (response.isEmpty()) {
-							showException(UIMessages.INSTANCE.w3wErrorText());
-							return;
-						}
+			public void onSuccess(final String response) {
+				finishProgressBar();
+				if (response.isEmpty()) {
+					showException(UIMessages.INSTANCE.w3wErrorText());
+					return;
+				}
 
-						LOG.info("W3W response: " + response);
-						final JSONValue jsonValue = JSONParser.parseLenient(response);
-						final JSONObject jsonObject = jsonValue.isObject();
+				final JSONValue jsonValue = JSONParser.parseLenient(response);
+				final JSONObject jsonObject = jsonValue.isObject();
 
-//						W3W v1.0 [obsolete]
-//						if (jsonObject.containsKey("position")) {
-//							final JSONArray jsonCoords = jsonObject.get("position").isArray();
-//
-//						final double[] coords = new double[2];
-//						coords[0] = jsonCoords.get(0).isNumber()
-//								.doubleValue();
-//						coords[1] = jsonCoords.get(1).isNumber()
-//								.doubleValue();
-//
-//						final double latitud = coords[0];
-//						final double longitud = coords[1];
-						
-						if (jsonObject.containsKey("geometry")) {
-							final JSONObject jsonCoords = jsonObject.get("geometry").isObject();
-							LOG.info("W3W coordinates: " + jsonCoords.toString());
-																					
-							final double latitud = jsonCoords.get("lat").isNumber().doubleValue();
-							final double longitud = jsonCoords.get("lng").isNumber().doubleValue();
+				if (jsonObject.containsKey("geometry")) {
+					final JSONObject jsonCoords = jsonObject.get("geometry").isObject();
 
-							updateMap(latitud, longitud, 20);
-							final LonLat lonLat = new LonLat(longitud, latitud);
-							transformToInternalProjection(lonLat);
-							w3wTool.addElementToW3wLayer(lonLat, words);
+					final double latitud = jsonCoords.get("lat").isNumber().doubleValue();
+					final double longitud = jsonCoords.get("lng").isNumber().doubleValue();
 
-						} else if (jsonObject.containsKey("error")) {
-							showException(UIMessages.INSTANCE.fail()
-									+ jsonObject.get("message").toString());
-						} else {
-							showException(UIMessages.INSTANCE.w3wErrorText());
-						}
-					}
-				});
+					updateMap(latitud, longitud, 20, "EPSG:4326");
+					final LonLat lonLat = new LonLat(longitud, latitud);
+					transformToInternalProjection(lonLat, "EPSG:4326");
+					w3wTool.addElementToW3wLayer(lonLat, words);
+
+				} else if (jsonObject.containsKey("error")) {
+					showException(UIMessages.INSTANCE.fail() + jsonObject.get("message").toString());
+				} else {
+					showException(UIMessages.INSTANCE.w3wErrorText());
+				}
+			}
+		});
 	}
 
 	private void showException(final String msg) {
-		final AlertMessageBox messageBox = new AlertMessageBox(
-				UIMessages.INSTANCE.warning(), msg);
+		final AlertMessageBox messageBox = new AlertMessageBox(UIMessages.INSTANCE.warning(), msg);
 		messageBox.show();
 	}
 
@@ -382,15 +344,14 @@ public class GeocodingPanelWidget implements IsWidget {
 
 		geolocate.addLocationUncapableListener(new LocationUncapableListener() {
 			public void onLocationUncapable() {
-				showDialog(UIMessages.INSTANCE.notSupported(),
-						UIMessages.INSTANCE.geolocationNotSupported());
+				showDialog(UIMessages.INSTANCE.notSupported(), UIMessages.INSTANCE.geolocationNotSupported());
 			}
 		});
 
 		geolocate.addLocationUpdateListener(new LocationUpdateListener() {
 			public void onLocationUpdate(final LocationUpdateEvent eventObject) {
-				updateMap(eventObject.getPosition().getCoords().lat(),
-						eventObject.getPosition().getCoords().lon(), 20);
+				updateMap(eventObject.getPosition().getCoords().lat(), eventObject.getPosition().getCoords().lon(), 20,
+						"EPSG:4326");
 				geolocate.deactivate();
 			}
 		});

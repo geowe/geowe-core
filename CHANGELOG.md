@@ -7,7 +7,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.9]Beta - 2016-11-28
+## [1.3.9]Beta - 2016-11-29
 ### Added
 - Added geolocation support for any projection. 
 - Added Canary Islands Projections. REGCAN95 / UTM zone 27N (EPSG:4082) and zone 28N (EPSG:4083)
@@ -16,6 +16,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#240](https://github.com/geowe/geowe-core/issues/240)
 - issue [#256](https://github.com/geowe/geowe-core/issues/256)
 - issue [#255](https://github.com/geowe/geowe-core/issues/255)
+- issue [#222](https://github.com/geowe/geowe-core/issues/222)
 
 ## [1.3.8]Beta - 2016-11-24
 version deployed for testing [map.geowe.org](http://map.geowe.org)

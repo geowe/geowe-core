@@ -76,7 +76,7 @@ public class GitHubUpdateFileExporter implements Exporter {
 	private void confirmUpdate() {
 
 		ConfirmMessageBox messageBox = messageDialogBuilder.createConfirm(UIMessages.INSTANCE.edtAlertDialogTitle(),
-				UIMessages.INSTANCE.gitHubConfirmUpdate(gitHubParameter.getFileName(), gitHubParameter.getUserName()) + ". El SHA de partida es: " + gitHubParameter.getSha(), ImageProvider.INSTANCE.github24());
+				UIMessages.INSTANCE.gitHubConfirmUpdate(gitHubParameter.getFileName(), gitHubParameter.getUserName()), ImageProvider.INSTANCE.github24());
 		messageBox.getButton(PredefinedButton.YES).addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {

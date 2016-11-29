@@ -165,7 +165,8 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		for(GitHubFileListAttributeBean file: files) {
 			final GitHubLayerVectorSource source = new GitHubLayerVectorSource();
 			source.setUrl(file.getAttributeUrl());
-			source.setLayerName(file.getAttributeName());
+			String name = file.getAttributeName().substring(0, file.getAttributeName().lastIndexOf("."));
+			source.setLayerName(name);
 			source.setSha(file.getAttributeSha());
 			createLayerFromURL(source);
 		}
@@ -215,10 +216,18 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 					}
 				});
 	}
+	
+	protected boolean isValidDataFormat() {
+		boolean isValid = true;
+		if (geoDataImportDialog.getDataFormat().isEmpty()) {
+			isValid = false;
+		}
+		return isValid;
+	}
 
 	protected boolean isValidInputFile() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab().equals(
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.file())
 				&& (geoDataImportDialog.getFileUploadField().getValue() == null || (geoDataImportDialog
 						.getFileUploadField().getValue() != null && geoDataImportDialog
@@ -230,8 +239,8 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 
 	protected boolean isValidInputURL() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab()
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.url())
 				&& (geoDataImportDialog.getUrl() == null || (geoDataImportDialog
 						.getUrl() != null && geoDataImportDialog.getUrl()
@@ -243,8 +252,8 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 
 	protected boolean isValidInputText() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab().equals(
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.text())
 				&& (geoDataImportDialog.getGeoData() == null || geoDataImportDialog
 						.getGeoData().isEmpty())) {
@@ -264,6 +273,19 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 						.getWfsNamespaceTypeName().isEmpty()))) {
 
 			isValid = false;
+		}
+		return isValid;
+	}
+	
+	protected boolean isValidInputGitHub() {
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab()
+				.equals(UIMessages.INSTANCE.gitHubResponseTitle())) {
+
+			int count = geoDataImportDialog.getGitHubImportTab().getSelectedFiles().size();
+			if(count == 0) {
+				isValid = false;
+			}
 		}
 		return isValid;
 	}

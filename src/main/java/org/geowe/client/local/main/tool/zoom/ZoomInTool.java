@@ -40,7 +40,7 @@ import com.sencha.gxt.core.client.Style.Side;
  * Zoom in tool.
  * 
  * @author rafa@geowe.org
- * @since 22-11-2016 Added key shortcut 'I'
+ * @since 22-11-2016 Added key shortcut 'KEY_PAGEDOWN'
  *
  */
 @ApplicationScoped
@@ -67,13 +67,15 @@ public class ZoomInTool extends ButtonTool {
 	}
 
 	private KeyUpHandler createKeyHandler() {
-		return new KeyUpHandler() {
+		KeyUpHandler handler=  new KeyUpHandler() {
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (KeyCodes.KEY_I == event.getNativeEvent().getKeyCode()) {
+				if (KeyCodes.KEY_PAGEDOWN == event.getNativeEvent().getKeyCode()) {
 					onRelease();
 				}
 			}
 		};
+		
+		return handler;
 	}
 }

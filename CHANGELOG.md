@@ -7,15 +7,30 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.8]Beta - 2016-11-25
+## [1.3.9]Beta - 2016-11-25
+### Added
+- Added geolocation support for any projection. 
+- Added Canary Islands Projections. REGCAN95 / UTM zone 27N (EPSG:4082) and zone 28N (EPSG:4083)
+
+### Fixed
+- issue [#240](https://github.com/geowe/geowe-core/issues/240)
+- issue [#256](https://github.com/geowe/geowe-core/issues/256)
+
+## [1.3.8]Beta - 2016-11-24
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Import csv with X and Y column (point option).
+- Add keyboard shortcut for zoom in (KEY_PAGEDOWN) and zoom out (KEY_PAGEUP).
+- Added GitHub tab in the add vector layer dialog to facilitate loading data from github.
 
 ### Fixed
 - issue [#186](https://github.com/geowe/geowe-core/issues/186)
-
+- issue [#238](https://github.com/geowe/geowe-core/issues/238)
+- issue [#247](https://github.com/geowe/geowe-core/issues/247)
+- issue [#231](https://github.com/geowe/geowe-core/issues/231)
 
 ## [1.3.7]Beta - 2016-11-18
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Added Help for Geoprocesses dialog.
 - Import CSV files (with WKT column)

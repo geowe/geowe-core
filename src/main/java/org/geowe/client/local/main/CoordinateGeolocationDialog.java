@@ -26,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.KeyShortcutHandler;
+import org.geowe.client.local.ui.ProjectionComboBox;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,9 +37,12 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * Represents a dialog to load a layer on the map from a Wem Map Service (WMS)
+ * Represents a dialog to load geolocate a coordinate
  * 
  * @author geowe
+ * @since 25-11-2016
+ * @author rafa@geowe.org
+ * fix issue 240
  *
  */
 @ApplicationScoped
@@ -47,12 +51,13 @@ public class CoordinateGeolocationDialog extends Dialog {
 	private static final String FIELD_WIDTH = "180px";
 	private TextField latitudTextField;
 	private TextField longitudTextField;
+	private ProjectionComboBox epsgCombo;
 
 	public CoordinateGeolocationDialog() {
 		super();
 		this.setHeadingText(UIMessages.INSTANCE.coordWGS84());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(280, 150);
+		this.setPixelSize(270, 190);
 		this.setModal(true);
 		this.setHideOnButtonClick(true);
 		add(createPanel());
@@ -61,6 +66,16 @@ public class CoordinateGeolocationDialog extends Dialog {
 
 	private Widget createPanel() {
 		final VerticalLayoutContainer panel = new VerticalLayoutContainer();
+		
+		longitudTextField = new TextField();
+		longitudTextField.setTitle(UIMessages.INSTANCE.longitude());
+		longitudTextField.setAllowBlank(false);
+
+		longitudTextField.setWidth(FIELD_WIDTH);
+
+		final FieldLabel longitudLabel = new FieldLabel(longitudTextField,
+				UIMessages.INSTANCE.longitude());
+		panel.add(longitudLabel, new VerticalLayoutData(1, -1));
 		
 		latitudTextField = new TextField();
 		latitudTextField.setTitle(UIMessages.INSTANCE.latitude());
@@ -71,25 +86,19 @@ public class CoordinateGeolocationDialog extends Dialog {
 				UIMessages.INSTANCE.latitude());
 		panel.add(latitudLabel, new VerticalLayoutData(1, -1));
 
-		longitudTextField = new TextField();
-		longitudTextField.setTitle(UIMessages.INSTANCE.longitude());
-		longitudTextField.setAllowBlank(false);
-
-		longitudTextField.setWidth(FIELD_WIDTH);
-
-		final FieldLabel longitudLabel = new FieldLabel(longitudTextField,
-				UIMessages.INSTANCE.longitude());
-		panel.add(longitudLabel, new VerticalLayoutData(1, -1));
 		initializeFields();
 
+		epsgCombo = new ProjectionComboBox(FIELD_WIDTH);
+		epsgCombo.setValue("WGS84");
+		final FieldLabel epsgLabel = new FieldLabel(epsgCombo,
+				UIMessages.INSTANCE.lidProjectionLabel());
+		panel.add(epsgLabel, new VerticalLayoutData(1, -1));
 		return panel;
 	}
 
 	private void initializeFields() {
-		latitudTextField.setEmptyText(UIMessages.INSTANCE.latitude()
-				+ ": WGS84");
-		longitudTextField.setEmptyText(UIMessages.INSTANCE.longitude()
-				+ ": WGS84");
+		latitudTextField.setEmptyText(UIMessages.INSTANCE.latitude());
+		longitudTextField.setEmptyText(UIMessages.INSTANCE.longitude());
 	}
 
 	public String getLatitud() {
@@ -120,6 +129,10 @@ public class CoordinateGeolocationDialog extends Dialog {
 		}
 
 		return isCorrect;
+	}
+	
+	public String getEPSG(){
+		return epsgCombo.getValue();
 	}
 
 	private void addKeyShortcuts() {

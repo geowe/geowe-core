@@ -32,9 +32,16 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.operation.overlay.OverlayOp;
 import com.vividsolutions.jts.precision.EnhancedPrecisionOp;
-
+/**
+ * 
+ * @author jose@geowe.org
+ * @since 29-11-2016
+ * @author rafa@geowe.org
+ * fix issue 222 (reduce tolerance)
+ *
+ */
 public class TopologicalOverlay {
-	private static final double TOLERANCIA = -0.0000001;
+	private static final double TOLERANCIA = -0.00001;
 	
 	public List<String> getOverlay(final Geometry layer1,
 			final Geometry layer2, final int op) {

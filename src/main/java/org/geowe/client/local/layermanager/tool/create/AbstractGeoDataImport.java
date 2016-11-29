@@ -25,6 +25,9 @@ package org.geowe.client.local.layermanager.tool.create;
 import java.util.List;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
+import org.geowe.client.local.layermanager.tool.create.vector.source.URLLayerVectorSource;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.main.tool.map.catalog.model.LayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.URLVectorLayerDef;
@@ -107,12 +110,14 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 	
 	
-	protected void createLayerFromURL(String url, String layerName) {
+	protected void createLayerFromURL(LayerVectorSource source) {
+		URLLayerVectorSource urlSource = (URLLayerVectorSource)source;
 		URLVectorLayerDef urlLayerDef = new URLVectorLayerDef();
 		urlLayerDef.setEpsg(geoDataImportDialog.getProjectionName());
 		urlLayerDef.setFormat(geoDataImportDialog.getDataFormat());
-		urlLayerDef.setName(layerName);
-		urlLayerDef.setUrl(url);
+		urlLayerDef.setName(source.getLayerName());
+		urlLayerDef.setUrl(urlSource.getUrl());
+		urlLayerDef.setSource(source);		
 		urlLayerDef.setType(LayerDef.VECTOR_TYPE);
 		urlLayerDef.load();
 	}
@@ -154,9 +159,15 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	protected void createGitHubLayers() {
 		GitHubImportTab getGitHubImportTab = geoDataImportDialog.getGitHubImportTab();
 		List<GitHubFileListAttributeBean> files = getGitHubImportTab.getSelectedFiles();
+		//eliminar la extension del fichero
+		
 		
 		for(GitHubFileListAttributeBean file: files) {
-			createLayerFromURL(file.getAttributeUrl(), file.getAttributeName());
+			final GitHubLayerVectorSource source = new GitHubLayerVectorSource();
+			source.setUrl(file.getAttributeUrl());
+			source.setLayerName(file.getAttributeName());
+			source.setSha(file.getAttributeSha());
+			createLayerFromURL(source);
 		}
 		
 	}

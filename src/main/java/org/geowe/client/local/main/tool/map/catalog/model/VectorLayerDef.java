@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.map.catalog.model;
 
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.format.GPX;
 import org.geowe.client.local.model.vector.format.TopoJSON;
@@ -56,7 +57,8 @@ public abstract class VectorLayerDef extends LayerDef{
 	private String highlightedColor;
 	
 	private String epsg;
-	private String format;		
+	private String format;
+	private LayerVectorSource source;
 	
 	private StyleMap styleMap;
 	
@@ -155,6 +157,15 @@ public abstract class VectorLayerDef extends LayerDef{
 		layerConfig.setEpsg(getEpsg());
 		layerConfig.setGeoDataFormat(getFormat());
 		layerConfig.setLayerName(getName());
+		layerConfig.setSource(source);
 		return layerConfig;
+	}
+	
+	public void setSource(LayerVectorSource source) {
+		this.source = source;
+	}
+	
+	public LayerVectorSource getSource() {
+		return source;
 	}
 }

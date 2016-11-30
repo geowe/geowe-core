@@ -17,6 +17,8 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#256](https://github.com/geowe/geowe-core/issues/256)
 - issue [#255](https://github.com/geowe/geowe-core/issues/255)
 - issue [#222](https://github.com/geowe/geowe-core/issues/222)
+- issue [#254](https://github.com/geowe/geowe-core/issues/254)
+- issue [#262](https://github.com/geowe/geowe-core/issues/262)
 
 ## [1.3.8]Beta - 2016-11-24
 version deployed for testing [map.geowe.org](http://map.geowe.org)

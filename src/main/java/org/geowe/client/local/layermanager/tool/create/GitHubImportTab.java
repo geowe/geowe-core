@@ -70,7 +70,7 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 	private GitHubGetFileListRequest<GitHubFileListAttributeBean> gitHubGetFileListRequest;
 
 	private Grid<GitHubFileListAttributeBean> grid;
-	private ListStore<GitHubFileListAttributeBean> repositoryStore;
+	private ListStore<GitHubFileListAttributeBean> fileStore;
 	
 	@Inject
 	private GitHubRepositoryListDialog repositoryListDialog;
@@ -133,7 +133,7 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 		final GitHubFileListAttributeBeanProperties props = GWT
 				.create(GitHubFileListAttributeBeanProperties.class);
 
-		repositoryStore = new ListStore<GitHubFileListAttributeBean>(
+		fileStore = new ListStore<GitHubFileListAttributeBean>(
 				props.key());
 
 		final ColumnConfig<GitHubFileListAttributeBean, String> nameCol = new ColumnConfig<GitHubFileListAttributeBean, String>(
@@ -152,7 +152,7 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 				columns);
 
 		
-		grid = new Grid<GitHubFileListAttributeBean>(repositoryStore,
+		grid = new Grid<GitHubFileListAttributeBean>(fileStore,
 				columModel);
 		grid.getView().setAutoFill(false);
 		grid.setWidth(260);
@@ -228,14 +228,17 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 		});
 	}
 	
-
+	public void clearFileGrid() {
+		fileStore.clear();
+	}
+	
 	public void setData(List<GitHubFileListAttributeBean> data) {
 		if (data == null) {
 			data = new ArrayList<GitHubFileListAttributeBean>();
 		}
 
-		repositoryStore.clear();
-		repositoryStore.addAll(data);
+		clearFileGrid();
+		fileStore.addAll(data);
 		//setHeadingText(UIMessages.INSTANCE.gitHubTitleListRepo());
 		show();
 	}

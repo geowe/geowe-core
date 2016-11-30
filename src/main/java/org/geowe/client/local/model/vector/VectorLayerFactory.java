@@ -89,6 +89,7 @@ public final class VectorLayerFactory {
 			break;
 		}
 
+		layer.setSource(layerConfig.getSource());
 		return layer;
 	}
 

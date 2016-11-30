@@ -37,14 +37,27 @@ public class GitHubFileListAttributeBean {
 	private String attributeName;
 	private String attributeUrl;
 	private String attributeType;
-	
+	private String attributeSha;
 
 	
-	public GitHubFileListAttributeBean(@MapsTo("name") String fileName, @MapsTo("download_url")String url, @MapsTo("type")String type) {
+	public String getAttributeSha() {
+		return attributeSha;
+	}
+
+
+
+	public void setAttributeSha(String attributeSha) {
+		this.attributeSha = attributeSha;
+	}
+
+
+
+	public GitHubFileListAttributeBean(@MapsTo("name") String fileName, @MapsTo("download_url")String url, @MapsTo("type")String type, @MapsTo("sha")String sha) {
 		
 		this.attributeName = fileName;
 		this.attributeUrl = url;
 		this.attributeType = type;
+		this.attributeSha = sha;
 	}
 
 	

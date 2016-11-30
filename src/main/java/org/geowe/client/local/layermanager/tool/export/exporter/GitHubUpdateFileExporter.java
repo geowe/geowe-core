@@ -22,13 +22,10 @@
  */
 package org.geowe.client.local.layermanager.tool.export.exporter;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.github.request.GitHubEventListener;
-import org.geowe.client.local.github.request.GitHubGetFileRequest;
 import org.geowe.client.local.github.request.GitHubParameter;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
@@ -60,32 +57,21 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 
 @ApplicationScoped
-public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener<GitHubContentResponse> {
+public class GitHubUpdateFileExporter implements Exporter {
 	private final static String URL_BASE = "https://api.github.com/repos/";
 
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	private ProgressBarDialog autoMessageBox;
-	@Inject
-	private GitHubGetFileRequest gitHubGetFileRequest;
 	private GitHubParameter gitHubParameter;	
 	
-	@PostConstruct
-	private void registerEvent() {
-		gitHubGetFileRequest.addListener(this);
-	}
+	
 
 	@Override
 	public void export(FileParameter fileParameter) {		
-		this.gitHubParameter = (GitHubParameter)fileParameter;		
-		gitHubGetFileRequest.send(gitHubParameter);
-	}
-	
-	@Override
-	public void onFinish(GitHubContentResponse response) {		
-		gitHubParameter.setSha(response.getSha());
+		this.gitHubParameter = (GitHubParameter)fileParameter;	
 		confirmUpdate();
-	}	
+	}
 	
 	private void confirmUpdate() {
 

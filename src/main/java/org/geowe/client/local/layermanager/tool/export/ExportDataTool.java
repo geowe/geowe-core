@@ -35,6 +35,7 @@ import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.LayerTool;
 import org.geowe.client.local.layermanager.tool.create.CSV;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
@@ -55,7 +56,6 @@ import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
-import org.slf4j.Logger;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -267,9 +267,11 @@ public class ExportDataTool extends LayerTool implements
 		gitHubParameter.setPath(gitHubExportDialog.getPath());
 		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
-		gitHubParameter.setExtension(getExtension());		
-		gitHubParameter
-				.setContent(getContent((VectorLayer) getSelectedLayer()));
+		gitHubParameter.setExtension(getExtension());
+		VectorLayer layer = (VectorLayer) getSelectedLayer();		
+		gitHubParameter.setContent(getContent(layer));
+		GitHubLayerVectorSource source = (GitHubLayerVectorSource)layer.getSource();
+		gitHubParameter.setSha(source.getSha());
 		return gitHubParameter;
 	}
 

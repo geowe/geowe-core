@@ -72,13 +72,12 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 	private String projection;
 
 	@Inject
-	public GeoDataImportTool(final GeoDataImportDialog geoDataImportDialog,
-			final LayerManagerWidget layerManager,
+	public GeoDataImportTool(final GeoDataImportDialog geoDataImportDialog, final LayerManagerWidget layerManager,
 			final MessageDialogBuilder messageDialogBuilder) {
 
 		super(geoDataImportDialog, layerManager, messageDialogBuilder);
-		configureDialog(UIMessages.INSTANCE.geoDataImportDialogTitle(),
-				UIMessages.INSTANCE.defaultLayerName(), GeoMap.INTERNAL_EPSG);
+		configureDialog(UIMessages.INSTANCE.geoDataImportDialogTitle(), UIMessages.INSTANCE.defaultLayerName(),
+				GeoMap.INTERNAL_EPSG);
 
 		this.geoDataImportDialog = geoDataImportDialog;
 		this.layerManagerWidget = layerManager;
@@ -88,62 +87,53 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 	private void initialize() {
 		addDialogListener();
 		addCloseButtonHandler();
-		geoDataImportDialog.getUploadPanel().addSubmitCompleteHandler(
-				new SubmitCompleteHandler() {
-					public void onSubmitComplete(final SubmitCompleteEvent event) {
+		geoDataImportDialog.getUploadPanel().addSubmitCompleteHandler(new SubmitCompleteHandler() {
+			public void onSubmitComplete(final SubmitCompleteEvent event) {
 
-						final Element label = DOM.createLabel();
-						label.setInnerHTML(event.getResults());
+				final Element label = DOM.createLabel();
+				label.setInnerHTML(event.getResults());
 
-						final String contentFile = label.getInnerText();
-						autoMessageBox.hide();
-						geoDataImportDialog.hide();
-						if (hasError(contentFile)) {
-							showAlert(contentFile);
-							return;
-						}
+				final String contentFile = label.getInnerText();
+				autoMessageBox.hide();
+				geoDataImportDialog.hide();
+				if (hasError(contentFile)) {
+					showAlert(contentFile);
+					return;
+				}
 
-						VectorLayerConfig layerConfig = null;
-						Layer layer = null;
+				VectorLayerConfig layerConfig = null;
+				Layer layer = null;
 
-						try {
-							layerConfig = new VectorLayerConfig();
-							layerConfig.setEpsg(geoDataImportDialog
-									.getProjectionName());
-							layerConfig.setGeoDataFormat(geoDataImportDialog
-									.getDataFormat());
-							layerConfig.setLayerName(geoDataImportDialog
-									.getLayerName());
-							layerConfig.setGeoDataString(contentFile);
+				try {
+					layerConfig = new VectorLayerConfig();
+					layerConfig.setEpsg(geoDataImportDialog.getProjectionName());
+					layerConfig.setGeoDataFormat(geoDataImportDialog.getDataFormat());
+					layerConfig.setLayerName(geoDataImportDialog.getLayerName());
+					layerConfig.setGeoDataString(contentFile);
 
-							layer = VectorLayerFactory
-									.createVectorLayerFromGeoData(layerConfig);
+					layer = VectorLayerFactory.createVectorLayerFromGeoData(layerConfig);
 
-						} catch (Exception e) {
-							showAlert(UIMessages.INSTANCE.gditAlertMessage());
-						}
+				} catch (Exception e) {
+					showAlert(UIMessages.INSTANCE.gditAlertMessage());
+				}
 
-						layerManagerWidget.addVector(layer);
-						layerManagerWidget.setSelectedLayer(
-								LayerManagerWidget.VECTOR_TAB, layer);
+				layerManagerWidget.addVector(layer);
+				layerManagerWidget.setSelectedLayer(LayerManagerWidget.VECTOR_TAB, layer);
 
-					}
+			}
 
-					private boolean hasError(final String contentFile) {
-						return contentFile.startsWith("413")
-								|| contentFile.startsWith("500");
-					}
+			private boolean hasError(final String contentFile) {
+				return contentFile.startsWith("413") || contentFile.startsWith("500");
+			}
 
-					private void showAlert(final String errorMsg) {
-						AlertMessageBox messageBox = new AlertMessageBox(
-								UIMessages.INSTANCE.warning(), errorMsg);
-						messageBox.show();
-					}
-				});
+			private void showAlert(final String errorMsg) {
+				AlertMessageBox messageBox = new AlertMessageBox(UIMessages.INSTANCE.warning(), errorMsg);
+				messageBox.show();
+			}
+		});
 	}
 
-	private void configureDialog(final String title, final String newLayerName,
-			String projection) {
+	private void configureDialog(final String title, final String newLayerName, String projection) {
 		this.dialogTitle = title;
 		this.layerName = newLayerName;
 		this.projection = projection;
@@ -157,88 +147,71 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 	}
 
 	private void addDialogListener() {
-		geoDataImportDialog.getButton(PredefinedButton.OK).addSelectHandler(
-				new SelectHandler() {
+		geoDataImportDialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(final SelectEvent event) {
+				autoMessageBox = new ProgressBarDialog(false, UIMessages.INSTANCE.processing());
+				taskManager.execute(new Runnable() {
+
 					@Override
-					public void onSelect(final SelectEvent event) {
-						autoMessageBox = new ProgressBarDialog(false,
-								UIMessages.INSTANCE.processing());
-						taskManager.execute(new Runnable() {
+					public void run() {
 
-							@Override
-							public void run() {
-
-								if (isValid(geoDataImportDialog.getActiveTab())) {
-									autoMessageBox.setClosable(true);
-									autoMessageBox.clear();
-									autoMessageBox.center();
-									if (!geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.url()) &&
-											!geoDataImportDialog.getActiveTab()
+						if (isValid(geoDataImportDialog.getActiveTab())) {
+							autoMessageBox.setClosable(true);
+							autoMessageBox.clear();
+							autoMessageBox.center();
+							if (!geoDataImportDialog.getActiveTab().equals(UIMessages.INSTANCE.url())
+									&& !geoDataImportDialog.getActiveTab()
 											.equals(UIMessages.INSTANCE.gitHubResponseTitle())) {
-										autoMessageBox.show();
-									}
-								
-									final Layer layer = getlayer(geoDataImportDialog
-											.getActiveTab());
+								autoMessageBox.show();
+							}
 
-									if (geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.file())) {
-										return;
-									}
+							final Layer layer = getlayer(geoDataImportDialog.getActiveTab());
 
-									if (layer != null) {
-										LayerLoader.load(layer);
-										if (geoDataImportDialog.getActiveTab()
-												.equals(UIMessages.INSTANCE
-														.empty())
-												&& isCreateAttrAfterLayerCreation()) {
+							if (geoDataImportDialog.getActiveTab().equals(UIMessages.INSTANCE.file())) {
+								return;
+							}
 
-											featureSchemaDialog
-													.setVectorLayer((VectorLayer) layer);
-											featureSchemaDialog.show();
+							if (layer != null) {
+								LayerLoader.load(layer);
+								if (geoDataImportDialog.getActiveTab().equals(UIMessages.INSTANCE.empty())
+										&& isCreateAttrAfterLayerCreation()) {
 
-										}
-									}
+									featureSchemaDialog.setVectorLayer((VectorLayer) layer);
+									featureSchemaDialog.show();
 
-									geoDataImportDialog.hide();
-
-									if (!geoDataImportDialog.getActiveTab()
-											.equals(UIMessages.INSTANCE.url())) {
-										autoMessageBox.hide();
-									}
-								} else {
-									showAlert(UIMessages.INSTANCE.warning(),
-											UIMessages.INSTANCE
-													.gditAlertMessage());
 								}
 							}
 
-							private boolean isValid(final String activeTab) {
-								boolean valid = true;
-								if (valid
-										&& UIMessages.INSTANCE.url().equals(
-												activeTab)) {
-									valid = isValidInputURL();
-								} else if (valid
-										&& UIMessages.INSTANCE.text().equals(
-												activeTab)) {
-									valid = isValidInputText();
-								} else if (valid
-										&& UIMessages.INSTANCE.file().equals(
-												activeTab)) {
-									valid = isValidInputFile();
-								} else if (valid
-										&& UIMessages.INSTANCE.wfs().equals(
-												activeTab)) {
-									valid = isValidInputWFS();
-								}
+							geoDataImportDialog.hide();
 
-								return valid;
+							if (!geoDataImportDialog.getActiveTab().equals(UIMessages.INSTANCE.url())) {
+								autoMessageBox.hide();
 							}
-
-						});
+						} else {
+							showAlert(UIMessages.INSTANCE.warning(), UIMessages.INSTANCE.gditAlertMessage());
+						}
 					}
+
+					private boolean isValid(final String activeTab) {
+						boolean valid = true;
+						if (valid && UIMessages.INSTANCE.url().equals(activeTab)) {
+							valid = isValidInputURL();
+						} else if (valid && UIMessages.INSTANCE.text().equals(activeTab)) {
+							valid = isValidInputText();
+						} else if (valid && UIMessages.INSTANCE.file().equals(activeTab)) {
+							valid = isValidInputFile();
+						} else if (valid && UIMessages.INSTANCE.wfs().equals(activeTab)) {
+							valid = isValidInputWFS();
+						} else if (valid && UIMessages.INSTANCE.gitHubResponseTitle().equals(activeTab)) {
+							valid = isValidInputGitHub();
+						}
+
+						return valid;
+					}
+
 				});
+			}
+		});
 	}
 }

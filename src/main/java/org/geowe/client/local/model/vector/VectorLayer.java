@@ -24,6 +24,7 @@ package org.geowe.client.local.model.vector;
 
 import java.util.Collection;
 
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
 import org.gwtopenmaps.openlayers.client.event.VectorFeatureAddedListener;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
@@ -223,5 +224,15 @@ public class VectorLayer extends Vector {
     	}
     	return matches;
     }
+    
+    private LayerVectorSource source;
+    
+    public void setSource(LayerVectorSource source) {
+		this.source = source;
+	}
+	
+	public LayerVectorSource getSource() {
+		return source;
+	}
 
 }

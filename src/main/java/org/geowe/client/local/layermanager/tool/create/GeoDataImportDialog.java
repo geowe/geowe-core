@@ -129,6 +129,7 @@ public class GeoDataImportDialog extends Dialog {
 		this.urlTextField.clear();
 		this.geoDataTextArea.clear();
 		this.file.clear();
+		this.gitHubImportTab.clearFileGrid();
 	}
 
 	public String getUrl() {
@@ -273,6 +274,7 @@ public class GeoDataImportDialog extends Dialog {
 				
 				if (UIMessages.INSTANCE.gitHubResponseTitle().equals(getActiveTab())) {					
 					layerName.setEnabled(false);
+//					gitHubImportTab.clearFileGrid();
 				} else {
 					layerName.setEnabled(true);
 				}

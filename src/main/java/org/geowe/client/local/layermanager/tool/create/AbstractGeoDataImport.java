@@ -25,6 +25,9 @@ package org.geowe.client.local.layermanager.tool.create;
 import java.util.List;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
+import org.geowe.client.local.layermanager.tool.create.vector.source.URLLayerVectorSource;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.main.tool.map.catalog.model.LayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.URLVectorLayerDef;
@@ -107,12 +110,14 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 	
 	
-	protected void createLayerFromURL(String url, String layerName) {
+	protected void createLayerFromURL(LayerVectorSource source) {
+		URLLayerVectorSource urlSource = (URLLayerVectorSource)source;
 		URLVectorLayerDef urlLayerDef = new URLVectorLayerDef();
 		urlLayerDef.setEpsg(geoDataImportDialog.getProjectionName());
 		urlLayerDef.setFormat(geoDataImportDialog.getDataFormat());
-		urlLayerDef.setName(layerName);
-		urlLayerDef.setUrl(url);
+		urlLayerDef.setName(source.getLayerName());
+		urlLayerDef.setUrl(urlSource.getUrl());
+		urlLayerDef.setSource(source);		
 		urlLayerDef.setType(LayerDef.VECTOR_TYPE);
 		urlLayerDef.load();
 	}
@@ -154,9 +159,16 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	protected void createGitHubLayers() {
 		GitHubImportTab getGitHubImportTab = geoDataImportDialog.getGitHubImportTab();
 		List<GitHubFileListAttributeBean> files = getGitHubImportTab.getSelectedFiles();
+		//eliminar la extension del fichero
+		
 		
 		for(GitHubFileListAttributeBean file: files) {
-			createLayerFromURL(file.getAttributeUrl(), file.getAttributeName());
+			final GitHubLayerVectorSource source = new GitHubLayerVectorSource();
+			source.setUrl(file.getAttributeUrl());
+			String name = file.getAttributeName().substring(0, file.getAttributeName().lastIndexOf("."));
+			source.setLayerName(name);
+			source.setSha(file.getAttributeSha());
+			createLayerFromURL(source);
 		}
 		
 	}
@@ -204,10 +216,18 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 					}
 				});
 	}
+	
+	protected boolean isValidDataFormat() {
+		boolean isValid = true;
+		if (geoDataImportDialog.getDataFormat().isEmpty()) {
+			isValid = false;
+		}
+		return isValid;
+	}
 
 	protected boolean isValidInputFile() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab().equals(
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.file())
 				&& (geoDataImportDialog.getFileUploadField().getValue() == null || (geoDataImportDialog
 						.getFileUploadField().getValue() != null && geoDataImportDialog
@@ -219,8 +239,8 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 
 	protected boolean isValidInputURL() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab()
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.url())
 				&& (geoDataImportDialog.getUrl() == null || (geoDataImportDialog
 						.getUrl() != null && geoDataImportDialog.getUrl()
@@ -232,8 +252,8 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 
 	protected boolean isValidInputText() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab().equals(
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.text())
 				&& (geoDataImportDialog.getGeoData() == null || geoDataImportDialog
 						.getGeoData().isEmpty())) {
@@ -253,6 +273,19 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 						.getWfsNamespaceTypeName().isEmpty()))) {
 
 			isValid = false;
+		}
+		return isValid;
+	}
+	
+	protected boolean isValidInputGitHub() {
+		boolean isValid = isValidDataFormat();
+		if (isValid && geoDataImportDialog.getActiveTab()
+				.equals(UIMessages.INSTANCE.gitHubResponseTitle())) {
+
+			int count = geoDataImportDialog.getGitHubImportTab().getSelectedFiles().size();
+			if(count == 0) {
+				isValid = false;
+			}
 		}
 		return isValid;
 	}

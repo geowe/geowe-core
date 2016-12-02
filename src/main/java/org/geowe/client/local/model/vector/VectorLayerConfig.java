@@ -2,6 +2,7 @@ package org.geowe.client.local.model.vector;
 
 import java.util.Arrays;
 
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.Projection;
@@ -25,6 +26,7 @@ public class VectorLayerConfig {
 	private String geoDataString;
 	private String geoDataFormat;
 	private VectorFeature[] features;
+	private LayerVectorSource source;
 
 	public String getLayerName() {
 		return layerName;
@@ -91,6 +93,14 @@ public class VectorLayerConfig {
 
 	public void setFeatures(VectorFeature[] features) {
 		this.features = features;
+	}
+	
+	public void setSource(LayerVectorSource source) {
+		this.source = source;
+	}
+	
+	public LayerVectorSource getSource() {
+		return source;
 	}
 
 	@Override

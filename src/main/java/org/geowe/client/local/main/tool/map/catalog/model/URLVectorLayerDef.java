@@ -51,7 +51,7 @@ import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
  */
 public class URLVectorLayerDef extends VectorLayerDef {
 	private static final long serialVersionUID = 1L;
-	private static final String URL_BASE = "/gwtOpenLayersProxy";
+	private static final String URL_BASE = GWT.getHostPageBaseURL()+ "gwtOpenLayersProxy";
 	private String url;	
 
 	public String getUrl() {

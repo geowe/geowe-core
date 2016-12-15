@@ -127,7 +127,7 @@ public class GitHubFileListDialog extends Dialog implements
 
 		TextButton repositoryButton = new TextButton("...");		
 		TextButton pathButton = new TextButton("...");
-		TextButton loadFilesButton = new TextButton("Load files");
+		TextButton loadFilesButton = new TextButton(UIMessages.INSTANCE.loadFiles());
 		
 		final VerticalLayoutContainer vPanel = new VerticalLayoutContainer();
 

@@ -44,7 +44,8 @@ import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 
 /**
- * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
+ * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.
+ * extension}
  * 
  * 
  * @author jose@geowe.org
@@ -58,15 +59,17 @@ public class GitHubCreateFileExporter implements Exporter {
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
 	private ProgressBarDialog autoMessageBox;
+	private GitHubParameter gitHubParameter;
 
 	@Override
 	public void export(FileParameter fileParameter) {
 		autoMessageBox = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
 		autoMessageBox.show();
+
 		final String fileName = fileParameter.getFileName() + "."
 				+ fileParameter.getExtension();
-		final GitHubParameter gitHubParameter = (GitHubParameter) fileParameter;
+		gitHubParameter = (GitHubParameter) fileParameter;
 		final String userName = gitHubParameter.getUserName();
 		final String password = gitHubParameter.getPassword();
 		final String repository = gitHubParameter.getRepository();
@@ -77,11 +80,11 @@ public class GitHubCreateFileExporter implements Exporter {
 		final GitHubCreateFileRequest content = new GitHubCreateFileRequest();
 		content.setContent(Base64.encode(fileParameter.getContent()));
 		content.setMessage(message);
-
 		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
-				getErrorCallback(), Response.SC_CREATED).createFile(userName,
-				repository, path, fileName, authorizationHeaderValue, content);
+		RestClient.create(GitHubFileService.class, URL_BASE,
+				getRemoteCallback(), getErrorCallback(), Response.SC_CREATED)
+				.createFile(userName, repository, path, fileName,
+						authorizationHeaderValue, content);
 	}
 
 	private RestErrorCallback getErrorCallback() {
@@ -95,16 +98,18 @@ public class GitHubCreateFileExporter implements Exporter {
 				try {
 					throw throwable;
 				} catch (ResponseException e) {
-					Response response = e.getResponse();					
-					message = response.getStatusText(); 
+					Response response = e.getResponse();
+					message = response.getStatusText();
 					defaultCodeError = response.getStatusCode();
-					
+
 				} catch (Throwable t) {
 					message = t.getMessage();
 				}
-				
-				messageDialogBuilder.createError(UIMessages.INSTANCE.warning() + " " + defaultCodeError, message).show();
-				
+
+				messageDialogBuilder.createError(
+						UIMessages.INSTANCE.warning() + " " + defaultCodeError,
+						message).show();
+
 				return false;
 			}
 		};
@@ -118,9 +123,12 @@ public class GitHubCreateFileExporter implements Exporter {
 				autoMessageBox.hide();
 				GitHubContentResponse content = response.getContent();
 				String url = content.getDownloadUrl();
-				//String html = "Guardado en GitHub correctamente. <br>Puedes acceder al fichero en la siguiente URL: <br><a href='"+ url + "'>descarga directa</a>";								
-				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(),UIMessages.INSTANCE.gitHubSavedSucsessfully(url)).show();
+				messageDialogBuilder.createInfo(
+						UIMessages.INSTANCE.gitHubResponseTitle(),
+						UIMessages.INSTANCE.gitHubSavedSucsessfully(url))
+						.show();
 			}
+
 		};
 	}
 }

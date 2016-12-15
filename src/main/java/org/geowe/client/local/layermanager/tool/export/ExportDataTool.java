@@ -56,6 +56,7 @@ import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.slf4j.Logger;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -69,13 +70,15 @@ import com.sencha.gxt.widget.core.client.info.Info;
  * Export GeoData Tool
  * 
  * @author geowe
- * @author rafa@geowe.org 
- * fix issue 247
+ * @author rafa@geowe.org fix issue 247
+ * @since 15/12/2016 fix issue 270
  */
 @ApplicationScoped
 public class ExportDataTool extends LayerTool implements
 		ChangeSelectedLayerListener {
 
+	@Inject
+	private Logger logger;
 	@Inject
 	private ExportDataDialog exportDataDialog;
 	@Inject
@@ -92,7 +95,7 @@ public class ExportDataTool extends LayerTool implements
 	private GitHubRepositoryListDialog repositoryListDialog;
 	private Exporter exporter;
 	private FileParameter fileParameter;
-	
+
 	@Inject
 	public ExportDataTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
@@ -122,7 +125,7 @@ public class ExportDataTool extends LayerTool implements
 		exportDataDialog.getGitHubButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {						
+					public void onSelect(SelectEvent event) {
 						gitHubExportDialog.setFileName(getFileName());
 						gitHubExportDialog.show();
 					}
@@ -133,12 +136,22 @@ public class ExportDataTool extends LayerTool implements
 					@Override
 					public void onSelect(SelectEvent event) {
 						if (isValidFieldGitHub()) {
-							gitHubCreateFileExporter
-									.export(getGitHubParameter());
+							try {
+								logger.info("Se va a exportar...");
+								gitHubCreateFileExporter
+										.export(getGitHubParameter());
+								logger.info("Exportado...");
+							} catch (Exception e) {
+								logger.info("ERROR AL CREAR EN GITHUB: "
+										+ e.getMessage() + " -- "
+										+ e.getCause());
+							}
+
 						} else {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
+									UIMessages.INSTANCE.gitHubCheckAllFields())
+									.show();
 						}
 					}
 				});
@@ -153,7 +166,8 @@ public class ExportDataTool extends LayerTool implements
 						} else {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
+									UIMessages.INSTANCE.gitHubCheckAllFields())
+									.show();
 						}
 					}
 				});
@@ -166,11 +180,12 @@ public class ExportDataTool extends LayerTool implements
 						if (userName.trim().isEmpty()) {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									UIMessages.INSTANCE.gitHubUserNameCheckField())
-									.show();
+									UIMessages.INSTANCE
+											.gitHubUserNameCheckField()).show();
 							return;
 						}
-						TextField target = gitHubExportDialog.getRepositoryTextField();
+						TextField target = gitHubExportDialog
+								.getRepositoryTextField();
 						repositoryListDialog.setTargetTextField(target);
 						repositoryListDialog.load(userName);
 					}
@@ -268,10 +283,17 @@ public class ExportDataTool extends LayerTool implements
 		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
 		gitHubParameter.setExtension(getExtension());
-		VectorLayer layer = (VectorLayer) getSelectedLayer();		
+		VectorLayer layer = (VectorLayer) getSelectedLayer();
 		gitHubParameter.setContent(getContent(layer));
-		GitHubLayerVectorSource source = (GitHubLayerVectorSource)layer.getSource();
-		gitHubParameter.setSha(source.getSha());
+		if (layer.getSource() != null) {
+			GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer
+					.getSource();
+
+			if (source.getSha() != null && !source.getSha().isEmpty()) {
+				gitHubParameter.setSha(source.getSha());
+			}
+		}
+
 		return gitHubParameter;
 	}
 
@@ -298,8 +320,7 @@ public class ExportDataTool extends LayerTool implements
 			format = new GeoJSON();
 		} else if (vectorFormat.getId() == VectorFormat.WKT_FORMAT.getId()) {
 			format = new WKT();
-		} else if (vectorFormat.getId() == VectorFormat.GPX_FORMAT
-				.getId()) {
+		} else if (vectorFormat.getId() == VectorFormat.GPX_FORMAT.getId()) {
 			// TODO: los atributos son los mismos para todos los features (no
 			// waypoints)
 			format = new GPX();
@@ -350,13 +371,14 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						fileParameter.setContent(getContent((VectorLayer) getSelectedLayer()));
+						fileParameter
+								.setContent(getContent((VectorLayer) getSelectedLayer()));
 						export();
 					}
 				});
 		messageBox.show();
-	}	
-	
+	}
+
 	private VectorFeature[] getTransformedFeatures(Vector layer) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
 		if (layer.getFeatures() != null) {

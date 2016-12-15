@@ -33,7 +33,6 @@ import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.KeyShortcutHandler;
 import org.geowe.client.local.ui.ProjectionComboBox;
 import org.geowe.client.local.ui.VectorFormatComboBox;
-import org.slf4j.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -81,8 +80,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  */
 @ApplicationScoped
 public class GeoDataImportDialog extends Dialog {
-	@Inject
-	private Logger logger;
+
 	@Inject
 	WfsImportTab wfsImportTab;
 	@Inject

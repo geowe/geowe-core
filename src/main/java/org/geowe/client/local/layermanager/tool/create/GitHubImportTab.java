@@ -32,12 +32,10 @@ import org.geowe.client.local.github.request.GitHubListEventListener;
 import org.geowe.client.local.layermanager.tool.export.GitHubRepositoryListDialog;
 import org.geowe.client.local.layermanager.tool.export.github.GitHubFileListAttributeBeanProperties;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.shared.rest.github.response.GitHubFileListAttributeBean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.resources.ThemeStyles;
 import com.sencha.gxt.core.client.util.Margins;
@@ -56,6 +54,11 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
+/**
+ * Representa un panel para cargar capas desde GitHub
+ * 
+ * @author jose@geowe.org
+ */
 @ApplicationScoped
 public class GitHubImportTab extends VerticalLayoutContainer implements
 GitHubListEventListener<GitHubFileListAttributeBean>{
@@ -63,7 +66,6 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 	private TextField userNameField;
 	private TextField repositoryField;
 	private TextField pathField;
-	private TextField targetUrlTextField;
 	private static final String FILE_TYPE = "file";
 
 	@Inject
@@ -78,16 +80,10 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 	private GitHubPathListDialog pathListDialog;
 	
 	
-	@Inject
-	private MessageDialogBuilder messageDialogBuilder;
-	
 	public GitHubImportTab() {
 		super();
-		
-		//this.setSpacing(5);
 				
 		setWidth(350);
-//		setHeight(400);
 		
 		userNameField = new TextField();
 		userNameField.setTitle(UIMessages.INSTANCE.gitHubUserNameField());
@@ -106,11 +102,8 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 
 		TextButton repositoryButton = new TextButton("...");		
 		TextButton pathButton = new TextButton("...");
-		TextButton loadFilesButton = new TextButton("Load files");
-		
-//		final VerticalLayoutContainer vPanel = new VerticalLayoutContainer();
-
-		//this.add(userNameField);
+		TextButton loadFilesButton = new TextButton(
+				UIMessages.INSTANCE.loadFiles());
 		
 		final HorizontalPanel repositoryPanel = new HorizontalPanel();
 		repositoryPanel.add(userNameField);
@@ -140,24 +133,17 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 				props.attributeName(), 330,
 				UIMessages.INSTANCE.gitHubColumNameRepo());
 
-//		final ColumnConfig<GitHubFileListAttributeBean, String> typeCol = new ColumnConfig<GitHubFileListAttributeBean, String>(
-//				props.attributeType(), 200, "Type");
-
 		final List<ColumnConfig<GitHubFileListAttributeBean, ?>> columns = new ArrayList<ColumnConfig<GitHubFileListAttributeBean, ?>>();
 
 		columns.add(nameCol);
-		//columns.add(typeCol);
 
 		final ColumnModel<GitHubFileListAttributeBean> columModel = new ColumnModel<GitHubFileListAttributeBean>(
 				columns);
-
 		
 		grid = new Grid<GitHubFileListAttributeBean>(fileStore,
 				columModel);
 		grid.getView().setAutoFill(false);
 		grid.setWidth(260);
-		// grid.setSelectionModel(new
-		// CellSelectionModel<GitHubRepositoryAttributeBean>());
 		grid.getColumnModel().getColumn(0).setHideable(false);
 		grid.setAllowTextSelection(true);
 		grid.getView().setStripeRows(true);
@@ -166,12 +152,7 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 		setGridDragable(grid);				
 		add(grid, new VerticalLayoutData(1, 1, new Margins(5, 0, 0, 0)));
 		
-		
-		//add(vPanel);				
 	}
-	
-	
-	
 	
 	private SelectHandler requestGetFiles() {
 		return new SelectHandler() {
@@ -197,7 +178,6 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 
 		};
 	}
-
 	
 	private SelectHandler getPath() {
 		return new SelectHandler() {
@@ -210,7 +190,6 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 
 		};
 	}
-	
 	
 	private void setGridDragable(final Grid<GitHubFileListAttributeBean> grid) {
 		new GridDragSource<GitHubFileListAttributeBean>(grid);
@@ -239,20 +218,8 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 
 		clearFileGrid();
 		fileStore.addAll(data);
-		//setHeadingText(UIMessages.INSTANCE.gitHubTitleListRepo());
 		show();
 	}
-
-//	private void addButtonHandlers() {
-//		this.getButton(PredefinedButton.OK).addSelectHandler(
-//				new SelectHandler() {
-//					@Override
-//					public void onSelect(final SelectEvent event) {
-//						targetUrlTextField.setValue(getSelectedFile()
-//								.getAttributeUrl());
-//					}
-//				});
-//	}
 
 	@Override
 	public void onFinish(List<GitHubFileListAttributeBean> response) {
@@ -272,11 +239,6 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 
 		return filter;
 	}
-
-	public void setTargetURLTextField(TextField urlTextField) {
-		this.targetUrlTextField = urlTextField;
-
-	}
 	
 	public GitHubFileListAttributeBean getSelectedFile() {
 		return grid.getSelectionModel().getSelectedItem();
@@ -285,6 +247,5 @@ GitHubListEventListener<GitHubFileListAttributeBean>{
 	public List<GitHubFileListAttributeBean> getSelectedFiles() {
 		return grid.getSelectionModel().getSelectedItems();
 	}
-	
 	
 }

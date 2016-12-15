@@ -8,12 +8,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - More tools
 
 ## [1.3.11]Beta - 2016-12-15
-
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Fixed
+- issue [#263](https://github.com/geowe/geowe-core/issues/263)
 - issue [#270](https://github.com/geowe/geowe-core/issues/270)
 
 ## [1.3.10]Beta - 2016-12-02
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Fixed
 - issue [#264](https://github.com/geowe/geowe-core/issues/264)
 

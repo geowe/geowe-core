@@ -27,7 +27,10 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.github.request.GitHubParameter;
+import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.local.util.Base64;
@@ -49,10 +52,12 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
- * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
- * 
+ * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.
+ * extension}
  * 
  * @author jose@geowe.org
+ * @since 15/12/2016
+ * @author rafa@geowe.org
  *
  */
 
@@ -62,6 +67,8 @@ public class GitHubUpdateFileExporter implements Exporter {
 
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
+	@Inject
+	private LayerManagerWidget layerManagerWidget;
 	private ProgressBarDialog autoMessageBox;
 	private GitHubParameter gitHubParameter;	
 	
@@ -113,7 +120,7 @@ public class GitHubUpdateFileExporter implements Exporter {
 							authorizationHeaderValue, content);
 		} else {
 			messageDialogBuilder.createError(UIMessages.INSTANCE.warning(),
-							"Para poder actualizar esta capa debes cargarla previamente desde GitHub")
+					UIMessages.INSTANCE.gitHubModifyWarning())
 					.show();
 			autoMessageBox.hide();
 		}
@@ -159,6 +166,14 @@ public class GitHubUpdateFileExporter implements Exporter {
 					message = UIMessages.INSTANCE.gitHubResponseNotUpdate();
 				}								
 				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), message).show();
+				// Actualiza el sha del source de la capa para no tener que
+				// recargarla
+				// TODO: pendiente de prueba
+				VectorLayer layer = (VectorLayer) layerManagerWidget
+						.getSelectedLayer(LayerManagerWidget.VECTOR_TAB);
+				GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer
+						.getSource();
+				source.setSha(shaUpdate);
 			}
 		};
 	}	

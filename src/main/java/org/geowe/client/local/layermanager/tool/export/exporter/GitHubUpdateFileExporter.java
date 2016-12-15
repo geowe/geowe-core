@@ -65,7 +65,6 @@ public class GitHubUpdateFileExporter implements Exporter {
 	private ProgressBarDialog autoMessageBox;
 	private GitHubParameter gitHubParameter;	
 	
-	
 
 	@Override
 	public void export(FileParameter fileParameter) {		
@@ -103,12 +102,21 @@ public class GitHubUpdateFileExporter implements Exporter {
 		final GitHubUpdateFileRequest content = new GitHubUpdateFileRequest();
 		content.setContent(Base64.encode(gitHubParameter.getContent()));
 		content.setMessage(message);
-		content.setSha(gitHubParameter.getSha());
-		
-		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
-				getErrorCallback(), Response.SC_OK).updateFile(userName,
-				repository, path, fileName, authorizationHeaderValue, content);
+		if (gitHubParameter.getSha() != null
+				&& !gitHubParameter.getSha().isEmpty()) {
+			content.setSha(gitHubParameter.getSha());
+
+			RestClient.setJacksonMarshallingActive(true);
+			RestClient.create(GitHubFileService.class, URL_BASE,
+					getRemoteCallback(), getErrorCallback(), Response.SC_OK)
+					.updateFile(userName, repository, path, fileName,
+							authorizationHeaderValue, content);
+		} else {
+			messageDialogBuilder.createError(UIMessages.INSTANCE.warning(),
+							"Para poder actualizar esta capa debes cargarla previamente desde GitHub")
+					.show();
+			autoMessageBox.hide();
+		}
 	}
 	
 	private RestErrorCallback getErrorCallback() {

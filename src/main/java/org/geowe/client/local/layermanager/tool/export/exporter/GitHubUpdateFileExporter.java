@@ -166,9 +166,7 @@ public class GitHubUpdateFileExporter implements Exporter {
 					message = UIMessages.INSTANCE.gitHubResponseNotUpdate();
 				}								
 				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), message).show();
-				// Actualiza el sha del source de la capa para no tener que
-				// recargarla
-				// TODO: pendiente de prueba
+				
 				VectorLayer layer = (VectorLayer) layerManagerWidget
 						.getSelectedLayer(LayerManagerWidget.VECTOR_TAB);
 				GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer

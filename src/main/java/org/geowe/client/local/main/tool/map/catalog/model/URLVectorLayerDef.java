@@ -35,6 +35,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
@@ -51,7 +52,7 @@ import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
  */
 public class URLVectorLayerDef extends VectorLayerDef {
 	private static final long serialVersionUID = 1L;
-	private static final String URL_BASE = "/gwtOpenLayersProxy";
+	private static final String URL_BASE = GWT.getHostPageBaseURL()+ "gwtOpenLayersProxy";
 	private String url;	
 
 	public String getUrl() {

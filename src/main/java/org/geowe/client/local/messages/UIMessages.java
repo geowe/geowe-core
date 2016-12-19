@@ -794,4 +794,8 @@ public interface UIMessages extends Messages {
 	String confirmClearMaxExtent();
 	
 	String unexpectedError();
+	
+	String loadFiles();
+
+	String gitHubModifyWarning();
 }

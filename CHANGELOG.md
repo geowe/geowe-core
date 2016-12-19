@@ -7,6 +7,17 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+## [1.3.11]Beta - 2016-12-15
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Fixed
+- issue [#263](https://github.com/geowe/geowe-core/issues/263)
+- issue [#270](https://github.com/geowe/geowe-core/issues/270)
+
+## [1.3.10]Beta - 2016-12-02
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Fixed
+- issue [#264](https://github.com/geowe/geowe-core/issues/264)
+
 ## [1.3.9]Beta - 2016-11-29
 ### Added
 - Added geolocation support for any projection. 
@@ -17,9 +28,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#256](https://github.com/geowe/geowe-core/issues/256)
 - issue [#255](https://github.com/geowe/geowe-core/issues/255)
 - issue [#222](https://github.com/geowe/geowe-core/issues/222)
+- issue [#254](https://github.com/geowe/geowe-core/issues/254)
+- issue [#262](https://github.com/geowe/geowe-core/issues/262)
 
 ## [1.3.8]Beta - 2016-11-24
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
 ### Added
 - Import csv with X and Y column (point option).
 - Add keyboard shortcut for zoom in (KEY_PAGEDOWN) and zoom out (KEY_PAGEUP).

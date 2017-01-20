@@ -33,7 +33,9 @@ import org.geowe.client.local.main.tool.edition.UnionTool;
 import org.geowe.client.local.main.tool.info.LayerInfoDialog;
 import org.geowe.client.local.main.tool.info.RasterInfoDialog;
 import org.geowe.client.local.main.tool.info.WmsGetInfoTool;
+import org.geowe.client.local.main.tool.layer.ExportLayerTool;
 import org.geowe.client.local.main.tool.layer.LayerInfoTool;
+import org.geowe.client.local.main.tool.layer.SaveLayerTool;
 import org.geowe.client.local.main.tool.layer.SearchAttributeTool;
 import org.geowe.client.local.main.tool.spatial.BufferTool;
 import org.geowe.client.local.main.tool.spatial.CentroidTool;
@@ -91,6 +93,10 @@ public class EventListenerInitializer {
 	private RasterInfoDialog rasterInfoDialog;
 	@Inject
 	private WmsGetInfoTool wmsGetInfoTool;
+	@Inject
+	private SaveLayerTool saveLayerTool;
+	@Inject
+	private ExportLayerTool exportLayerTool;
 
 	public void initialize() {
 
@@ -125,7 +131,9 @@ public class EventListenerInitializer {
 		layerManagerWidget.addChangeLayerListener(envelopeTool);
 		layerManagerWidget.addChangeLayerListener(centroidTool);
 		layerManagerWidget.addChangeLayerListener(bufferTool);
-		layerManagerWidget.addChangeLayerListener(geometricValidationTool);						
+		layerManagerWidget.addChangeLayerListener(geometricValidationTool);
+		layerManagerWidget.addChangeLayerListener(saveLayerTool);
+		layerManagerWidget.addChangeLayerListener(exportLayerTool);
 	}
 	
 	private void addChangeSelectedWMSLayerListener() {

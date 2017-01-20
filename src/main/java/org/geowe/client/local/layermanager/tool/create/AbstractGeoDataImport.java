@@ -222,11 +222,22 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		if (geoDataImportDialog.getDataFormat().isEmpty()) {
 			isValid = false;
 		}
+		LOG.info("FORMAT VALID: " + isValid);
+		return isValid;
+	}
+
+	protected boolean isValidProjection() {
+
+		boolean isValid = true;
+		if (geoDataImportDialog.getProjectionName().isEmpty()) {
+			isValid = false;
+		}
+		LOG.info("PROJECTION VALID: " + isValid);
 		return isValid;
 	}
 
 	protected boolean isValidInputFile() {
-		boolean isValid = isValidDataFormat();
+		boolean isValid = isValidDataFormat() && isValidProjection();
 		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.file())
 				&& (geoDataImportDialog.getFileUploadField().getValue() == null || (geoDataImportDialog
@@ -239,7 +250,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 
 	protected boolean isValidInputURL() {
-		boolean isValid = isValidDataFormat();
+		boolean isValid = isValidDataFormat() && isValidProjection();
 		if (isValid && geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.url())
 				&& (geoDataImportDialog.getUrl() == null || (geoDataImportDialog
@@ -252,7 +263,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 
 	protected boolean isValidInputText() {
-		boolean isValid = isValidDataFormat();
+		boolean isValid = isValidDataFormat() && isValidProjection();
 		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.text())
 				&& (geoDataImportDialog.getGeoData() == null || geoDataImportDialog
@@ -278,7 +289,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	}
 	
 	protected boolean isValidInputGitHub() {
-		boolean isValid = isValidDataFormat();
+		boolean isValid = isValidDataFormat() && isValidProjection();
 		if (isValid && geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.gitHubResponseTitle())) {
 

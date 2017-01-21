@@ -51,8 +51,10 @@ import org.geowe.client.local.main.tool.extent.CustomExtentTool;
 import org.geowe.client.local.main.tool.extent.LockCurrentExtentTool;
 import org.geowe.client.local.main.tool.info.WmsGetInfoTool;
 import org.geowe.client.local.main.tool.layer.AddLayerTool;
+import org.geowe.client.local.main.tool.layer.ExportLayerTool;
 import org.geowe.client.local.main.tool.layer.LayerInfoTool;
 import org.geowe.client.local.main.tool.layer.LayerManagerTool;
+import org.geowe.client.local.main.tool.layer.SaveLayerTool;
 import org.geowe.client.local.main.tool.layer.SearchAttributeTool;
 import org.geowe.client.local.main.tool.map.GraticuleTool;
 import org.geowe.client.local.main.tool.map.LayerCatalogTool;
@@ -189,6 +191,11 @@ public class MenuPanelWidget implements IsWidget {
 	private CustomExtentTool customExtentTool;
 
 	private ContentPanel panel;
+	
+	@Inject
+	private SaveLayerTool saveLayerTool;
+	@Inject
+	private ExportLayerTool exportLayerTool;
 
 	@Override
 	public Widget asWidget() {
@@ -274,7 +281,6 @@ public class MenuPanelWidget implements IsWidget {
 		horizontalGroup.add(layerCatalogTool);
 		horizontalGroup.add(basicToolBarTool);
 
-
 		return horizontalGroup;
 	}
 
@@ -315,8 +321,6 @@ public class MenuPanelWidget implements IsWidget {
 		horizontalGroup.add(customExtentTool);		
 		horizontalGroup.add(lockCurrentExtentTool);
 		
-		
-
 		return horizontalGroup;
 	}
 
@@ -328,6 +332,7 @@ public class MenuPanelWidget implements IsWidget {
 		tabPanel.add(getMeasureToolTab(),
 				UIMessages.INSTANCE.mpMeasureToolsLabel());
 		tabPanel.add(getZoomToolTab(), UIMessages.INSTANCE.mpZoomToolsLabel());
+		tabPanel.add(getSaveToolTab(), UIMessages.INSTANCE.save());
 		return tabPanel;
 	}
 
@@ -403,7 +408,6 @@ public class MenuPanelWidget implements IsWidget {
 		verticalLayoutContainer.add(getZoomToolGroup2Tools());
 
 		return verticalLayoutContainer;
-
 	}
 
 	private HorizontalPanel getZoomToolGroupTools() {
@@ -429,6 +433,23 @@ public class MenuPanelWidget implements IsWidget {
 		horizontalGroup.add(zoomOut);
 		horizontalGroup.add(zoomToSeletionTool);
 
+		return horizontalGroup;
+	}
+	
+	private VerticalLayoutContainer getSaveToolTab() {
+		VerticalLayoutContainer verticalLayoutContainer = new VerticalLayoutContainer();
+		verticalLayoutContainer.add(getSaveToolGroup1Tools());
+
+		return verticalLayoutContainer;
+	}
+	
+	private Widget getSaveToolGroup1Tools() {
+		HorizontalPanel horizontalGroup = new HorizontalPanel();
+		horizontalGroup.getElement().getStyle()
+				.setVerticalAlign(VerticalAlign.MIDDLE);
+		horizontalGroup.setSpacing(5);
+		horizontalGroup.add(saveLayerTool);
+		horizontalGroup.add(exportLayerTool);
 		return horizontalGroup;
 	}
 
@@ -531,5 +552,4 @@ public class MenuPanelWidget implements IsWidget {
 
 		return horizontalGroup;
 	}
-
 }

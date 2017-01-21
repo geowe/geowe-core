@@ -366,4 +366,7 @@ public interface ImageProvider extends ClientBundle {
 			
 	@Source("images/ic_earth_extension-custom-24.png")
 	ImageResource customExtension24();
+	
+	@Source("images/ic_file_download-24.png")
+	ImageResource fileDownload24();
 }

@@ -122,7 +122,7 @@ public class GeoDataImportDialog extends Dialog {
 	public void initialize(String title, String layerName, String epsg) {
 		this.setHeadingText(title);
 		this.layerName.setText(layerName);
-		this.projectionName.setValue(epsg);
+		this.projectionName.setValue(null);
 		this.vectorFormatCombo.setValue(null);
 		this.urlTextField.clear();
 		this.geoDataTextArea.clear();
@@ -147,7 +147,11 @@ public class GeoDataImportDialog extends Dialog {
 	}
 
 	public String getProjectionName() {
-		return this.projectionName.getValue();
+		if (this.projectionName.getValue() == null) {
+			return "";
+		} else {
+			return this.projectionName.getValue();
+		}
 	}
 
 	public String getDataFormat() {
@@ -209,6 +213,8 @@ public class GeoDataImportDialog extends Dialog {
 		layerDataContainer.add(layerName);
 
 		projectionName = new ProjectionComboBox(fieldWidth);
+		projectionName.setEmptyText(UIMessages.INSTANCE
+				.asdAttributeComboEmptyText());
 		layerDataContainer.add(new Label(UIMessages.INSTANCE
 				.gdidProjectionLabel()));
 		layerDataContainer.add(projectionName);
@@ -272,7 +278,6 @@ public class GeoDataImportDialog extends Dialog {
 				
 				if (UIMessages.INSTANCE.gitHubResponseTitle().equals(getActiveTab())) {					
 					layerName.setEnabled(false);
-//					gitHubImportTab.clearFileGrid();
 				} else {
 					layerName.setEnabled(true);
 				}

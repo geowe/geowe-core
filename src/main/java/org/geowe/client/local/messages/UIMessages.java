@@ -798,4 +798,10 @@ public interface UIMessages extends Messages {
 	String loadFiles();
 
 	String gitHubModifyWarning();
+	
+	String save();
+
+	String quickSaveToolTipText();
+
+	String exportAs();
 }

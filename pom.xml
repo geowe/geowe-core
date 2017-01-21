@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.geowe</groupId>
 	<artifactId>geowe</artifactId>
-	<version>1.3.11</version>
+	<version>1.3.12</version>
 	<packaging>war</packaging>
 	<properties>
 		<errai.dev.context>${project.artifactId}</errai.dev.context>
@@ -145,6 +145,7 @@
 			<artifactId>gxt-theme-neptune</artifactId>
 			<version>${gxt.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-tools</artifactId>
@@ -228,6 +229,7 @@
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-cordova</artifactId>
 		</dependency>
+		
 	</dependencies>
 	<build>
 		<outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>

@@ -7,7 +7,8 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.12]Beta - 2017-01-20
+## [1.3.12]Beta - 2017-01-21
+version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added
 - Added Save Tab in main menu panel
 
@@ -16,7 +17,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [1.3.11]Beta - 2016-12-15
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Fixed
 - issue [#263](https://github.com/geowe/geowe-core/issues/263)
 - issue [#270](https://github.com/geowe/geowe-core/issues/270)

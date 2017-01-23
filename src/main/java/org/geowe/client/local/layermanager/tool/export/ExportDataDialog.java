@@ -40,6 +40,11 @@ import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 
+/**
+ * 
+ * @author geowe
+ *
+ */
 public class ExportDataDialog extends Dialog {
 
 	private TextButton downloadFileButton;
@@ -94,9 +99,8 @@ public class ExportDataDialog extends Dialog {
 	private Widget createPanel() {
 		String comboWidth = "150px";
 
-		// Combo initialization
 		vectorFormatCombo = new VectorFormatComboBox(comboWidth,
-				VectorFormat.getAllFormat());
+				VectorFormat.getSupportedExportVectorFormat());
 		vectorFormatCombo.addSelectionHandler(getVectorComboSelectionHandler());
 		vectorFormatCombo.setValue(VectorFormat.GEO_JSON_FORMAT);
 		epsgCombo = new ProjectionComboBox(comboWidth);
@@ -124,13 +128,11 @@ public class ExportDataDialog extends Dialog {
 		horizontalGroup.add(downloadFileButton);
 		horizontalGroup.add(gitHubButton);
 		
-
 		return horizontalGroup;
 	}
 
 	private SelectionHandler<VectorFormat> getVectorComboSelectionHandler() {
 		return new SelectionHandler<VectorFormat>() {
-
 			@Override
 			public void onSelection(SelectionEvent<VectorFormat> event) {
 					epsgCombo.enable();

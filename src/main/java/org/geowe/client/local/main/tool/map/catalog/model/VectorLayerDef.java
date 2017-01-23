@@ -22,7 +22,10 @@
  */
 package org.geowe.client.local.main.tool.map.catalog.model;
 
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.format.GPX;
+import org.geowe.client.local.model.vector.format.TopoJSON;
 import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.format.Format;
@@ -35,6 +38,8 @@ import org.gwtopenmaps.openlayers.client.format.WKT;
  * Implementacion base de la definicion de una capa vectorial.
  * 
  * @author Atanasio Muñoz
+ * @author rafa@geowe.org
+ * @since 14/10/2016 addes topojson and gpx format
  *
  */
 public abstract class VectorLayerDef extends LayerDef{
@@ -44,13 +49,16 @@ public abstract class VectorLayerDef extends LayerDef{
 	public static final String GEOJSON = "GeoJSON";
 	public static final String WKT = "WKT";
 	public static final String GML = "GML";
+	public static final String TOPOJSON = "TopoJSON";
+	public static final String GPX = "GPX";
 
 	private String normalColor;
 	private String selectedColor;
 	private String highlightedColor;
 	
 	private String epsg;
-	private String format;		
+	private String format;
+	private LayerVectorSource source;
 	
 	private StyleMap styleMap;
 	
@@ -130,12 +138,17 @@ public abstract class VectorLayerDef extends LayerDef{
 			break;
 		case GML:
 			layerFormat = new GML();
-			break;			
+			break;
+		case GPX:
+			layerFormat = new GPX();
+			break;
+		case TOPOJSON:
+			layerFormat = new TopoJSON();
+			break;
 		default:
 			layerFormat = new GeoJSON();
 			break;
 		}
-		
 		return layerFormat;
 	}
 	
@@ -144,6 +157,15 @@ public abstract class VectorLayerDef extends LayerDef{
 		layerConfig.setEpsg(getEpsg());
 		layerConfig.setGeoDataFormat(getFormat());
 		layerConfig.setLayerName(getName());
+		layerConfig.setSource(source);
 		return layerConfig;
+	}
+	
+	public void setSource(LayerVectorSource source) {
+		this.source = source;
+	}
+	
+	public LayerVectorSource getSource() {
+		return source;
 	}
 }

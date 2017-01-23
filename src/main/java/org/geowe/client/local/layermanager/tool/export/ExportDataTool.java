@@ -30,20 +30,22 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.github.request.GitHubParameter;
 import org.geowe.client.local.layermanager.ChangeSelectedLayerListener;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.LayerTool;
 import org.geowe.client.local.layermanager.tool.create.CSV;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubParameter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.model.vector.format.GPX;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
@@ -54,24 +56,29 @@ import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.slf4j.Logger;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * Export GeoData Tool
  * 
  * @author geowe
- *
+ * @author rafa@geowe.org fix issue 247
+ * @since 15/12/2016 fix issue 270
  */
 @ApplicationScoped
 public class ExportDataTool extends LayerTool implements
 		ChangeSelectedLayerListener {
 
+	@Inject
+	private Logger logger;
 	@Inject
 	private ExportDataDialog exportDataDialog;
 	@Inject
@@ -88,7 +95,7 @@ public class ExportDataTool extends LayerTool implements
 	private GitHubRepositoryListDialog repositoryListDialog;
 	private Exporter exporter;
 	private FileParameter fileParameter;
-	
+
 	@Inject
 	public ExportDataTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
@@ -118,7 +125,7 @@ public class ExportDataTool extends LayerTool implements
 		exportDataDialog.getGitHubButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {						
+					public void onSelect(SelectEvent event) {
 						gitHubExportDialog.setFileName(getFileName());
 						gitHubExportDialog.show();
 					}
@@ -129,12 +136,22 @@ public class ExportDataTool extends LayerTool implements
 					@Override
 					public void onSelect(SelectEvent event) {
 						if (isValidFieldGitHub()) {
-							gitHubCreateFileExporter
-									.export(getGitHubParameter());
+							try {
+								logger.info("Se va a exportar...");
+								gitHubCreateFileExporter
+										.export(getGitHubParameter());
+								logger.info("Exportado...");
+							} catch (Exception e) {
+								logger.info("ERROR AL CREAR EN GITHUB: "
+										+ e.getMessage() + " -- "
+										+ e.getCause());
+							}
+
 						} else {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
+									UIMessages.INSTANCE.gitHubCheckAllFields())
+									.show();
 						}
 					}
 				});
@@ -149,7 +166,8 @@ public class ExportDataTool extends LayerTool implements
 						} else {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									UIMessages.INSTANCE.gitHubCheckAllFields()).show();
+									UIMessages.INSTANCE.gitHubCheckAllFields())
+									.show();
 						}
 					}
 				});
@@ -162,10 +180,13 @@ public class ExportDataTool extends LayerTool implements
 						if (userName.trim().isEmpty()) {
 							messageDialogBuilder.createInfo(
 									UIMessages.INSTANCE.gitHubResponseTitle(),
-									UIMessages.INSTANCE.gitHubUserNameCheckField())
-									.show();
+									UIMessages.INSTANCE
+											.gitHubUserNameCheckField()).show();
 							return;
 						}
+						TextField target = gitHubExportDialog
+								.getRepositoryTextField();
+						repositoryListDialog.setTargetTextField(target);
 						repositoryListDialog.load(userName);
 					}
 				});
@@ -208,7 +229,6 @@ public class ExportDataTool extends LayerTool implements
 		taskManager.execute(new Runnable() {
 			@Override
 			public void run() {
-
 				if (isContentValid(fileParameter.getContent())) {
 					exporter.export(fileParameter);
 				}
@@ -262,9 +282,18 @@ public class ExportDataTool extends LayerTool implements
 		gitHubParameter.setPath(gitHubExportDialog.getPath());
 		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
-		gitHubParameter.setExtension(getExtension());		
-		gitHubParameter
-				.setContent(getContent((VectorLayer) getSelectedLayer()));
+		gitHubParameter.setExtension(getExtension());
+		VectorLayer layer = (VectorLayer) getSelectedLayer();
+		gitHubParameter.setContent(getContent(layer));
+		if (layer.getSource() != null) {
+			GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer
+					.getSource();
+
+			if (source.getSha() != null && !source.getSha().isEmpty()) {
+				gitHubParameter.setSha(source.getSha());
+			}
+		}
+
 		return gitHubParameter;
 	}
 
@@ -291,6 +320,12 @@ public class ExportDataTool extends LayerTool implements
 			format = new GeoJSON();
 		} else if (vectorFormat.getId() == VectorFormat.WKT_FORMAT.getId()) {
 			format = new WKT();
+		} else if (vectorFormat.getId() == VectorFormat.GPX_FORMAT.getId()) {
+			// TODO: los atributos son los mismos para todos los features (no
+			// waypoints)
+			format = new GPX();
+			format.getJSObject().setProperty("creator", "geowe.org");
+
 		} else if (vectorFormat.getId() == VectorFormat.CSV_FORMAT.getId()) {
 			content = new CSV(exportDataDialog.getSelectedEpsg())
 					.write(selectedLayer);
@@ -336,12 +371,14 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
+						fileParameter
+								.setContent(getContent((VectorLayer) getSelectedLayer()));
 						export();
 					}
 				});
 		messageBox.show();
-	}	
-	
+	}
+
 	private VectorFeature[] getTransformedFeatures(Vector layer) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
 		if (layer.getFeatures() != null) {

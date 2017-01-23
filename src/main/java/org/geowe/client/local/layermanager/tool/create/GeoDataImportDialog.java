@@ -33,7 +33,6 @@ import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.KeyShortcutHandler;
 import org.geowe.client.local.ui.ProjectionComboBox;
 import org.geowe.client.local.ui.VectorFormatComboBox;
-import org.slf4j.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -56,6 +55,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -74,14 +74,17 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * Represents the dialog to import layers
  * 
  * @author geowe
+ * @since 18/10/2016
+ * @author rafa@geowe.org WFS fix
  *
  */
 @ApplicationScoped
 public class GeoDataImportDialog extends Dialog {
-	@Inject
-	private Logger logger;
+
 	@Inject
 	WfsImportTab wfsImportTab;
+	@Inject
+	GitHubImportTab gitHubImportTab;
 
 	private TextField urlTextField;
 	private TextArea geoDataTextArea;
@@ -97,11 +100,14 @@ public class GeoDataImportDialog extends Dialog {
 	private Label urlLabel;
 	private HorizontalPanel urlPanel;
 	private CreateEmptyLayerTab createEmptyLayerTab;
+	
+	@Inject
+	private GitHubFileListDialog gitHubFileListDialog;
 
 	public GeoDataImportDialog() {
 		this.setHeadingText(UIMessages.INSTANCE.geoDataImportDialogTitle());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(550, 350);
+		this.setPixelSize(600, 350);
 		this.setModal(true);
 		this.setResizable(false);
 	}
@@ -110,16 +116,18 @@ public class GeoDataImportDialog extends Dialog {
 	private void createLayouts() {
 		this.add(createLayout());
 		addKeyShortcuts();
+		gitHubFileListDialog.setTargetURLTextField(urlTextField);
 	}
 
 	public void initialize(String title, String layerName, String epsg) {
 		this.setHeadingText(title);
 		this.layerName.setText(layerName);
-		this.projectionName.setValue(epsg);
+		this.projectionName.setValue(null);
 		this.vectorFormatCombo.setValue(null);
 		this.urlTextField.clear();
 		this.geoDataTextArea.clear();
 		this.file.clear();
+		this.gitHubImportTab.clearFileGrid();
 	}
 
 	public String getUrl() {
@@ -139,7 +147,11 @@ public class GeoDataImportDialog extends Dialog {
 	}
 
 	public String getProjectionName() {
-		return this.projectionName.getValue();
+		if (this.projectionName.getValue() == null) {
+			return "";
+		} else {
+			return this.projectionName.getValue();
+		}
 	}
 
 	public String getDataFormat() {
@@ -148,7 +160,6 @@ public class GeoDataImportDialog extends Dialog {
 		} else {
 			return this.vectorFormatCombo.getValue().getName();
 		}
-
 	}
 
 	public FormPanel getUploadPanel() {
@@ -159,20 +170,30 @@ public class GeoDataImportDialog extends Dialog {
 		return wfsImportTab.getWfsUrl();
 	}
 
-	public String getWfsNamespace() {
-		return wfsImportTab.getWfsNamespace();
+	public String getWfsNamespaceTypeName() {
+		return wfsImportTab.getWfsTypeName();
 	}
 
-	public String getWfsFeatureType() {
-		return wfsImportTab.getWfsFeatureType();
+	public int getWfsMaxFeatures() {
+		return (wfsImportTab.getWfsMaxFeaturesType() != null && !wfsImportTab
+				.getWfsMaxFeaturesType().isEmpty()) ? Integer
+				.parseInt(wfsImportTab.getWfsMaxFeaturesType()) : 0;
+	}
+
+	public String getWfsCqlfilter() {
+		return wfsImportTab.getCql();
 	}
 
 	public String getGeomColumn() {
-		return wfsImportTab.getGeomColumn();
+		return wfsImportTab.getCql();
 	}
 
-	public String getVersion() {
-		return wfsImportTab.getVersion();
+	public String getWfsVersion() {
+		return wfsImportTab.getWfsVersion();
+	}
+
+	public boolean isBboxEnabled() {
+		return wfsImportTab.isBboxEnabled();
 	}
 
 	private HorizontalLayoutContainer createLayout() {
@@ -192,6 +213,8 @@ public class GeoDataImportDialog extends Dialog {
 		layerDataContainer.add(layerName);
 
 		projectionName = new ProjectionComboBox(fieldWidth);
+		projectionName.setEmptyText(UIMessages.INSTANCE
+				.asdAttributeComboEmptyText());
 		layerDataContainer.add(new Label(UIMessages.INSTANCE
 				.gdidProjectionLabel()));
 		layerDataContainer.add(projectionName);
@@ -201,7 +224,7 @@ public class GeoDataImportDialog extends Dialog {
 		layerDataContainer.add(padding);
 
 		vectorFormatCombo = new VectorFormatComboBox("120px",
-				VectorFormat.getAllVectorFormat());
+				VectorFormat.getSupportedImportFormat());
 		dataFormatField = new FieldLabel(vectorFormatCombo,
 				UIMessages.INSTANCE.gdidDataFormatLabel());
 
@@ -218,13 +241,20 @@ public class GeoDataImportDialog extends Dialog {
 
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
-		tabPanel.setPixelSize(300, 250);
+		
+		tabPanel.setPixelSize(330, 270);//250
 		tabPanel.getElement().setId("tabPanel");
 		tabPanel.add(getEmptyPanel(), UIMessages.INSTANCE.empty());
 		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());
 		tabPanel.add(getTextPanel(), UIMessages.INSTANCE.text());
 		tabPanel.add(getFilePanel(), UIMessages.INSTANCE.file());
 		tabPanel.add(wfsImportTab, UIMessages.INSTANCE.wfs());
+				
+		TabItemConfig gitHubItenConfig = new TabItemConfig(UIMessages.INSTANCE.gitHubResponseTitle());
+		gitHubItenConfig.setIcon(ImageProvider.INSTANCE.github24());
+		
+		tabPanel.add(gitHubImportTab, gitHubItenConfig);
+		
 
 		tabPanel.addSelectionHandler(getTabPanelSelectionHandler());
 		return tabPanel;
@@ -239,6 +269,17 @@ public class GeoDataImportDialog extends Dialog {
 					dataFormatField.setVisible(false);
 				} else {
 					dataFormatField.setVisible(true);
+				}
+				if (UIMessages.INSTANCE.wfs().equals(getActiveTab())) {
+					vectorFormatCombo.setValue(VectorFormat.GML_FORMAT);
+				} else {
+					vectorFormatCombo.setValue(null);
+				}
+				
+				if (UIMessages.INSTANCE.gitHubResponseTitle().equals(getActiveTab())) {					
+					layerName.setEnabled(false);
+				} else {
+					layerName.setEnabled(true);
 				}
 			}
 		};
@@ -266,11 +307,22 @@ public class GeoDataImportDialog extends Dialog {
 		urlTextField.setWidth(270);
 		geoDataContainer.add(urlTextField);
 
+		HorizontalPanel horizontalContainer = new HorizontalPanel();
+		
 		TextButton createUrlButton = new TextButton(
 				UIMessages.INSTANCE.urlToShareButtonText());
+		
+		TextButton gitHubButton = new TextButton(
+				UIMessages.INSTANCE.gitHubResponseTitle());
+		
+		horizontalContainer.add(createUrlButton);
+		horizontalContainer.add(gitHubButton);
+		
 		createUrlButton.addSelectHandler(createUrlToShare(geoDataContainer));
+		gitHubButton.addSelectHandler(gitHubDialog());
 
-		geoDataContainer.add(createUrlButton);
+//		geoDataContainer.add(createUrlButton);
+		geoDataContainer.add(horizontalContainer);
 		geoDataContainer.add(createUrlToShareAnchor());
 
 		urlShared = new TextField();
@@ -358,6 +410,20 @@ public class GeoDataImportDialog extends Dialog {
 			}
 		};
 	}
+	
+	
+	//https://api.github.com/repos/jmmluna/geodata/contents/
+	private SelectHandler gitHubDialog() {
+		return new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				//https://developer.github.com/v3/repos/contents/#get-contents
+				gitHubFileListDialog.show();
+			}
+
+			
+		};
+	}
 
 	private VerticalPanel getTextPanel() {
 		VerticalPanel geoDataContainer = new VerticalPanel();
@@ -418,6 +484,10 @@ public class GeoDataImportDialog extends Dialog {
 
 		return uploadPanel;
 	}
+	
+	public GitHubImportTab getGitHubImportTab() {
+		return gitHubImportTab;
+	}
 
 	public FileUploadField getFileUploadField() {
 		return this.file;
@@ -436,5 +506,4 @@ public class GeoDataImportDialog extends Dialog {
 		p.appendChild(i);
 		i.onload = o;
 	}-*/;
-
 }

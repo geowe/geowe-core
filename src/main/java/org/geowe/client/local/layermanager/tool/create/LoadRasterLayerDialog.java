@@ -46,7 +46,8 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * and Web Map Tile Service
  * 
  * @author jose@geowe.org
- * @since 24/08/2016
+ * @since 19/10/2016
+ * @author rafa@geowe.org fix issue 215
  */
 @ApplicationScoped
 public class LoadRasterLayerDialog extends Dialog {
@@ -165,7 +166,7 @@ public class LoadRasterLayerDialog extends Dialog {
 		panel.add(urlTMSField);
 
 		nameTMSField = new TextField();
-		nameTMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameTMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField(""));
 		nameTMSField.setAllowBlank(false);
 		nameTMSField.setWidth(FIELD_WIDTH);
 		panel.add(nameTMSField);
@@ -192,7 +193,8 @@ public class LoadRasterLayerDialog extends Dialog {
 		panel.add(urlWMSField);
 
 		nameWMSField = new TextField();
-		nameWMSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMSField
+				.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField("WMS"));
 		nameWMSField.setAllowBlank(false);
 		nameWMSField.setWidth(FIELD_WIDTH);
 		panel.add(nameWMSField);
@@ -219,7 +221,8 @@ public class LoadRasterLayerDialog extends Dialog {
 		panel.add(urlWMTSField);
 
 		nameWMTSField = new TextField();
-		nameWMTSField.setTitle(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMTSField.setTitle(UIMessages.INSTANCE
+				.lrasterdLayerNameField("WMTS"));
 		nameWMTSField.setAllowBlank(false);
 		nameWMTSField.setWidth(FIELD_WIDTH);
 		panel.add(nameWMTSField);
@@ -400,7 +403,8 @@ public class LoadRasterLayerDialog extends Dialog {
 
 	public void initializeWMSFields() {
 		urlWMSField.setEmptyText("http://...");
-		nameWMSField.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMSField.setEmptyText(UIMessages.INSTANCE
+				.lrasterdLayerNameField("WMS"));
 		formatWMSField.setEmptyText("image/png, image/jpg...");
 
 		urlWMSField.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -415,7 +419,8 @@ public class LoadRasterLayerDialog extends Dialog {
 
 	public void initializeTMSFields() {
 		urlTMSField.setEmptyText("http://...");
-		nameTMSField.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameTMSField.setEmptyText(UIMessages.INSTANCE
+				.lrasterdLayerNameField(" "));
 		formatTMSField.setEmptyText("png, jpg...");
 
 		urlTMSField.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -430,8 +435,8 @@ public class LoadRasterLayerDialog extends Dialog {
 
 	public void initializeWMTSFields() {
 		urlWMTSField.setEmptyText("http://...");
-		nameWMTSField
-				.setEmptyText(UIMessages.INSTANCE.lrasterdLayerNameField());
+		nameWMTSField.setEmptyText(UIMessages.INSTANCE
+				.lrasterdLayerNameField("WMTS"));
 		formatWMTSField.setEmptyText("image/png, image/jpg...");
 		tileMatrixSetField.setEmptyText("matrix set identifier");
 

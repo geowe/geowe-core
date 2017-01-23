@@ -31,6 +31,10 @@ public class VectorFormat {
 	public static final VectorFormat GML_FORMAT = new VectorFormat(3, "GML", "gml+xml");
 	public static final VectorFormat WKT_FORMAT = new VectorFormat(4, "WKT", "x-wkt");
 	public static final VectorFormat CSV_FORMAT = new VectorFormat(5, "CSV", "text/plain");
+	public static final VectorFormat TOPO_JSON_FORMAT = new VectorFormat(6,
+			"TopoJSON", "x-topo+json");
+	public static final VectorFormat GPX_FORMAT = new VectorFormat(7, "GPX",
+			"application/gpx+xml");
 	
 	private final int id;
 	private final String name;
@@ -55,7 +59,7 @@ public class VectorFormat {
 	}
 	
 	public static VectorFormat getFromName(final String format) {
-		final List<VectorFormat> allFormats = getAllFormat();
+		final List<VectorFormat> allFormats = getSupportedImportFormat();
 		
 		for(final VectorFormat vectorFormat : allFormats) {
 			if(vectorFormat.getName().toLowerCase().equals(format.toLowerCase())) {
@@ -66,18 +70,22 @@ public class VectorFormat {
 		return null;
 	}
 	
-	public static List<VectorFormat> getAllFormat() {
-		final List<VectorFormat> vectorFormats = getAllVectorFormat();
-		vectorFormats.add(CSV_FORMAT);
-		return vectorFormats;
-	}
-
-	public static List<VectorFormat> getAllVectorFormat() {
+	public static List<VectorFormat> getSupportedImportFormat() {
 		final List<VectorFormat> vectorFormats = new ArrayList<VectorFormat>();
 		vectorFormats.add(GEO_JSON_FORMAT);
 		vectorFormats.add(KML_FORMAT);
 		vectorFormats.add(GML_FORMAT);
 		vectorFormats.add(WKT_FORMAT);
+		vectorFormats.add(TOPO_JSON_FORMAT);
+		vectorFormats.add(GPX_FORMAT);
+		vectorFormats.add(CSV_FORMAT);
+		return vectorFormats;
+	}
+
+
+	public static List<VectorFormat> getSupportedExportVectorFormat() {
+		final List<VectorFormat> vectorFormats = getSupportedImportFormat();
+		vectorFormats.remove(TOPO_JSON_FORMAT);
 		return vectorFormats;
 	}
 }

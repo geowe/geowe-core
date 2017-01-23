@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.zoom;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
@@ -29,31 +30,49 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
 
 /**
  * Zoom Out Tool
  * 
- * @author geowe.org
- *
+ * @author rafa@geowe.org
+ * @since 22-11-2016 Added key shortcut 'KEY_PAGEUP'
  */
 @ApplicationScoped
 public class ZoomOutTool extends ButtonTool {
-	
+
 	private final GeoMap geoMap;
-	
+
 	@Inject
-	public ZoomOutTool(GeoMap geoMap) {		
+	public ZoomOutTool(GeoMap geoMap) {
 		super(UIMessages.INSTANCE.zoomOutToolText(), ImageProvider.INSTANCE.zoomOut());
-		setToolTipConfig(createTooltipConfig(
-				UIMessages.INSTANCE.zoomOutToolText(),
+		setToolTipConfig(createTooltipConfig(UIMessages.INSTANCE.zoomOutToolText(),
 				UIMessages.INSTANCE.zoomOutToolTip(), Side.LEFT));
 		this.geoMap = geoMap;
 	}
 
 	@Override
 	protected void onRelease() {
-		geoMap.getMap().zoomOut();		
+		geoMap.getMap().zoomOut();
+	}
+
+	@PostConstruct
+	private void setKeyHandler() {
+		addKeyHandler(createKeyHandler());
+	}
+
+	private KeyUpHandler createKeyHandler() {
+		return new KeyUpHandler() {
+			@Override
+			public void onKeyUp(final KeyUpEvent event) {
+				if (KeyCodes.KEY_PAGEUP == event.getNativeEvent().getKeyCode()) {
+					onRelease();
+				}
+			}
+		};
 	}
 }

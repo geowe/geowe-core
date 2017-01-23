@@ -31,10 +31,22 @@ import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.WKT;
+import org.gwtopenmaps.openlayers.client.geometry.Geometry;
+import org.gwtopenmaps.openlayers.client.geometry.Point;
+import org.gwtopenmaps.openlayers.client.util.Attributes;
 
+/**
+ * Write CSV from VectorFeature and read CSV to VectorFeature.<br>
+ * First line indicates the attribute names. <br>
+ * geoCSV (WKT option):. Last column must be WKT. <br>
+ * geoCSV (Point option): last two column must be X and Y. <br>
+ * 
+ * @author rafa@geowe.org
+ */
 public class CSV {
-
 	private final String projection;
+	private final String CSV_SEPARATOR = ";";
+	private final String GEOM_COLUMN_NAME = "WKT";
 
 	public CSV(String projection) {
 		super();
@@ -44,21 +56,18 @@ public class CSV {
 	public String write(VectorLayer layer) {
 		String csvContent = "undefined";
 		if (layer != null && layer.getFeatures() != null) {
-			csvContent = write(new ArrayList<VectorFeature>(Arrays.asList(layer
-					.getFeatures())));
+			csvContent = write(new ArrayList<VectorFeature>(Arrays.asList(layer.getFeatures())));
 		}
 		return csvContent;
 	}
 
 	public String write(List<VectorFeature> selectedFeatures) {
-		StringBuffer csv = new StringBuffer(
-				getColumnName(selectedFeatures.get(0)));
+		StringBuffer csv = new StringBuffer(getColumnName(selectedFeatures.get(0)));
 
 		for (VectorFeature vectorFeature : selectedFeatures) {
 			VectorFeature transformedFeature = getTransformedFeatures(vectorFeature);
-			for (String attributeValue : transformedFeature.getAttributes()
-					.getAttributeValues()) {
-				csv.append(attributeValue + ",");
+			for (String attributeValue : transformedFeature.getAttributes().getAttributeValues()) {
+				csv.append(attributeValue + CSV_SEPARATOR);
 			}
 			csv.append(getWkt(transformedFeature));
 			csv.append("\n");
@@ -69,9 +78,9 @@ public class CSV {
 	private String getColumnName(VectorFeature feature) {
 		StringBuffer columnName = new StringBuffer("");
 		for (String attributeName : feature.getAttributes().getAttributeNames()) {
-			columnName.append(attributeName + ",");
+			columnName.append(attributeName + CSV_SEPARATOR);
 		}
-		columnName.append("WKT");
+		columnName.append(GEOM_COLUMN_NAME);
 		columnName.append("\n");
 		return columnName.toString();
 	}
@@ -82,13 +91,65 @@ public class CSV {
 	}
 
 	private VectorFeature getTransformedFeatures(VectorFeature vectorFeature) {
-
 		VectorFeature featureToExport = vectorFeature.clone();
-		featureToExport.getGeometry().transform(
-				new Projection(GeoMap.INTERNAL_EPSG),
-				new Projection(this.projection));
+		featureToExport.getGeometry().transform(new Projection(GeoMap.INTERNAL_EPSG), new Projection(this.projection));
 
 		return featureToExport;
 	}
 
+	public List<VectorFeature> read(String geoDataString) {
+		String[] csvLines = geoDataString.split("\n");
+
+		String[] csvAttrName = csvLines[0].split(CSV_SEPARATOR);
+
+		return createFeatures(csvLines, csvAttrName);
+	}
+
+	private List<VectorFeature> createFeatures(String[] csvLines, String[] csvAttrName) {
+		List<VectorFeature> features = new ArrayList<VectorFeature>();
+		for (int i = 1; i < csvLines.length; i++) {
+			String[] csvFeature = csvLines[i].split(CSV_SEPARATOR);
+
+			VectorFeature feature = null;
+			if (hasWKT(csvAttrName[csvAttrName.length - 1])) {
+				feature = new VectorFeature(getGeom(csvFeature[csvFeature.length - 1]));
+			} else {
+				feature = new VectorFeature(
+						getPoint(csvFeature[csvFeature.length - 2], csvFeature[csvFeature.length - 1]));
+			}
+
+			if (isCsvLineValid(csvAttrName, csvFeature)) {
+				feature.setAttributes(getAttributes(csvAttrName, csvFeature));
+			}
+			features.add(feature);
+		}
+		return features;
+	}
+
+	private boolean hasWKT(String attrName) {
+		return GEOM_COLUMN_NAME.equals(attrName);
+	}
+
+	private Geometry getGeom(String wkt) {
+		return Geometry.fromWKT((wkt));
+	}
+
+	private Point getPoint(String coordX, String coordY) {
+		return new Point(Double.valueOf(coordX), Double.valueOf(coordY));
+	}
+
+	private Attributes getAttributes(String[] csvAttrName, String[] csvFeature) {
+		Attributes attributes = new Attributes();
+		for (int i = 0; i < csvAttrName.length; i++) {
+			if (GEOM_COLUMN_NAME.equals(csvAttrName[i])) {
+				continue;
+			}
+			attributes.setAttribute(csvAttrName[i], csvFeature[i]);
+		}
+		return attributes;
+	}
+
+	private boolean isCsvLineValid(String[] csvAttrName, String[] csvFeature) {
+		return csvAttrName.length == csvFeature.length;
+	}
 }

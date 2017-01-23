@@ -22,7 +22,12 @@
  */
 package org.geowe.client.local.layermanager.tool.create;
 
+import java.util.List;
+
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
+import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
+import org.geowe.client.local.layermanager.tool.create.vector.source.URLLayerVectorSource;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.main.tool.map.catalog.model.LayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.URLVectorLayerDef;
@@ -32,6 +37,7 @@ import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.ui.MessageDialogBuilder;
+import org.geowe.client.shared.rest.github.response.GitHubFileListAttributeBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +46,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public abstract class AbstractGeoDataImport extends ButtonTool {
-//	private static final Logger LOG = LoggerFactory
-//			.getLogger(AbstractGeoDataImport.class.getName());
-	
+	private static final Logger LOG = LoggerFactory
+			.getLogger(AbstractGeoDataImport.class.getName());
+
 	private final GeoDataImportDialog geoDataImportDialog;
 	private final LayerManagerWidget layerManager;
 	private final MessageDialogBuilder messageDialogBuilder;
@@ -73,7 +79,10 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		} else if (UIMessages.INSTANCE.empty().equals(activeTab)) {
 			layer = createEmptyLayer();
 		} else if (UIMessages.INSTANCE.wfs().equals(activeTab)) {
-			layer = createWfsLayer();
+			createWfsLayer();
+		}
+		else if (UIMessages.INSTANCE.gitHubResponseTitle().equals(activeTab)) {
+			createGitHubLayers();
 		}
 
 		return layer;
@@ -82,7 +91,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 	protected VectorLayer createLayerFromText() {
 		VectorLayer layer = null;
 		VectorLayerConfig layerConfig = null;
-		
+
 		try {
 			layerConfig = new VectorLayerConfig();
 			layerConfig.setEpsg(geoDataImportDialog.getProjectionName());
@@ -99,6 +108,19 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 		return layer;
 	}
+	
+	
+	protected void createLayerFromURL(LayerVectorSource source) {
+		URLLayerVectorSource urlSource = (URLLayerVectorSource)source;
+		URLVectorLayerDef urlLayerDef = new URLVectorLayerDef();
+		urlLayerDef.setEpsg(geoDataImportDialog.getProjectionName());
+		urlLayerDef.setFormat(geoDataImportDialog.getDataFormat());
+		urlLayerDef.setName(source.getLayerName());
+		urlLayerDef.setUrl(urlSource.getUrl());
+		urlLayerDef.setSource(source);		
+		urlLayerDef.setType(LayerDef.VECTOR_TYPE);
+		urlLayerDef.load();
+	}
 
 	protected void createLayerFromURL() {
 		URLVectorLayerDef urlLayerDef = new URLVectorLayerDef();
@@ -114,19 +136,44 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		geoDataImportDialog.getUploadPanel().submit();
 	}
 
-	protected VectorLayer createWfsLayer() {
-		WfsVectorLayerDef wfsLayer = new WfsVectorLayerDef();
-		wfsLayer.setName(geoDataImportDialog.getLayerName());
-		wfsLayer.setUrl(geoDataImportDialog.getWfsUrl());
-		wfsLayer.setNameSpace(geoDataImportDialog.getWfsNamespace());
-		wfsLayer.setFeatureType(geoDataImportDialog.getWfsFeatureType());
-		wfsLayer.setGeometryColumn(geoDataImportDialog.getGeomColumn());
-		wfsLayer.setFormat(geoDataImportDialog.getDataFormat());
-		wfsLayer.setEpsg(geoDataImportDialog.getProjectionName());
-		wfsLayer.setVersion(geoDataImportDialog.getVersion());
-
-		return (VectorLayer) wfsLayer.getLayer();
+	protected void createWfsLayer() {
+		WfsVectorLayerDef urlLayerDef = new WfsVectorLayerDef();
+		urlLayerDef.setType(LayerDef.VECTOR_TYPE);
+		urlLayerDef.setEpsg(geoDataImportDialog.getProjectionName());
+		urlLayerDef.setFormat(geoDataImportDialog.getDataFormat());
+		urlLayerDef.setName(geoDataImportDialog.getLayerName());
+		urlLayerDef.setServiceUrl(geoDataImportDialog.getWfsUrl());
+		urlLayerDef.setVersion(geoDataImportDialog.getWfsVersion());
+		urlLayerDef.setNameSpaceFeatureType(geoDataImportDialog
+				.getWfsNamespaceTypeName());
+		urlLayerDef.setMaxFeatures(geoDataImportDialog.getWfsMaxFeatures());
+		if (geoDataImportDialog.isBboxEnabled()) {
+			urlLayerDef.generateBbox();
+		}else{
+			urlLayerDef.setCql(geoDataImportDialog.getWfsCqlfilter());
+		}
+		urlLayerDef.load();
 	}
+	
+	
+	protected void createGitHubLayers() {
+		GitHubImportTab getGitHubImportTab = geoDataImportDialog.getGitHubImportTab();
+		List<GitHubFileListAttributeBean> files = getGitHubImportTab.getSelectedFiles();
+		//eliminar la extension del fichero
+		
+		
+		for(GitHubFileListAttributeBean file: files) {
+			final GitHubLayerVectorSource source = new GitHubLayerVectorSource();
+			source.setUrl(file.getAttributeUrl());
+			String name = file.getAttributeName().substring(0, file.getAttributeName().lastIndexOf("."));
+			source.setLayerName(name);
+			source.setSha(file.getAttributeSha());
+			createLayerFromURL(source);
+		}
+		
+	}
+	
+	
 
 	protected VectorLayer createEmptyLayer() {
 
@@ -170,9 +217,28 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 				});
 	}
 	
-	protected boolean isValidInputFile() {
+	protected boolean isValidDataFormat() {
 		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab().equals(
+		if (geoDataImportDialog.getDataFormat().isEmpty()) {
+			isValid = false;
+		}
+		LOG.info("FORMAT VALID: " + isValid);
+		return isValid;
+	}
+
+	protected boolean isValidProjection() {
+
+		boolean isValid = true;
+		if (geoDataImportDialog.getProjectionName().isEmpty()) {
+			isValid = false;
+		}
+		LOG.info("PROJECTION VALID: " + isValid);
+		return isValid;
+	}
+
+	protected boolean isValidInputFile() {
+		boolean isValid = isValidDataFormat() && isValidProjection();
+		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.file())
 				&& (geoDataImportDialog.getFileUploadField().getValue() == null || (geoDataImportDialog
 						.getFileUploadField().getValue() != null && geoDataImportDialog
@@ -180,13 +246,12 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 			isValid = false;
 		}
-
 		return isValid;
 	}
 
 	protected boolean isValidInputURL() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab()
+		boolean isValid = isValidDataFormat() && isValidProjection();
+		if (isValid && geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.url())
 				&& (geoDataImportDialog.getUrl() == null || (geoDataImportDialog
 						.getUrl() != null && geoDataImportDialog.getUrl()
@@ -194,20 +259,18 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 
 			isValid = false;
 		}
-
 		return isValid;
 	}
 
 	protected boolean isValidInputText() {
-		boolean isValid = true;
-		if (geoDataImportDialog.getActiveTab().equals(
+		boolean isValid = isValidDataFormat() && isValidProjection();
+		if (isValid && geoDataImportDialog.getActiveTab().equals(
 				UIMessages.INSTANCE.text())
 				&& (geoDataImportDialog.getGeoData() == null || geoDataImportDialog
 						.getGeoData().isEmpty())) {
 
 			isValid = false;
 		}
-
 		return isValid;
 	}
 
@@ -216,13 +279,24 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 		if (geoDataImportDialog.getActiveTab()
 				.equals(UIMessages.INSTANCE.wfs())
 				&& ((geoDataImportDialog.getWfsUrl() == null && geoDataImportDialog
-						.getWfsUrl().isEmpty())
-						|| (geoDataImportDialog.getWfsNamespace() == null && geoDataImportDialog
-								.getWfsNamespace().isEmpty()) || (geoDataImportDialog
-						.getWfsFeatureType() == null && geoDataImportDialog
-						.getWfsFeatureType().isEmpty()))) {
+						.getWfsUrl().isEmpty()) || (geoDataImportDialog
+						.getWfsNamespaceTypeName() == null && geoDataImportDialog
+						.getWfsNamespaceTypeName().isEmpty()))) {
 
 			isValid = false;
+		}
+		return isValid;
+	}
+	
+	protected boolean isValidInputGitHub() {
+		boolean isValid = isValidDataFormat() && isValidProjection();
+		if (isValid && geoDataImportDialog.getActiveTab()
+				.equals(UIMessages.INSTANCE.gitHubResponseTitle())) {
+
+			int count = geoDataImportDialog.getGitHubImportTab().getSelectedFiles().size();
+			if(count == 0) {
+				isValid = false;
+			}
 		}
 		return isValid;
 	}

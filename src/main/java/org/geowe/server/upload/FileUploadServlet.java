@@ -43,9 +43,8 @@ public class FileUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1296384085403737411L;
 
-	private static final long MAX_FILE_SIZE = 1024 * 1024 * 2; //2MB 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(FileUploadServlet.class.getName());
+	private static final long MAX_FILE_SIZE = 1024 * 1024 * 2; // 2MB
+	private static final Logger LOG = LoggerFactory.getLogger(FileUploadServlet.class.getName());
 
 	@Override
 	public void doPost(final HttpServletRequest request, final HttpServletResponse response)
@@ -61,7 +60,7 @@ public class FileUploadServlet extends HttpServlet {
 			final FileItemIterator iter = upload.getItemIterator(request);
 			final StringWriter writer = new StringWriter();
 			while (iter.hasNext()) {
-				final FileItemStream item = iter.next();				
+				final FileItemStream item = iter.next();
 				IOUtils.copy(item.openStream(), writer, "UTF-8");
 				final String content = writer.toString();
 				response.setStatus(HttpStatus.SC_OK);
@@ -69,14 +68,11 @@ public class FileUploadServlet extends HttpServlet {
 			}
 		} catch (SizeLimitExceededException e) {
 			response.setStatus(HttpStatus.SC_REQUEST_TOO_LONG);
-			response.getWriter().printf(
-					HttpStatus.SC_REQUEST_TOO_LONG + ":" + e.getMessage());
+			response.getWriter().printf(HttpStatus.SC_REQUEST_TOO_LONG + ":" + e.getMessage());
 			LOG.error(e.getMessage());
 		} catch (Exception e) {
 			response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().printf(
-					HttpStatus.SC_INTERNAL_SERVER_ERROR
-							+ ": ups! something went wrong.");
+			response.getWriter().printf(HttpStatus.SC_INTERNAL_SERVER_ERROR + ": ups! something went wrong.");
 			LOG.error(e.getMessage());
 		}
 	}

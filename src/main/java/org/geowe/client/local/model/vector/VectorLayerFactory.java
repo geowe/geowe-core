@@ -22,7 +22,12 @@
  */
 package org.geowe.client.local.model.vector;
 
+import java.util.List;
+
+import org.geowe.client.local.layermanager.tool.create.CSV;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
+import org.geowe.client.local.model.vector.format.GPX;
+import org.geowe.client.local.model.vector.format.TopoJSON;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.FormatOptions;
 import org.gwtopenmaps.openlayers.client.format.GML;
@@ -40,13 +45,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Atanasio Muñoz
  * @since 18-08-2016
- * @author rafa@geowe.org
- * Fixed issue #150: fail to load geojson with Z coordinate.
+ * @author rafa@geowe.org Fixed issue #150: fail to load geojson with Z
+ *         coordinate.
  */
 public final class VectorLayerFactory {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(VectorLayerFactory.class.getName());
-	
+
 	public static final String DEFAULT_KML_LAYER_EPSG = "EPSG:4326";
 
 	private VectorLayerFactory() {
@@ -70,31 +75,43 @@ public final class VectorLayerFactory {
 		case (VectorLayerDef.GEOJSON):
 			layer = createGeoJsonVectorLayer(layerConfig);
 			break;
+		case (VectorLayerDef.TOPOJSON):
+			layer = createTopoJsonVectorLayer(layerConfig);
+			break;
+		case (VectorLayerDef.GPX):
+			layer = createGpxVectorLayer(layerConfig);
+			break;
+		case ("CSV"):
+			layer = createCsvVectorLayer(layerConfig);
+			break;
 		default:
 			LOG.info("GeoData Format not supported in this version");
 			break;
 		}
 
+		layer.setSource(layerConfig.getSource());
 		return layer;
 	}
-	
-	public static VectorLayer createEmptyVectorLayer(final VectorLayerConfig layerConfig) {
+
+
+	public static VectorLayer createEmptyVectorLayer(
+			final VectorLayerConfig layerConfig) {
 		final VectorOptions vectorOptions = new VectorOptions();
 
 		vectorOptions.setStyleMap(layerConfig.getStyleMap());
 		vectorOptions.setProjection(layerConfig.getEpsg());
 
 		return new VectorLayer(layerConfig.getLayerName(), vectorOptions);
-	}	
+	}
 
-	public static VectorLayer createVectorLayer(final VectorLayerConfig layerConfig) {
-		LOG.info("Creating VectorLayer: " + layerConfig);
+	public static VectorLayer createVectorLayer(
+			final VectorLayerConfig layerConfig) {
 		final VectorLayer layer = createEmptyVectorLayer(layerConfig);
-		
-		if(layerConfig.getFeatures() == null) {
+
+		if (layerConfig.getFeatures() == null) {
 			return layer;
 		}
-		
+
 		for (final VectorFeature feature : layerConfig.getFeatures()) {
 			feature.getGeometry().transform(layerConfig.getProjection(),
 					layerConfig.getDefaultProjection());
@@ -104,53 +121,87 @@ public final class VectorLayerFactory {
 		return layer;
 	}
 
-	public static VectorLayer createKmlVectorLayer(final VectorLayerConfig layerConfig) {
+	public static VectorLayer createKmlVectorLayer(
+			final VectorLayerConfig layerConfig) {
 		final KML kmlReader = new KML(createFormatOptions(layerConfig));
-		
+
 		kmlReader.setExtractStyles(true);
 		kmlReader.setExtractAttributes(true);
 		kmlReader.getJSObject().setProperty("kvpAttributes", true);
 		kmlReader.getJSObject().setProperty("foldersName", (String) null);
 		kmlReader.getJSObject().setProperty("foldersDesc", (String) null);
 
-		final VectorFeature[] features = kmlReader.read(layerConfig.getGeoDataString());
+		final VectorFeature[] features = kmlReader.read(layerConfig
+				.getGeoDataString());
 		final VectorLayer layer = createEmptyVectorLayer(layerConfig);
 		layer.addFeatures(features);
 
 		return layer;
 	}
 
+	public static FormatOptions createFormatOptions(
+			VectorLayerConfig layerConfig) {
+		FormatOptions formatOptions = new FormatOptions();
+		formatOptions.setInternalProjection(layerConfig.getDefaultProjection());
+		formatOptions.setExternalProjection(layerConfig.getProjection());
+
+		return formatOptions;
+	}
+
 	public static VectorLayer createGmlVectorLayer(VectorLayerConfig layerConfig) {
 		GML gmlReader = new GML();
-		VectorFeature[] features = gmlReader.read(layerConfig.getGeoDataString());
+		VectorFeature[] features = gmlReader.read(layerConfig
+				.getGeoDataString());
 		layerConfig.setFeatures(features);
-		
+
 		return createVectorLayer(layerConfig);
 	}
 
-	public static VectorLayer createGeoJsonVectorLayer(VectorLayerConfig layerConfig) {
+	public static VectorLayer createGeoJsonVectorLayer(
+			VectorLayerConfig layerConfig) {
 		GeoJSON geoJsonReader = new GeoJSON();
 		geoJsonReader.getJSObject().setProperty("ignoreExtraDims", true);
-		VectorFeature[] features = geoJsonReader.read(layerConfig.getGeoDataString());
+		VectorFeature[] features = geoJsonReader.read(layerConfig
+				.getGeoDataString());
 		layerConfig.setFeatures(features);
-				
+
 		return createVectorLayer(layerConfig);
 	}
 
 	public static VectorLayer createWktVectorLayer(VectorLayerConfig layerConfig) {
 		WKT wktReader = new WKT();
-		VectorFeature[] features = wktReader.read(layerConfig.getGeoDataString());
+		VectorFeature[] features = wktReader.read(layerConfig
+				.getGeoDataString());
 		layerConfig.setFeatures(features);
 
 		return createVectorLayer(layerConfig);
 	}
 
-	public static FormatOptions createFormatOptions(VectorLayerConfig layerConfig) {
-		FormatOptions formatOptions = new FormatOptions();
-		formatOptions
-				.setInternalProjection(layerConfig.getDefaultProjection());
-		formatOptions.setExternalProjection(layerConfig.getProjection());
+	public static VectorLayer createTopoJsonVectorLayer(
+			VectorLayerConfig layerConfig) {
+		TopoJSON topoJsonReader = new TopoJSON();
+		topoJsonReader.getJSObject().setProperty("ignoreExtraDims", true);
+		VectorFeature[] features = topoJsonReader.read(layerConfig
+				.getGeoDataString());
+		layerConfig.setFeatures(features);
 
-		return formatOptions;
+		return createVectorLayer(layerConfig);
+	}
+
+	// TODO: Crea todas las features con los mismos atributos
+	public static VectorLayer createGpxVectorLayer(VectorLayerConfig layerConfig) {
+		GPX gpxReader = new GPX();
+		VectorFeature[] features = gpxReader.read(layerConfig
+				.getGeoDataString());
+		layerConfig.setFeatures(features);
+		return createVectorLayer(layerConfig);
+	}
+	
+	private static VectorLayer createCsvVectorLayer(VectorLayerConfig layerConfig) {
+		CSV csv = new CSV(layerConfig.getEpsg());
+		List<VectorFeature> features = csv.read(layerConfig.getGeoDataString());
+		
+		layerConfig.setFeatures(features.toArray(new VectorFeature[features.size()]));
+		return createVectorLayer(layerConfig);
 	}
 }

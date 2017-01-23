@@ -34,6 +34,7 @@ import org.geowe.client.shared.rest.github.GitHubCreateFileRequest;
 import org.geowe.client.shared.rest.github.GitHubUpdateFileRequest;
 import org.geowe.client.shared.rest.github.response.GitHubContentResponse;
 import org.geowe.client.shared.rest.github.response.GitHubResponse;
+import org.jboss.resteasy.annotations.GZIP;
 /**
  * 
  * @author jose@geowe.org

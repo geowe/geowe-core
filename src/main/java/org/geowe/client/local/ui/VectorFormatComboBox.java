@@ -50,7 +50,6 @@ public class VectorFormatComboBox extends ComboBox<VectorFormat> {
 				((VectorFormatProperties)GWT.create(VectorFormatProperties.class)).key()),
 				((VectorFormatProperties)GWT.create(VectorFormatProperties.class)).name());
 		initialize(width);
-		// getStore().addAll(VectorFormat.getAllFormat());
 		getStore().addAll(vectorFormats);
 	}
 

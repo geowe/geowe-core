@@ -22,15 +22,15 @@
  */
 package org.geowe.client.local.layermanager.tool.export.exporter;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubEventListener;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubGetFileRequest;
-import org.geowe.client.local.layermanager.tool.export.exporter.github.GitHubParameter;
+import org.geowe.client.local.github.request.GitHubParameter;
+import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.create.vector.source.GitHubLayerVectorSource;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.local.util.Base64;
@@ -52,40 +52,32 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
- * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.extension}
- * 
+ * https://api.github.com/repos/{user}/{repository}/contents/{path}/{filename.
+ * extension}
  * 
  * @author jose@geowe.org
+ * @since 15/12/2016
+ * @author rafa@geowe.org
  *
  */
 
 @ApplicationScoped
-public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener<GitHubContentResponse> {
+public class GitHubUpdateFileExporter implements Exporter {
 	private final static String URL_BASE = "https://api.github.com/repos/";
 
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
-	private ProgressBarDialog autoMessageBox;
 	@Inject
-	private GitHubGetFileRequest gitHubGetFileRequest;
+	private LayerManagerWidget layerManagerWidget;
+	private ProgressBarDialog autoMessageBox;
 	private GitHubParameter gitHubParameter;	
 	
-	@PostConstruct
-	private void registerEvent() {
-		gitHubGetFileRequest.addListener(this);
-	}
 
 	@Override
 	public void export(FileParameter fileParameter) {		
-		this.gitHubParameter = (GitHubParameter)fileParameter;		
-		gitHubGetFileRequest.send(gitHubParameter);
-	}
-	
-	@Override
-	public void onFinish(GitHubContentResponse response) {		
-		gitHubParameter.setSha(response.getSha());
+		this.gitHubParameter = (GitHubParameter)fileParameter;	
 		confirmUpdate();
-	}	
+	}
 	
 	private void confirmUpdate() {
 
@@ -117,12 +109,21 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener<G
 		final GitHubUpdateFileRequest content = new GitHubUpdateFileRequest();
 		content.setContent(Base64.encode(gitHubParameter.getContent()));
 		content.setMessage(message);
-		content.setSha(gitHubParameter.getSha());
-		
-		RestClient.setJacksonMarshallingActive(true);
-		RestClient.create(GitHubFileService.class, URL_BASE, getRemoteCallback(),
-				getErrorCallback(), Response.SC_OK).updateFile(userName,
-				repository, path, fileName, authorizationHeaderValue, content);
+		if (gitHubParameter.getSha() != null
+				&& !gitHubParameter.getSha().isEmpty()) {
+			content.setSha(gitHubParameter.getSha());
+
+			RestClient.setJacksonMarshallingActive(true);
+			RestClient.create(GitHubFileService.class, URL_BASE,
+					getRemoteCallback(), getErrorCallback(), Response.SC_OK)
+					.updateFile(userName, repository, path, fileName,
+							authorizationHeaderValue, content);
+		} else {
+			messageDialogBuilder.createError(UIMessages.INSTANCE.warning(),
+					UIMessages.INSTANCE.gitHubModifyWarning())
+					.show();
+			autoMessageBox.hide();
+		}
 	}
 	
 	private RestErrorCallback getErrorCallback() {
@@ -165,6 +166,12 @@ public class GitHubUpdateFileExporter implements Exporter, GitHubEventListener<G
 					message = UIMessages.INSTANCE.gitHubResponseNotUpdate();
 				}								
 				messageDialogBuilder.createInfo(UIMessages.INSTANCE.gitHubResponseTitle(), message).show();
+				
+				VectorLayer layer = (VectorLayer) layerManagerWidget
+						.getSelectedLayer(LayerManagerWidget.VECTOR_TAB);
+				GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer
+						.getSource();
+				source.setSha(shaUpdate);
 			}
 		};
 	}	

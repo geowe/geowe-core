@@ -7,8 +7,104 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.3.1]Beta - 2016-10-04
+## [1.3.12]Beta - 2017-01-21
 version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added Save Tab in main menu panel
+
+### Fixed
+- issue [#251](https://github.com/geowe/geowe-core/issues/251)
+
+
+## [1.3.11]Beta - 2016-12-15
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Fixed
+- issue [#263](https://github.com/geowe/geowe-core/issues/263)
+- issue [#270](https://github.com/geowe/geowe-core/issues/270)
+
+## [1.3.10]Beta - 2016-12-02
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Fixed
+- issue [#264](https://github.com/geowe/geowe-core/issues/264)
+
+## [1.3.9]Beta - 2016-11-29
+### Added
+- Added geolocation support for any projection. 
+- Added Canary Islands Projections. REGCAN95 / UTM zone 27N (EPSG:4082) and zone 28N (EPSG:4083)
+
+### Fixed
+- issue [#240](https://github.com/geowe/geowe-core/issues/240)
+- issue [#256](https://github.com/geowe/geowe-core/issues/256)
+- issue [#255](https://github.com/geowe/geowe-core/issues/255)
+- issue [#222](https://github.com/geowe/geowe-core/issues/222)
+- issue [#254](https://github.com/geowe/geowe-core/issues/254)
+- issue [#262](https://github.com/geowe/geowe-core/issues/262)
+
+## [1.3.8]Beta - 2016-11-24
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
+### Added
+- Import csv with X and Y column (point option).
+- Add keyboard shortcut for zoom in (KEY_PAGEDOWN) and zoom out (KEY_PAGEUP).
+- Added GitHub tab in the add vector layer dialog to facilitate loading data from github.
+
+### Fixed
+- issue [#186](https://github.com/geowe/geowe-core/issues/186)
+- issue [#238](https://github.com/geowe/geowe-core/issues/238)
+- issue [#247](https://github.com/geowe/geowe-core/issues/247)
+- issue [#231](https://github.com/geowe/geowe-core/issues/231)
+
+## [1.3.7]Beta - 2016-11-18
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available.
+### Added
+- Added Help for Geoprocesses dialog.
+- Import CSV files (with WKT column)
+
+### Fixed
+- issue [#223](https://github.com/geowe/geowe-core/issues/223)
+- issue [#225](https://github.com/geowe/geowe-core/issues/225)
+- issue [#228](https://github.com/geowe/geowe-core/issues/228)
+
+## [1.3.6]Beta - 2016-11-09
+### Added
+- Added EPSG:25829
+
+### Fixed
+- issue [#221](https://github.com/geowe/geowe-core/issues/221)
+- issue [#227](https://github.com/geowe/geowe-core/issues/227)
+
+## [1.3.5]Beta - 2016-10-20
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Added
+- WFS load: Permit no filter on CQL query for WFS layer.
+- WFS load: if maxFeatures  equals to 0 you get all elements.
+
+### Fixed
+- issue [#219](https://github.com/geowe/geowe-core/issues/219)
+
+## [1.3.4]Beta - 2016-10-19
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Added
+- Added CQL support for WFS layers.
+- Added BBox query to WFS layers.
+
+### Fixed
+- issue [#31](https://github.com/geowe/geowe-core/issues/31)
+- issue [#215](https://github.com/geowe/geowe-core/issues/215)
+- issue [#217](https://github.com/geowe/geowe-core/issues/217)
+
+## [1.3.3]Beta - 2016-10-14
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
+### Added
+- Added TopoJSON format support (only for Polygon, linestring and points)
+- Added GPX support (no waypoints info)
+- improve performance
+
+### Fixed
+- issue [#207](https://github.com/geowe/geowe-core/issues/207)
+- issue [#208](https://github.com/geowe/geowe-core/issues/208)
+
+## [1.3.1]Beta - 2016-10-04
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added pagging grid support in layer info dialog and search dialog.
 - Show bounds locked 

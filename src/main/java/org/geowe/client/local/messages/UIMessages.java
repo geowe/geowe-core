@@ -742,6 +742,8 @@ public interface UIMessages extends Messages {
 	String gitHubResponseNotUpdate();
 	
 	String extentGroupTools();
+	
+	String projectGroupTools();
 
 	String currentExtentTool();
 
@@ -804,4 +806,12 @@ public interface UIMessages extends Messages {
 	String quickSaveToolTipText();
 
 	String exportAs();
+	
+	String saveProject();
+	
+	String saveProjectToolTipText();
+	
+	String openProject();
+	
+	String openProjectToolTipText();
 }

@@ -32,11 +32,15 @@ import javax.enterprise.context.ApplicationScoped;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.main.tool.edition.DivideTool;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.layer.GoogleV3;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.gwtopenmaps.openlayers.client.layer.WMS;
+import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -78,6 +82,10 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class LayerManagerWidget implements IsWidget {
 	public static final String VECTOR_TAB = "Vector";
 	public static final String RASTER_TAB = "Raster";
+	
+	private static final Logger LOG = LoggerFactory
+			.getLogger(LayerManagerWidget.class.getName());
+	
 	private FramedPanel panel;
 	private final Map<String, LayerTree> layerTrees = new HashMap<String, LayerTree>();
 	private PlainTabPanel tabPanel;
@@ -88,7 +96,7 @@ public class LayerManagerWidget implements IsWidget {
 	private final List<RemoveLayerListener> removeLayerListeners = new ArrayList<RemoveLayerListener>();
 	private final Label statusBar = new Label(
 			UIMessages.INSTANCE.lmStatusBarInitLabel());
-	private final Slider slider = new Slider();
+	private final Slider slider = new Slider();	
 
 	public void add(final String titleTab, final LayerTree layerTree) {
 		layerTrees.put(titleTab, layerTree);
@@ -207,6 +215,28 @@ public class LayerManagerWidget implements IsWidget {
 	}
 
 	public Layer getSelectedLayer(final String tabName) {
+		Layer selectedLayer = layerTrees.get(tabName).getSelectedItem();
+		
+		LOG.info("Getting layer " + selectedLayer.getName());
+		
+		if(tabName.equals(LayerManagerWidget.VECTOR_TAB)) {
+			JSObject defaultStyle = ((VectorLayer)selectedLayer).getStyleMap().getJSObject()
+					.getProperty("styles").getProperty("default")
+					.getProperty("defaultStyle");
+		
+			String fillColor = defaultStyle.getPropertyAsString("fillColor");
+			int fillOpacity = (int) Math.floor(defaultStyle
+					.getPropertyAsDouble("fillOpacity") * 100);
+			String lineColor = defaultStyle.getPropertyAsString("strokeColor");
+			int lineThick = (int) Math.floor(defaultStyle
+				.getPropertyAsDouble("strokeWidth"));
+			String currentAttributeLabel = defaultStyle.getPropertyAsString("label");
+		
+			LOG.info("Layer style = fill[" + fillColor + "] line[" +
+					lineColor + "] thick[" + lineThick + "] opacity[" +
+					fillOpacity + "] label[" + currentAttributeLabel + "]");
+		}
+		
 		return layerTrees.get(tabName).getSelectedItem();
 	}
 

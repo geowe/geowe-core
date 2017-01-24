@@ -25,6 +25,7 @@ package org.geowe.client.local.model.vector;
 import java.util.Collection;
 
 import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.gwtopenmaps.openlayers.client.event.VectorFeatureAddedListener;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
@@ -43,6 +44,8 @@ import org.gwtopenmaps.openlayers.client.util.JSObject;
 public class VectorLayer extends Vector {
 	
 	private FeatureSchema featureSchema;
+	private LayerVectorSource source;	
+	private VectorStyleDef vectorStyle;
 
 	public VectorLayer(JSObject vector) {
 		super(vector);	
@@ -223,9 +226,7 @@ public class VectorLayer extends Vector {
     		matches = false;
     	}
     	return matches;
-    }
-    
-    private LayerVectorSource source;
+    }       
     
     public void setSource(LayerVectorSource source) {
 		this.source = source;
@@ -235,4 +236,11 @@ public class VectorLayer extends Vector {
 		return source;
 	}
 
+	public VectorStyleDef getVectorStyle() {
+		return vectorStyle;
+	}
+
+	public void setVectorStyle(VectorStyleDef vectorStyle) {
+		this.vectorStyle = vectorStyle;
+	}
 }

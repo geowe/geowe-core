@@ -26,33 +26,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.layermanager.LayerManagerWidget;
-import org.geowe.client.local.main.tool.map.catalog.LayerLoader;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.VectorLayer;
-import org.geowe.client.local.model.vector.VectorLayerConfig;
-import org.geowe.client.local.model.vector.VectorLayerFactory;
-import org.geowe.client.local.ui.ProgressBarDialog;
-import org.gwtopenmaps.openlayers.client.layer.Layer;
-import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.inject.Inject;
 import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitCompleteHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FileUploadField;
 import com.sencha.gxt.widget.core.client.form.FormPanel;
@@ -60,11 +41,9 @@ import com.sencha.gxt.widget.core.client.form.FormPanel.Encoding;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
 
 /**
- * Layer info dialog. Responsible to show layer info and features list.
+ * Ventana encargada de realizar la carga de la sesión de trabajo
  * 
- * @author geowe.org
- * @since 15-09-2016
- * @author rafa@geoew.org changed design
+ * @author jose@geowe.org
  *
  */
 @ApplicationScoped
@@ -79,7 +58,7 @@ public class OpenProjectDialog extends Dialog {
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.openProject());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(350, 300);
+		this.setPixelSize(350, 200);
 		this.setModal(true);
 		this.setResizable(false);
 		//this.setHideOnButtonClick(true);
@@ -98,7 +77,7 @@ public class OpenProjectDialog extends Dialog {
 	private Widget createPanel() {
 
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setPixelSize(490, 400);
+		vPanel.setPixelSize(490, 200);
 		vPanel.setSpacing(5);
 		vPanel.add(getFilePanel());
 

@@ -22,15 +22,12 @@
  */
 package org.geowe.client.local.main.tool.project;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
@@ -52,6 +49,10 @@ import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Exporta a fichero en formato JSON la sesión de trabajo
@@ -66,18 +67,23 @@ public class SaveProjectTool extends ButtonTool {
 	private Logger logger;
 
 	@Inject
-	private LayerManagerWidget layerMangerWidget;
+	private LayerManagerWidget layerManagerWidget;
 	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
+	@Inject
+	private SaveProjectDialog saveProjectDialog;
+
 	private Exporter exporter;
 	private FileParameter fileParameter;
 	private ProgressBarDialog progressBar;
+	private List<Layer> vectorLayers;
+	private static final String PROJECT_EXTENSION = "gpj";
 
-	@Inject
-	public SaveProjectTool(GeoMap geoMap) {
-		super(UIMessages.INSTANCE.download(), ImageProvider.INSTANCE
+	
+	public SaveProjectTool() {
+		super(UIMessages.INSTANCE.saveProject(), ImageProvider.INSTANCE
 				.saveProject24());
 		setToolTipConfig(createTooltipConfig(UIMessages.INSTANCE.saveProject(),
 				UIMessages.INSTANCE.saveProjectToolTipText(), Side.LEFT));
@@ -86,48 +92,71 @@ public class SaveProjectTool extends ButtonTool {
 
 	@Override
 	protected void onRelease() {
+		vectorLayers = layerManagerWidget.getLayerTree(
+				LayerManagerWidget.VECTOR_TAB).getLayers();
+		
+		if(vectorLayers.isEmpty()) {
+			showAlert("No vector layers found");
+			return;
+		}
+		saveProjectDialog.clear();
+		saveProjectDialog.setVectorLayerCount(vectorLayers.size());
+		saveProjectDialog.show();
+	}
+	
+	@PostConstruct
+	private void initialize() {
+		addDialogListener();		
+	}
+
+	protected void loadProject() {
 		progressBar = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
 		progressBar.show();
-		List<Layer> vectorLayers = layerMangerWidget.getLayerTree(layerMangerWidget.VECTOR_TAB).getLayers();		
-		Project project = getProyect(vectorLayers);
 		
+		Project project = getProyect(vectorLayers);
+						
 		exporter = new FileExporter();
 		fileParameter = new FileParameter();
-		
+
 		if (layer == null) {
 			messageDialogBuilder.createWarning(UIMessages.INSTANCE.warning(),
 					UIMessages.INSTANCE.edtAlertMessageBoxLabel()).show();
 		}
 		fileParameter.setFileName(project.getName());
-		fileParameter.setExtension("gprj");
+		fileParameter.setExtension(PROJECT_EXTENSION);
 		fileParameter.setContent(project.toJSON());
 		export();
 	}
-				
+
 	private Project getProyect(List<Layer> layers) {
 		Project project = new Project();
+
+		project.setDate(saveProjectDialog.getDate());
+		project.setDescription(saveProjectDialog.getDescription());
+		project.setName(saveProjectDialog.getName());
+		project.setTitle(saveProjectDialog.getTitle());
+		project.setVersion(saveProjectDialog.getVersion());
 		
-		project.setName("proyecto prueba");
-		for(Layer layer: layers) {
-			Vector vector = (Vector)layer;
+		for (Layer layer : layers) {
+			Vector vector = (Vector) layer;
 			JSObject styleMap = getDefaultStyle(vector);
 			String fillColor = styleMap.getPropertyAsString("fillColor");
-			String fillOpacity = styleMap.getPropertyAsString("fillOpacity");
+			Double fillOpacity = styleMap.getPropertyAsDouble("fillOpacity");
 			String strokeColor = styleMap.getPropertyAsString("strokeColor");
-			String strokeWidth = styleMap.getPropertyAsString("strokeWidth");
-						
-			project.add(layer.getName(), getContentAsGeoJSON(vector), fillColor, fillOpacity, strokeColor, strokeWidth);
+			Double strokeWidth = styleMap.getPropertyAsDouble("strokeWidth");
+
+			project.add(layer.getName(), getContentAsGeoJSON(vector),
+					fillColor, fillOpacity, strokeColor, strokeWidth);
 		}
-				
-		return project;	
-		
+
+		return project;
+
 	}
-	
+
 	protected JSObject getDefaultStyle(Vector layer) {
-		return layer.getStyleMap().getJSObject()
-				.getProperty("styles").getProperty("default")
-				.getProperty("defaultStyle");
+		return layer.getStyleMap().getJSObject().getProperty("styles")
+				.getProperty("default").getProperty("defaultStyle");
 	}
 
 	private String getContentAsGeoJSON(Vector vectorLayer) {
@@ -157,10 +186,41 @@ public class SaveProjectTool extends ButtonTool {
 		taskManager.execute(new Runnable() {
 			@Override
 			public void run() {
-				exporter.export(fileParameter);
+				//exporter.export(fileParameter);
+				
+				((FileExporter)exporter).exportZip(fileParameter);
 				progressBar.hide();
 			}
 		});
+	}
+
+	private void addDialogListener() {
+		saveProjectDialog.getButton(PredefinedButton.OK).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(final SelectEvent event) {
+						
+						if(saveProjectDialog.getName().trim().isEmpty()) {
+							 showAlert("filename is required");
+							return;
+						}
+
+						taskManager.execute(new Runnable() {
+
+							@Override
+							public void run() {
+								loadProject();
+							}
+
+						});
+					}
+				});
+	}
+	
+	private void showAlert(final String errorMsg) {
+		AlertMessageBox messageBox = new AlertMessageBox(
+				UIMessages.INSTANCE.warning(), errorMsg);
+		messageBox.show();
 	}
 
 }

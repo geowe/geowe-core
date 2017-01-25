@@ -105,8 +105,8 @@ public class OpenProjectTool extends ButtonTool {
 				}
 				
 				Project project = getProject(contentFile);
-				List<ProjectLayer> projectLayers = project.getLayers();
-				for(final ProjectLayer projectLayer: projectLayers) {
+				List<ProjectVectorLayer> projectLayers = project.getVectors();
+				for(final ProjectVectorLayer projectLayer: projectLayers) {
 					taskManager.execute(new Runnable() {
 
 						@Override
@@ -131,7 +131,7 @@ public class OpenProjectTool extends ButtonTool {
 		});
 	}
 	
-	private void loadLayer(ProjectLayer projectLayer) {
+	private void loadLayer(ProjectVectorLayer projectLayer) {
 		VectorLayerConfig layerConfig = null;
 		Layer layer = null;
 
@@ -144,11 +144,13 @@ public class OpenProjectTool extends ButtonTool {
 
 			layer = VectorLayerFactory.createVectorLayerFromGeoData(layerConfig);
 			Vector vector = (Vector)layer;
-			//JSObject style = getDefaultStyle(vector);
-			getDefaultStyle(vector).setProperty("fillColor", projectLayer.getFillColor());
-			//getDefaultStyle(vector).setProperty("fillOpacity", projectLayer.getFillOpacity());
-			getDefaultStyle(vector).setProperty("strokeColor", projectLayer.getStrokeColor());
-			//getDefaultStyle(vector).setProperty("strokeWidth", projectLayer.getStrokeWidth());
+			JSObject style = getDefaultStyle(vector);
+			StyleProjectLayer styleProjectLayer = projectLayer.getStyle();
+			
+			style.setProperty("fillColor", styleProjectLayer.getFillColor());
+			style.setProperty("fillOpacity", styleProjectLayer.getFillOpacity());
+			style.setProperty("strokeColor", styleProjectLayer.getStrokeColor());
+			style.setProperty("strokeWidth", styleProjectLayer.getStrokeWidth());
 
 		} catch (Exception e) {
 			showAlert(UIMessages.INSTANCE.gditAlertMessage());
@@ -170,20 +172,31 @@ public class OpenProjectTool extends ButtonTool {
 		final JSONValue jsonValue = JSONParser.parseLenient(json);
 		final JSONObject jsonObject = jsonValue.isObject();
 		
-		String projectName = jsonObject.get("name").isString().stringValue();
-		project.setName(projectName);
+		//String projectName = jsonObject.get("name").isString().stringValue();
+		String projectDate = jsonObject.get("date").isString().stringValue();
+		String projectTitle = jsonObject.get("title").isString().stringValue();
+		String projectVersion = jsonObject.get("version").isString().stringValue();
+		String projectDescription = jsonObject.get("description").isString().stringValue();
 		
-		JSONArray layersArray = jsonObject.get("layers").isArray();
+		//project.setName(projectName);
+		project.setDate(projectDate);
+		project.setTitle(projectTitle);
+		project.setVersion(projectVersion);
+		project.setDescription(projectDescription);
+		
+		JSONArray layersArray = jsonObject.get("vectors").isArray();
 		
 		if (layersArray != null) {
 	        for (int i = 0; i < layersArray.size(); i++) {
 	            JSONObject projectLayerObj = layersArray.get(i).isObject();
 	            String name = projectLayerObj.get("name").isString().stringValue();
-	            String content = projectLayerObj.get("content").isString().stringValue();
-	            String fillColor = projectLayerObj.get("fillColor").isString().stringValue();
-	            String fillOpacity = projectLayerObj.get("fillOpacity").isString().stringValue();
-	            String strokeColor = projectLayerObj.get("strokeColor").isString().stringValue();
-	            String strokeWidth = projectLayerObj.get("strokeWidth").isString().stringValue();
+	            String content = projectLayerObj.get("content").isString().stringValue();	            
+	            JSONObject styleProjectLayer = projectLayerObj.get("style").isObject();
+	            
+	            String fillColor = styleProjectLayer.get("fillColor").isString().stringValue();
+	            Double fillOpacity = styleProjectLayer.get("fillOpacity").isNumber().doubleValue();
+	            String strokeColor = styleProjectLayer.get("strokeColor").isString().stringValue();
+	            Double strokeWidth = styleProjectLayer.get("strokeWidth").isNumber().doubleValue();
 	            
 	            project.add(name, content, fillColor, fillOpacity, strokeColor, strokeWidth);	           
 	        }

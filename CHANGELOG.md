@@ -7,6 +7,16 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+
+## [1.4.0]Beta - 2017-01-26
+version deployed for testing [map.geowe.org](http://map.geowe.org)
+### Added
+- Added Project Tab in main menu panel
+
+### Fixed
+- issue [#187](https://github.com/geowe/geowe-core/issues/187)
+
+
 ## [1.3.12]Beta - 2017-01-21
 version deployed for testing [map.geowe.org](http://map.geowe.org)
 ### Added

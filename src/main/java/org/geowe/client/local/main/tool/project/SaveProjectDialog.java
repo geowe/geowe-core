@@ -62,7 +62,7 @@ public class SaveProjectDialog extends Dialog {
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.saveProject());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(250, 400);
+		this.setPixelSize(315, 400);
 		this.setModal(true);
 		this.setResizable(false);
 		this.setHideOnButtonClick(true);
@@ -77,14 +77,13 @@ public class SaveProjectDialog extends Dialog {
 
 	@PostConstruct
 	private void initialize() {
-		add(createPanel());
-		
+		add(createPanel());		
 	}
 
 	private Widget createPanel() {
 
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setPixelSize(250, 400);
+		vPanel.setPixelSize(315, 400);
 		vPanel.setSpacing(5);
 		vPanel.add(createTopPanel());
 
@@ -104,27 +103,28 @@ public class SaveProjectDialog extends Dialog {
 		
 		projectTitleField = new TextField();
 		projectTitleField.setEnabled(true);
-		projectTitleField.setWidth(fieldWidth);
+		projectTitleField.setWidth("280px");
 		infoPanel.add(new Label(UIMessages.INSTANCE.projectTitle()));
 		infoPanel.add(projectTitleField);
 		
 		projectVersionField = new TextField();
 		projectVersionField.setValue(PROJECT_VERSION);
 		projectVersionField.setEnabled(false);
-		projectVersionField.setWidth(fieldWidth);
+		projectVersionField.setWidth("125px");
 		infoPanel.add(new Label("Version"));
 		infoPanel.add(projectVersionField);
 		
 		vectorLayerCountField = new TextField();		
 		vectorLayerCountField.setEnabled(false);
-		vectorLayerCountField.setWidth(fieldWidth);
+		vectorLayerCountField.setWidth("125px");
 		infoPanel.add(new Label(UIMessages.INSTANCE.projectTotalVectorLayer()));
 		infoPanel.add(vectorLayerCountField);
 				
 		projectDescriptionField = new TextArea();
-		projectDescriptionField.setWidth(480);
 		projectDescriptionField.setEnabled(true);
-		projectDescriptionField.setWidth(fieldWidth);
+		projectDescriptionField.setWidth("280px");
+		
+		
 		infoPanel.add(new Label(UIMessages.INSTANCE.projectDescription()));
 		infoPanel.add(projectDescriptionField);
 		

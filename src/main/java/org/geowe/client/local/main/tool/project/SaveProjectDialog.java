@@ -49,6 +49,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 public class SaveProjectDialog extends Dialog {
 
 	private static final String PROJECT_VERSION = "1.0.0";
+	private static final String DEFAULT_PROJECT_NAME = "geowe-project-name";
 	private TextField projectNameField;
 	private TextField projectVersionField;
 	private TextField projectTitleField;
@@ -61,14 +62,15 @@ public class SaveProjectDialog extends Dialog {
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.saveProject());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(300, 400);
+		this.setPixelSize(250, 400);
 		this.setModal(true);
 		this.setResizable(false);
 		this.setHideOnButtonClick(true);
 	}
 	
 	public void clear() {		
-		this.projectNameField.clear();		
+		//this.projectNameField.clear();
+		projectNameField.setValue(DEFAULT_PROJECT_NAME);
 		this.projectDescriptionField.clear();
 		this.projectTitleField.clear();
 	}
@@ -82,7 +84,7 @@ public class SaveProjectDialog extends Dialog {
 	private Widget createPanel() {
 
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setPixelSize(300,400);
+		vPanel.setPixelSize(250, 400);
 		vPanel.setSpacing(5);
 		vPanel.add(createTopPanel());
 
@@ -94,17 +96,16 @@ public class SaveProjectDialog extends Dialog {
 		VerticalPanel infoPanel = new VerticalPanel();
 		infoPanel.setSpacing(5);
 
-		projectNameField = new TextField();
-		projectNameField.setValue("geowe-project");
+		projectNameField = new TextField();		
 		projectNameField.setEnabled(true);
 		projectNameField.setWidth(fieldWidth);
-		infoPanel.add(new Label("Filename"));
+		infoPanel.add(new Label(UIMessages.INSTANCE.projectFileName()));
 		infoPanel.add(projectNameField);
 		
 		projectTitleField = new TextField();
 		projectTitleField.setEnabled(true);
 		projectTitleField.setWidth(fieldWidth);
-		infoPanel.add(new Label("Title"));
+		infoPanel.add(new Label(UIMessages.INSTANCE.projectTitle()));
 		infoPanel.add(projectTitleField);
 		
 		projectVersionField = new TextField();
@@ -117,24 +118,20 @@ public class SaveProjectDialog extends Dialog {
 		vectorLayerCountField = new TextField();		
 		vectorLayerCountField.setEnabled(false);
 		vectorLayerCountField.setWidth(fieldWidth);
-		infoPanel.add(new Label("Total vector layers"));
+		infoPanel.add(new Label(UIMessages.INSTANCE.projectTotalVectorLayer()));
 		infoPanel.add(vectorLayerCountField);
-
-//		VerticalPanel infoPanel2 = new VerticalPanel();
-//		infoPanel2.setSpacing(5);
-		
 				
 		projectDescriptionField = new TextArea();
 		projectDescriptionField.setWidth(480);
 		projectDescriptionField.setEnabled(true);
 		projectDescriptionField.setWidth(fieldWidth);
-		infoPanel.add(new Label("Description"));
+		infoPanel.add(new Label(UIMessages.INSTANCE.projectDescription()));
 		infoPanel.add(projectDescriptionField);
 		
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 
 		hPanel.add(infoPanel);
-//		hPanel.add(infoPanel2);
+
 		return hPanel;
 	}
 	
@@ -161,7 +158,6 @@ public class SaveProjectDialog extends Dialog {
 	}
 
 	public void setVectorLayerCount(int size) {
-		vectorLayerCountField.setValue("" +size);
-		
+		vectorLayerCountField.setValue("" +size);		
 	}
 }

@@ -100,7 +100,8 @@ public class OpenProjectTool extends ButtonTool {
 				
 				openProjectDialog.hide();
 				if (hasError(contentFile)) {
-					showAlert("Error");
+					autoMessageBox.hide();
+					showAlert("Error: " + contentFile);
 					return;
 				}
 				

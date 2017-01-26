@@ -814,4 +814,12 @@ public interface UIMessages extends Messages {
 	String openProject();
 	
 	String openProjectToolTipText();
+	
+	String projectFileName();
+	
+	String projectTitle();
+	
+	String projectTotalVectorLayer();
+	
+	String projectDescription();
 }

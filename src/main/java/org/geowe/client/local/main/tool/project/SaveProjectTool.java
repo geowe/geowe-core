@@ -168,7 +168,7 @@ public class SaveProjectTool extends ButtonTool {
 	private VectorFeature[] getTransformedFeatures(Vector vectorLayer) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
 		if (vectorLayer.getFeatures() != null) {
-			logger.info("N. features de la Capa: " + layer.getFeatures().length);
+//			logger.info("N. features de la Capa: " + layer.getFeatures().length);
 			for (VectorFeature feature : vectorLayer.getFeatures()) {
 				VectorFeature featureToExport = feature.clone();
 				featureToExport.getGeometry().transform(
@@ -186,7 +186,6 @@ public class SaveProjectTool extends ButtonTool {
 		taskManager.execute(new Runnable() {
 			@Override
 			public void run() {
-				//exporter.export(fileParameter);
 				
 				((FileExporter)exporter).exportZip(fileParameter);
 				progressBar.hide();

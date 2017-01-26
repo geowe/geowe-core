@@ -52,13 +52,12 @@ public class OpenProjectDialog extends Dialog {
 	private FormPanel uploadPanel;
 	private FileUploadField file;
 	
-
 	public OpenProjectDialog() {
 		super();
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.openProject());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(350, 200);
+		this.setPixelSize(350, 150);
 		this.setModal(true);
 		this.setResizable(false);
 		//this.setHideOnButtonClick(true);
@@ -77,7 +76,7 @@ public class OpenProjectDialog extends Dialog {
 	private Widget createPanel() {
 
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setPixelSize(490, 200);
+		vPanel.setPixelSize(490, 150);
 		vPanel.setSpacing(5);
 		vPanel.add(getFilePanel());
 
@@ -99,7 +98,7 @@ public class OpenProjectDialog extends Dialog {
 		uploadPanel = new FormPanel();
 		uploadPanel.setMethod(Method.POST);
 		uploadPanel.setEncoding(Encoding.MULTIPART);
-		uploadPanel.setAction("fileupload.do");
+		uploadPanel.setAction("fileuploadzip.do");
 		uploadPanel.setWidget(layoutContainer);
 
 		return uploadPanel;

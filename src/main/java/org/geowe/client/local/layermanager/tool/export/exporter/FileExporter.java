@@ -56,9 +56,9 @@ public final class FileExporter implements Exporter {
 	public native static void saveAsZip(final String str, final String fileName) /*-{
 		
 		var zip = new  $wnd.JSZip();
-		zip.file(fileName, str);
+		zip.file("geowe-project.prj", str);
 		
-		zip.generateAsync({type:"blob"})
+		zip.generateAsync({type:"blob", compression: "DEFLATE"})
 		.then(function(content) {
 		    $wnd.saveAs(content, fileName); 
 		    

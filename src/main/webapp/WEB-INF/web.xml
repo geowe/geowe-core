@@ -85,5 +85,15 @@
        <servlet-name>FileUpload</servlet-name>  
        <url-pattern>/fileupload.do</url-pattern>  
      </servlet-mapping> 
+     
+     
+     <servlet>  
+       <servlet-name>FileUploadZip</servlet-name>  
+       <servlet-class>org.geowe.server.upload.FileUploadZipServlet</servlet-class>  
+     </servlet> 
+     <servlet-mapping>  
+       <servlet-name>FileUploadZip</servlet-name>  
+       <url-pattern>/fileuploadzip.do</url-pattern>  
+     </servlet-mapping> 
 
 </web-app>

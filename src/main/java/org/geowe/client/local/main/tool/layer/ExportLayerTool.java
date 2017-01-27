@@ -52,7 +52,7 @@ public class ExportLayerTool extends ButtonTool {
 				.download24());
 		setToolTipConfig(createTooltipConfig(
 				UIMessages.INSTANCE.exportDataToolText(),
-				UIMessages.INSTANCE.download(), Side.LEFT));
+				UIMessages.INSTANCE..exportAs(), Side.LEFT));
 		setEnabled(false);
 	}
 

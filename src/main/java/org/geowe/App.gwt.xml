@@ -42,6 +42,7 @@
 	<inherits name="org.jboss.errai.databinding.DataBinding" />
 	<inherits name="org.jboss.errai.enterprise.Jaxrs" />
 	<inherits name="org.jboss.errai.security.Security" />
+<!-- 	<inherits name="com.google.web.bindery.autobean.AutoBean"/> -->
 
 	<inherits name="com.google.gwt.i18n.I18N" />
 	<!-- 	Spanish language, independent of country -->

@@ -369,4 +369,10 @@ public interface ImageProvider extends ClientBundle {
 	
 	@Source("images/ic_file_download-24.png")
 	ImageResource fileDownload24();
+	
+	@Source("images/ic_open_project-24.png")
+	ImageResource openProject24();
+	
+	@Source("images/ic_save_project-24.png")
+	ImageResource saveProject24();
 }

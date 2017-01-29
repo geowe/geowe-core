@@ -62,6 +62,8 @@ import org.geowe.client.local.main.tool.map.MapToolTipTool;
 import org.geowe.client.local.main.tool.measure.MeasureAreaTool;
 import org.geowe.client.local.main.tool.measure.MeasureElementTool;
 import org.geowe.client.local.main.tool.measure.MeasureTool;
+import org.geowe.client.local.main.tool.project.OpenProjectTool;
+import org.geowe.client.local.main.tool.project.SaveProjectTool;
 import org.geowe.client.local.main.tool.spatial.BufferTool;
 import org.geowe.client.local.main.tool.spatial.CentroidTool;
 import org.geowe.client.local.main.tool.spatial.EnvelopeTool;
@@ -196,7 +198,11 @@ public class MenuPanelWidget implements IsWidget {
 	private SaveLayerTool saveLayerTool;
 	@Inject
 	private ExportLayerTool exportLayerTool;
-
+	@Inject
+	private SaveProjectTool saveProjectTool;
+	@Inject
+	private OpenProjectTool openProjectTool;
+	
 	@Override
 	public Widget asWidget() {
 
@@ -260,6 +266,7 @@ public class MenuPanelWidget implements IsWidget {
 		tabPanel.add(getMapToolTab(), UIMessages.INSTANCE.mpMapLabel());
 		tabPanel.add(getViewToolTab(), UIMessages.INSTANCE.viewText());
 		tabPanel.add(getExtentToolTab(), UIMessages.INSTANCE.extentGroupTools());
+		tabPanel.add(getProjectToolTab(), UIMessages.INSTANCE.projectGroupTools());
 		
 		return tabPanel;
 	}
@@ -320,6 +327,26 @@ public class MenuPanelWidget implements IsWidget {
 		horizontalGroup.add(currentExtentTool);
 		horizontalGroup.add(customExtentTool);		
 		horizontalGroup.add(lockCurrentExtentTool);
+		
+		return horizontalGroup;
+	}
+	
+	private VerticalLayoutContainer getProjectToolTab() {
+		VerticalLayoutContainer verticalLayoutContainer = new VerticalLayoutContainer();
+		verticalLayoutContainer.add(getProjectGroupTools());
+
+		return verticalLayoutContainer;
+	}
+	
+	private HorizontalPanel getProjectGroupTools() {
+		HorizontalPanel horizontalGroup = new HorizontalPanel();
+		horizontalGroup.setSpacing(5);
+		horizontalGroup.getElement().getStyle()
+				.setVerticalAlign(VerticalAlign.MIDDLE);
+
+		horizontalGroup.add(openProjectTool);
+		horizontalGroup.add(saveProjectTool);		
+		
 		
 		return horizontalGroup;
 	}
@@ -450,6 +477,7 @@ public class MenuPanelWidget implements IsWidget {
 		horizontalGroup.setSpacing(5);
 		horizontalGroup.add(saveLayerTool);
 		horizontalGroup.add(exportLayerTool);
+		//horizontalGroup.add(saveProjectTool);
 		return horizontalGroup;
 	}
 

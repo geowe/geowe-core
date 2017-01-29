@@ -37,6 +37,7 @@ import org.geowe.client.local.main.tool.layer.ExportLayerTool;
 import org.geowe.client.local.main.tool.layer.LayerInfoTool;
 import org.geowe.client.local.main.tool.layer.SaveLayerTool;
 import org.geowe.client.local.main.tool.layer.SearchAttributeTool;
+import org.geowe.client.local.main.tool.project.SaveProjectTool;
 import org.geowe.client.local.main.tool.spatial.BufferTool;
 import org.geowe.client.local.main.tool.spatial.CentroidTool;
 import org.geowe.client.local.main.tool.spatial.EnvelopeTool;
@@ -97,6 +98,8 @@ public class EventListenerInitializer {
 	private SaveLayerTool saveLayerTool;
 	@Inject
 	private ExportLayerTool exportLayerTool;
+	@Inject
+	private SaveProjectTool saveProjectTool;
 
 	public void initialize() {
 
@@ -134,6 +137,7 @@ public class EventListenerInitializer {
 		layerManagerWidget.addChangeLayerListener(geometricValidationTool);
 		layerManagerWidget.addChangeLayerListener(saveLayerTool);
 		layerManagerWidget.addChangeLayerListener(exportLayerTool);
+		layerManagerWidget.addChangeLayerListener(saveProjectTool);		
 	}
 	
 	private void addChangeSelectedWMSLayerListener() {

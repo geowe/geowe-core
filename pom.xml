@@ -145,7 +145,6 @@
 			<artifactId>gxt-theme-neptune</artifactId>
 			<version>${gxt.version}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-tools</artifactId>
@@ -229,7 +228,6 @@
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-cordova</artifactId>
 		</dependency>
-		
 	</dependencies>
 	<build>
 		<outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>

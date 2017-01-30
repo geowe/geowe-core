@@ -174,7 +174,7 @@ public class AnchorBuilder {
 	}
 
 	public Widget getBugLink() {
-		return setHref("http://www.geowe.org/index.php?id=contact")
+		return setHref("http://www.geowe.org/index.php?id=contacto")
 				.setImage(new Image(ImageProvider.INSTANCE.bug()))
 				.setTitle("Issue tracker").setBottomBorderOnMouseOver(true).build();
 	}

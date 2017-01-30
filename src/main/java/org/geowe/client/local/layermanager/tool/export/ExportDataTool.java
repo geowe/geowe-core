@@ -46,6 +46,7 @@ import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.format.GPX;
+import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
@@ -330,6 +331,9 @@ public class ExportDataTool extends LayerTool implements
 			content = new CSV(exportDataDialog.getSelectedEpsg())
 					.write(selectedLayer);
 		}
+		else if (vectorFormat.getId() == VectorFormat.GEOJSON_CSS_FORMAT.getId()) {
+			format = new GeoJSONCSS();
+		} 
 
 		if (content.isEmpty()) {
 			content = format.write(getTransformedFeatures(selectedLayer));

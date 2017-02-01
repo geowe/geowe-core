@@ -36,7 +36,15 @@ public class ProjectVectorLayer {
 	private String name;
 	private String content;
 	private StyleProjectLayer style;
-	
+	private int numElements;
+
+	public int getNumElements() {
+		return numElements;
+	}
+
+	public void setNumElements(int numElements) {
+		this.numElements = numElements;
+	}
 
 	public ProjectVectorLayer(String name, String content, StyleProjectLayer style) {
 		this.name = name;

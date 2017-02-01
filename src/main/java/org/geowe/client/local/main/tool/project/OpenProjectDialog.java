@@ -60,7 +60,6 @@ public class OpenProjectDialog extends Dialog {
 		this.setPixelSize(350, 150);
 		this.setModal(true);
 		this.setResizable(false);
-		//this.setHideOnButtonClick(true);
 	}
 	
 	public void clear() {		

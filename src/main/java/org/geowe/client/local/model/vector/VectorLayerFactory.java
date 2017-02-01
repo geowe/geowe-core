@@ -26,7 +26,9 @@ import java.util.List;
 
 import org.geowe.client.local.layermanager.tool.create.CSV;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
+import org.geowe.client.local.main.tool.project.StyleProjectLayer;
 import org.geowe.client.local.model.vector.format.GPX;
+import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.geowe.client.local.model.vector.format.TopoJSON;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.FormatOptions;
@@ -35,6 +37,7 @@ import org.gwtopenmaps.openlayers.client.format.GeoJSON;
 import org.gwtopenmaps.openlayers.client.format.KML;
 import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.VectorOptions;
+import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +78,9 @@ public final class VectorLayerFactory {
 		case (VectorLayerDef.GEOJSON):
 			layer = createGeoJsonVectorLayer(layerConfig);
 			break;
+		case (VectorLayerDef.GEOJSON_CSS):
+			layer = createGeoJsonCssVectorLayer(layerConfig);
+			break;	
 		case (VectorLayerDef.TOPOJSON):
 			layer = createTopoJsonVectorLayer(layerConfig);
 			break;
@@ -166,6 +172,34 @@ public final class VectorLayerFactory {
 		layerConfig.setFeatures(features);
 
 		return createVectorLayer(layerConfig);
+	}
+	
+	public static VectorLayer createGeoJsonCssVectorLayer(
+			VectorLayerConfig layerConfig) {
+		GeoJSONCSS geoJsonReader = new GeoJSONCSS();
+		geoJsonReader.getJSObject().setProperty("ignoreExtraDims", true);
+		VectorFeature[] features = geoJsonReader.read(layerConfig
+				.getGeoDataString());
+		layerConfig.setFeatures(features);
+		VectorLayer layer = createVectorLayer(layerConfig);
+		
+		
+		JSObject style = getDefaultStyle(layer);
+		StyleProjectLayer styleProjectLayer = geoJsonReader.getStyle(layerConfig
+				.getGeoDataString());
+		
+		style.setProperty("fillColor", styleProjectLayer.getFillColor());
+		style.setProperty("fillOpacity", styleProjectLayer.getFillOpacity());
+		style.setProperty("strokeColor", styleProjectLayer.getStrokeColor());
+		style.setProperty("strokeWidth", styleProjectLayer.getStrokeWidth());
+		
+		return layer;
+	}
+	
+	protected static JSObject getDefaultStyle(VectorLayer layer) {
+		return layer.getStyleMap().getJSObject()
+				.getProperty("styles").getProperty("default")
+				.getProperty("defaultStyle");
 	}
 
 	public static VectorLayer createWktVectorLayer(VectorLayerConfig layerConfig) {

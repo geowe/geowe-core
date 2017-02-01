@@ -822,4 +822,8 @@ public interface UIMessages extends Messages {
 	String projectTotalVectorLayer();
 	
 	String projectDescription();
+	
+	String projectVersion();
+	
+	String projectDate();
 }

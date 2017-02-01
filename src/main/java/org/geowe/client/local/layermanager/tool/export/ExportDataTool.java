@@ -109,7 +109,7 @@ public class ExportDataTool extends LayerTool implements
 		exportDataDialog.getDownloadFileButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {
+					public void onSelect(SelectEvent event) {						
 						exporter = new FileExporter();
 						fileParameter = new FileParameter();
 						fileParameter.setFileName(getFileName());
@@ -118,8 +118,8 @@ public class ExportDataTool extends LayerTool implements
 						if (isSelectedFeatures()) {
 							confirmDownloadSelected();
 						} else {
-							fileParameter
-									.setContent(getContent((VectorLayer) getSelectedLayer()));
+							
+							fileParameter.setContent(getContent(exportDataDialog.getVectorLayer()));							
 							export();
 						}
 					}
@@ -263,9 +263,10 @@ public class ExportDataTool extends LayerTool implements
 
 	private boolean isSelectedFeatures() {
 		boolean isSelected = false;
-		if (isLayerToExportValid(exportDataDialog.getVectorLayer())) {
+		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
+		
+		if (isLayerToExportValid(selectedLayer)) {
 
-			final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
 			final VectorFeature[] selectedFeatures = selectedLayer
 					.getSelectedFeatures();
 
@@ -286,7 +287,8 @@ public class ExportDataTool extends LayerTool implements
 		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
 		gitHubParameter.setExtension(getExtension());
-		VectorLayer layer = (VectorLayer) getSelectedLayer();
+
+		VectorLayer layer = exportDataDialog.getVectorLayer();
 		gitHubParameter.setContent(getContent(layer));
 		if (layer.getSource() != null) {
 			GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer
@@ -301,7 +303,9 @@ public class ExportDataTool extends LayerTool implements
 	}
 
 	private String getFileName() {
-		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+
+		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
+				
 		return selectedLayer.getName();
 	}
 
@@ -362,7 +366,7 @@ public class ExportDataTool extends LayerTool implements
 	}
 
 	private VectorLayer getLayerWithSelectedFeature() {
-		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
 		final FeatureSchema schema = selectedLayer.getSchema();
 		VectorFeature[] features = selectedLayer.getSelectedFeatures();
 
@@ -395,7 +399,7 @@ public class ExportDataTool extends LayerTool implements
 					@Override
 					public void onSelect(SelectEvent event) {
 						fileParameter
-								.setContent(getContent((VectorLayer) getSelectedLayer()));
+								.setContent(getContent(exportDataDialog.getVectorLayer()));
 						export();
 					}
 				});

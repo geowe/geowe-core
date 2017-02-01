@@ -375,4 +375,7 @@ public interface ImageProvider extends ClientBundle {
 	
 	@Source("images/ic_save_project-24.png")
 	ImageResource saveProject24();
+	
+	@Source("images/geowe_cuadrado.png")
+	ImageResource geoweSquareLogo();
 }

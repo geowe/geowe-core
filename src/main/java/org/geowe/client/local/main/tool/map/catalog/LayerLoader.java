@@ -52,13 +52,7 @@ public final class LayerLoader {
 	public static void load(Layer layer) {
 		if (layer != null) {
 			if (layer instanceof Vector) {
-				layerManagerWidget.addVector(layer);
-				
-				VectorLayer vLayer = (VectorLayer)layer;
-				Feature f = vLayer.getFeatures()[0];
-				f.getStyle().setFill(true);
-				f.getStyle().setFillColor("#ee9900");
-				
+				layerManagerWidget.addVector(layer);				
 				layerManagerWidget.setSelectedLayer(
 						LayerManagerWidget.VECTOR_TAB, layer);
 			} else {

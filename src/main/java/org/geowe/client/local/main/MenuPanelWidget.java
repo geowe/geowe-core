@@ -62,6 +62,7 @@ import org.geowe.client.local.main.tool.map.MapToolTipTool;
 import org.geowe.client.local.main.tool.measure.MeasureAreaTool;
 import org.geowe.client.local.main.tool.measure.MeasureElementTool;
 import org.geowe.client.local.main.tool.measure.MeasureTool;
+import org.geowe.client.local.main.tool.project.InfoProjectTool;
 import org.geowe.client.local.main.tool.project.OpenProjectTool;
 import org.geowe.client.local.main.tool.project.SaveProjectTool;
 import org.geowe.client.local.main.tool.spatial.BufferTool;
@@ -202,6 +203,8 @@ public class MenuPanelWidget implements IsWidget {
 	private SaveProjectTool saveProjectTool;
 	@Inject
 	private OpenProjectTool openProjectTool;
+	@Inject
+	private InfoProjectTool infoProjectTool;
 	
 	@Override
 	public Widget asWidget() {
@@ -345,8 +348,8 @@ public class MenuPanelWidget implements IsWidget {
 				.setVerticalAlign(VerticalAlign.MIDDLE);
 
 		horizontalGroup.add(openProjectTool);
-		horizontalGroup.add(saveProjectTool);		
-		
+		horizontalGroup.add(saveProjectTool);	
+		horizontalGroup.add(infoProjectTool);
 		
 		return horizontalGroup;
 	}

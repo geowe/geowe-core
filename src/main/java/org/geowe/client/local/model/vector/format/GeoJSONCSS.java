@@ -1,17 +1,46 @@
+/*
+ * #%L
+ * GeoWE Project
+ * %%
+ * Copyright (C) 2015 - 2016 GeoWE.org
+ * %%
+ * This file is part of GeoWE.org.
+ * 
+ * GeoWE is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * GeoWE is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 package org.geowe.client.local.model.vector.format;
 
 import org.geowe.client.local.main.tool.project.StyleProjectLayer;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.GeoJSON;
+import org.gwtopenmaps.openlayers.client.format.GeoJSONImpl;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
+/**
+ * Representa el formato vectorial GeoJSON CSS según la especificación Leaflet
+ * 
+ * http://leafletjs.com/reference-1.0.2.html#path-option
+ * 
+ * @author jose@geowe.org
+ */
 
-
-//http://leafletjs.com/reference-1.0.2.html#path-option
 public class GeoJSONCSS extends GeoJSON {
 	private StyleProjectLayer style;
 
@@ -19,12 +48,12 @@ public class GeoJSONCSS extends GeoJSON {
 		this.style = style;
 	}
 
-	public GeoJSONCSS() {
-		super(null);
+	protected GeoJSONCSS(JSObject geoJSONFormat) {
+		super(geoJSONFormat);
 	}
 
-	protected GeoJSONCSS(JSObject element) {
-		super(element);
+	public GeoJSONCSS() {
+		this(GeoJSONImpl.create());
 	}
 
 	public String write(VectorFeature[] vectorFeatures) {

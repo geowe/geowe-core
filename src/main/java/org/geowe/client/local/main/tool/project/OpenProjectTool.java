@@ -70,6 +70,8 @@ public class OpenProjectTool extends ButtonTool {
 	@Inject
 	private OpenProjectDialog openProjectDialog;
 	private LayerManagerWidget layerManagerWidget;
+	@Inject
+	private InfoProjectTool infoProjectTool;
 
 	@Inject
 	public OpenProjectTool(final LayerManagerWidget layerManager) {
@@ -120,6 +122,8 @@ public class OpenProjectTool extends ButtonTool {
 				}
 				
 				autoMessageBox.hide();
+				infoProjectTool.setEnabled(true);
+				infoProjectTool.setProject(project);
 				
 			}
 

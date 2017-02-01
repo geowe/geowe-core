@@ -7,6 +7,20 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
+## [1.4.1]Beta - 2017-02-1
+
+### Added
+- Added new vector format GeoJSON CSS (layer level Style)
+- Added new disclaimer dialog
+- Added information project dialog
+
+### Fixed
+- issue [#220](https://github.com/geowe/geowe-core/issues/220)
+- issue [#276](https://github.com/geowe/geowe-core/issues/276)
+- issue [#281](https://github.com/geowe/geowe-core/issues/281)
+- issue [#284](https://github.com/geowe/geowe-core/issues/284)
+
+
 
 ## [1.4.0]Beta - 2017-01-26
 version deployed for testing [map.geowe.org](http://map.geowe.org)
@@ -18,7 +32,7 @@ version deployed for testing [map.geowe.org](http://map.geowe.org)
 
 
 ## [1.3.12]Beta - 2017-01-21
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added Save Tab in main menu panel
 

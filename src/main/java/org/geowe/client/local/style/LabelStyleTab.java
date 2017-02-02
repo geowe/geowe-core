@@ -23,12 +23,11 @@
 package org.geowe.client.local.style;
 
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.FeatureAttributeDef;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.ui.ColorPicker;
 import org.geowe.client.local.ui.FeatureAttributeComboBox;
 import org.geowe.client.local.ui.FontSizeComboBox;
 import org.geowe.client.local.ui.KeyShortcutHandler;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -101,10 +100,10 @@ public class LabelStyleTab extends StyleTab implements
 				labelBackColor.setEnabled(event.getValue());
 				colorPicker.slide(event.getValue());
 				colorPicker.setEnabled(event.getValue());
-				if (!event.getValue()) {
-					selectedLayer.setStyleMap(StyleFactory
-							.createDefaultStyleMap());
-				}
+//				if (!event.getValue()) {
+//					selectedLayer.setStyleMap(StyleFactory
+//							.createDefaultStyleMap());
+//				}
 			}
 		});
 		HorizontalPanel mainPanel = new HorizontalPanel();
@@ -156,34 +155,19 @@ public class LabelStyleTab extends StyleTab implements
 	@Override
 	protected void updateLayerStyleData() {	
 		if (this.panel != null && this.selectedLayer != null) {
-			attributeLabel.loadValues(selectedLayer);
-						
-			FeatureAttributeDef currentAttributeLabel = null;
-			Integer fontSize = 10;
-			Boolean useBoldFont = false;
-			String backgroundColor = "";
+			attributeLabel.loadValues(selectedLayer);					
+			VectorStyleDef style = selectedLayer.getVectorStyle();
 			
-			// Estilo simple
-			if (selectedLayer.getStyle() != null) {				
-				currentAttributeLabel = getStyleAttribute(
-						selectedLayer.getStyle().getLabel());
-											
-			// Estilo compuesto (StyleMap)
-			} else {				
-				JSObject defaultStyle = getDefaultStyle();						
-											
-				currentAttributeLabel = getStyleAttribute(
-						defaultStyle.getPropertyAsString("label"));						
-				fontSize = getFontSize(defaultStyle.getPropertyAsString("fontSize"));
-				useBoldFont = defaultStyle.getPropertyAsString("fontWeight").equals("bold");
-				backgroundColor = defaultStyle.getPropertyAsString("labelOutlineColor");
+			this.enableLabeling.setValue(style.getLabel().isEnabled(), true);
+			
+			if(style.getLabel().isEnabled()) {
+				this.attributeLabel.setValue(style.getLabel().getAttribute());
+				this.fontSize.setValue(style.getLabel().getFontSize());
+				this.boldFont.setValue(style.getLabel().isBoldStyle());
+				this.labelBackColor.setText(style.getLabel().getBackgroundColor());
+			} else {
+				this.attributeLabel.setValue(null);
 			}
-						
-			this.enableLabeling.setValue((currentAttributeLabel != null), true);
-			this.attributeLabel.setValue(currentAttributeLabel);
-			this.fontSize.setValue(fontSize);
-			this.boldFont.setValue(useBoldFont);
-			this.labelBackColor.setText(backgroundColor);
 		}
 	}
 
@@ -201,14 +185,4 @@ public class LabelStyleTab extends StyleTab implements
 		labelBackColor.setText(selectedColor);
 		colorPicker.slide(false);		
 	}	
-	
-	private Integer getFontSize(String fontSizeStyle) {
-		int fontSize = 0;
-		
-		if (fontSizeStyle != null && fontSizeStyle.length() > 0) {
-			fontSize = Integer.parseInt(fontSizeStyle.substring(0, fontSizeStyle.lastIndexOf("px")));
-		}
-		
-		return fontSize;
-	}
 }

@@ -22,7 +22,6 @@
  */
 package org.geowe.client.local.style;
 
-import org.geowe.client.local.model.vector.FeatureAttributeDef;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
@@ -68,29 +67,6 @@ public abstract class StyleTab implements IsWidget {
 				.getProperty("styles").getProperty("default")
 				.getProperty("defaultStyle");
 	}
-	
-	protected VertexStyleDef getCurrentVertexStyle(String styleValue) {
-		// Si no tiene estilo de vertices aplicado, se considera
-		// que tiene el estilo por defecto: cuadrado
-		VertexStyleDef vertexStyle = VertexStyles.getByStyleName("Square");
-
-		if (styleValue != null && !styleValue.isEmpty() && !styleValue.equals("null")) {
-			vertexStyle = VertexStyles.getByStyleName(styleValue);
-		}
-
-		return vertexStyle;
-	}
-
-	protected FeatureAttributeDef getStyleAttribute(String styleValue) {
-		FeatureAttributeDef currentAttribute = null;
-
-		if (styleValue != null && !styleValue.isEmpty()) {
-			String currentAttrName = styleValue.substring(2, styleValue.length() - 1);
-			currentAttribute = selectedLayer.getAttribute(currentAttrName);
-		}
-
-		return currentAttribute;
-	}	
 	
 	protected abstract void initializePanel();	
 	protected abstract void updateLayerStyleData();

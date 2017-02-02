@@ -29,7 +29,6 @@ import org.geowe.client.local.main.tool.map.catalog.SampleLayerDataProvider;
 import org.geowe.client.local.main.tool.map.catalog.model.SampleFileVectorLayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
 import org.geowe.client.local.messages.UICatalogMessages;
-import org.geowe.client.local.style.StyleFactory;
 
 /**
  * Conjunto de definiciones de las capas de ejemplo, correspondientes a ficheros
@@ -51,8 +50,7 @@ public class SampleLayerSet extends AbstractLayerSet {
 		andaluciaLayer.setFile(SampleLayerDataProvider.INSTANCE
 				.andaluciaLayerKml());
 		andaluciaLayer.setIcon(ImageProvider.INSTANCE.layer16());
-		andaluciaLayer.setEpsg("EPSG:25830");
-		andaluciaLayer.setStyle(StyleFactory.createDefaultStyleMap());
+		andaluciaLayer.setEpsg("EPSG:25830");		
 
 		final SampleFileVectorLayerDef blockLayer = new SampleFileVectorLayerDef();
 		blockLayer.setName(UICatalogMessages.INSTANCE.lebrijaBlocksName());
@@ -62,8 +60,7 @@ public class SampleLayerSet extends AbstractLayerSet {
 		blockLayer.setFile(SampleLayerDataProvider.INSTANCE
 				.manzanasLayerKml());
 		blockLayer.setIcon(ImageProvider.INSTANCE.layer16());
-		blockLayer.setEpsg("EPSG:25830");
-		blockLayer.setStyle(StyleFactory.createDefaultStyleMap());
+		blockLayer.setEpsg("EPSG:25830");		
 
 		final SampleFileVectorLayerDef wetlandLayer = new SampleFileVectorLayerDef();
 		wetlandLayer.setName(UICatalogMessages.INSTANCE
@@ -74,8 +71,7 @@ public class SampleLayerSet extends AbstractLayerSet {
 		wetlandLayer.setFile(SampleLayerDataProvider.INSTANCE
 				.humedalesLayerKml());
 		wetlandLayer.setIcon(ImageProvider.INSTANCE.layer16());
-		wetlandLayer.setEpsg("EPSG:25830");
-		wetlandLayer.setStyle(StyleFactory.createDefaultStyleMap());
+		wetlandLayer.setEpsg("EPSG:25830");		
 		
 		layers.add(andaluciaLayer);
 		layers.add(blockLayer);

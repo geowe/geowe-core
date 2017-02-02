@@ -23,9 +23,9 @@
 package org.geowe.client.local.style;
 
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.ui.FeatureAttributeComboBox;
 import org.geowe.client.local.ui.KeyShortcutHandler;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -99,27 +99,19 @@ public class ColorThemingStyleTab extends StyleTab {
 	protected void updateLayerStyleData() {
 		if (this.panel != null && this.selectedLayer != null) {
 			attributeTheming.loadValues(selectedLayer);
-						
-			boolean colorThemingIsActive = false;			
 			
-			// Estilo simple
-			if (selectedLayer.getStyle() != null) {			
-				//TODO Ver como se puede obtener del Style
-				colorThemingIsActive = 	selectedLayer.getStyle().getLabel()
-						.equals("${getColor}");	
-				
-			// Estilo compuesto (StyleMap)
+			VectorStyleDef style = selectedLayer.getVectorStyle();
+							
+			enableTheming.setValue(style.isColorThemingEnabled(), true);
+			if(style.isColorThemingEnabled()) {
+				attributeTheming.setValue(style.getColorThemingAttribute());
+				enableLegend.setValue(style.isEnableLegend(), true);
 			} else {
-				JSObject defaultStyle = getDefaultStyle();
-				
-				colorThemingIsActive = defaultStyle.getPropertyAsString("fillColor")
-						.equals("${getColor}");				
+				attributeTheming.setValue(null);
+				attributeTheming.setEmptyText(UIMessages.INSTANCE
+						.sbLayerComboEmptyText());
+				enableLegend.setValue(false, true);
 			}
-						
-			enableTheming.setValue(colorThemingIsActive, true);
-			attributeTheming.setValue(null);
-			attributeTheming.setEmptyText(UIMessages.INSTANCE
-					.sbLayerComboEmptyText());
 		}
 	}
 

@@ -32,6 +32,7 @@ import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
+import org.gwtopenmaps.openlayers.client.layer.Vector;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -56,7 +57,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 @ApplicationScoped
 public class InfoProjectTool extends ButtonTool {
 
-	private LayerManagerWidget layerManagerWidget;
+
 	private Project project;
 
 	public interface ProjectInfoTemplate extends XTemplates {
@@ -65,15 +66,13 @@ public class InfoProjectTool extends ButtonTool {
 				List<ProjectVectorLayer> vectors, int totalElements);
 	}
 
-	// TODO: PONER LOS MENSAJES EN EL UIMESSAGES
 	@Inject
 	public InfoProjectTool(LayerManagerWidget layerManager) {
 		super(UIMessages.INSTANCE.infoLayerToolText(), ImageProvider.INSTANCE
 				.info24(), layerManager);
 		setToolTipConfig(createTooltipConfig(
 				UIMessages.INSTANCE.infoLayerToolText(),
-				UIMessages.INSTANCE.infoLayerToolText(), Side.LEFT));
-		this.layerManagerWidget = layerManager;
+				UIMessages.INSTANCE.infoProjectToolTipText(), Side.LEFT));
 		setEnabled(false);
 	}
 
@@ -119,6 +118,11 @@ public class InfoProjectTool extends ButtonTool {
 				project.getVectors(), project.getNumElements()));
 	}
 
+	@Override
+	public void onChange(Vector layer) {
+		this.layer = layer;
+	}
+
 	public Project getProject() {
 		return project;
 	}
@@ -126,5 +130,4 @@ public class InfoProjectTool extends ButtonTool {
 	public void setProject(Project project) {
 		this.project = project;
 	}
-
 }

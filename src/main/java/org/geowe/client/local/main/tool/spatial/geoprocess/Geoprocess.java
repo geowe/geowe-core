@@ -114,11 +114,9 @@ public abstract class Geoprocess implements IGeoprocess {
 	}				
 	
 	protected VectorLayer getResultLayer(final List<String> elements) {
-		final String normalColor = StyleFactory.stringToColour("result"
-				+ (int) (Math.random() * 0x1000000));
-		final StyleMap styleMap = StyleFactory.createStyleMap(normalColor,
-				StyleFactory.DEFAULT_SELECTED_COLOR,
-				StyleFactory.DEFAULT_HIGHLIGHTED_COLOR, null, null);
+//		final String normalColor = StyleFactory.stringToColour("result"
+//				+ (int) (Math.random() * 0x1000000));
+		final StyleMap styleMap = StyleFactory.createDefaultStyleMap();
 		final VectorLayerConfig layerConfig = new VectorLayerConfig();
 		layerConfig.setLayerName("geoprocess_result");
 		layerConfig.setStyleMap(styleMap);

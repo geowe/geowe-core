@@ -188,10 +188,25 @@ public final class VectorLayerFactory {
 		StyleProjectLayer styleProjectLayer = geoJsonReader.getStyle(layerConfig
 				.getGeoDataString());
 		
-		style.setProperty("fillColor", styleProjectLayer.getFillColor());
-		style.setProperty("fillOpacity", styleProjectLayer.getFillOpacity());
-		style.setProperty("strokeColor", styleProjectLayer.getStrokeColor());
-		style.setProperty("strokeWidth", styleProjectLayer.getStrokeWidth());
+		String fillColor = styleProjectLayer.getFillColor();
+		if(!fillColor.isEmpty()) {		
+			style.setProperty("fillColor", fillColor);
+		}
+		
+		String strokeColor = styleProjectLayer.getStrokeColor();
+		if(!strokeColor.isEmpty()) {		
+			style.setProperty("strokeColor", strokeColor);
+		}
+		
+		Double fillOpacity = styleProjectLayer.getFillOpacity();
+		if(fillOpacity != null) {		
+			style.setProperty("fillOpacity", fillOpacity);
+		}
+		
+		Double strokeWidth = styleProjectLayer.getStrokeWidth();
+		if(strokeWidth != null) {		
+			style.setProperty("strokeWidth", strokeWidth);
+		}
 		
 		return layer;
 	}

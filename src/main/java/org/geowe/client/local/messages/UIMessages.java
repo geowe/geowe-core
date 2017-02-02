@@ -826,4 +826,6 @@ public interface UIMessages extends Messages {
 	String projectVersion();
 	
 	String projectDate();
+	
+	String infoProjectToolTipText();
 }

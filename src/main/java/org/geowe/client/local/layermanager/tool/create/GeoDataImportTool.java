@@ -118,8 +118,7 @@ public class GeoDataImportTool extends AbstractGeoDataImport {
 				}
 
 				layerManagerWidget.addVector(layer);
-				layerManagerWidget.setSelectedLayer(LayerManagerWidget.VECTOR_TAB, layer);
-
+				layerManagerWidget.setSelectedLayer(LayerManagerWidget.VECTOR_TAB, layer);				
 			}
 
 			private boolean hasError(final String contentFile) {

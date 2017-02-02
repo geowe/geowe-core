@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.project;
 
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -90,6 +91,20 @@ public class StyleProjectLayer {
 		projectLayerObject.put("strokeWidth", new JSONNumber(getStrokeWidth()));
 		
 		return projectLayerObject;		
+	}
+	
+	public JSONObject getLeafletJSONObject() {
+		
+		JSONObject styleObject = new JSONObject();
+		styleObject.put("fill", JSONBoolean.getInstance(true));
+		styleObject.put("fillColor", new JSONString(getFillColor()));
+		styleObject.put("fill-opacity", new JSONNumber(getFillOpacity())); //opacidad de color de relleno
+		
+		styleObject.put("weight", new JSONNumber(getStrokeWidth())); //stroke-width		
+		styleObject.put("color", new JSONString(getStrokeColor()));//stroke-color
+		styleObject.put("opacity", new JSONNumber(1)); //stroke opacity	
+						
+		return styleObject;		
 	}
 	
 	public String toJSON() {

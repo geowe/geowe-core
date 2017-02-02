@@ -107,7 +107,7 @@ public class GeoDataImportDialog extends Dialog {
 	public GeoDataImportDialog() {
 		this.setHeadingText(UIMessages.INSTANCE.geoDataImportDialogTitle());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(600, 350);
+		this.setPixelSize(650, 350);
 		this.setModal(true);
 		this.setResizable(false);
 	}
@@ -242,7 +242,7 @@ public class GeoDataImportDialog extends Dialog {
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
 		
-		tabPanel.setPixelSize(330, 270);//250
+		tabPanel.setPixelSize(380, 270);//ancho antes 330
 		tabPanel.getElement().setId("tabPanel");
 		tabPanel.add(getEmptyPanel(), UIMessages.INSTANCE.empty());
 		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());

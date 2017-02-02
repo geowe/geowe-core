@@ -28,13 +28,13 @@ import javax.inject.Inject;
 import org.geowe.client.local.initializer.EventListenerInitializer;
 import org.geowe.client.local.initializer.GeoMapInitializer;
 import org.geowe.client.local.initializer.RasterLayerInitializer;
-import org.geowe.client.local.initializer.URLVectorLayerInitializer;
 import org.geowe.client.local.initializer.VectorLayerInitializer;
 import org.geowe.client.local.initializer.WidgetInitializer;
 import org.geowe.client.local.main.ActionBar;
 import org.geowe.client.local.main.LinksWidget;
 import org.geowe.client.local.main.ZoomStatusWidget;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.welcome.Welcome;
 import org.gwtopenmaps.openlayers.client.OpenLayers;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -42,11 +42,6 @@ import org.slf4j.Logger;
 
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.TextArea;
 
 @EntryPoint
 public class App {
@@ -70,13 +65,13 @@ public class App {
 	@Inject
 	private EventListenerInitializer eventListenerInitializer;
 	@Inject
-	private URLVectorLayerInitializer uRLVectorLayerInitializer;
-	@Inject
 	private ZoomStatusWidget zoomStatusWidget;
-	
+	@Inject
+	private Welcome welcome;
+
 	@PostConstruct
 	public void buildUI() {
-		
+
 		OpenLayers.setProxyHost("gwtOpenLayersProxy?targetURL=");
 		RootLayoutPanel.get().add(geoMap.getMapWidget());
 		RootPanel.get().add(actionBar);
@@ -91,40 +86,14 @@ public class App {
 		eventListenerInitializer.initialize();
 
 		showDisclaimer();
-		
+
 		RestClient.setJacksonMarshallingActive(true);
 		RootPanel.get("splash").setVisible(false);
 	}
 
 	private void showDisclaimer() {
-		final TextArea description = new TextArea();
-		description.setText(DisclaimerResourceProvider.INSTANCE.disclaimer()
-				.getText());
-		description.setReadOnly(true);
+		welcome.showDialog();
 
-		final Dialog disclaimerDialog = new Dialog();
-		disclaimerDialog.setHeadingText("Disclaimer");
-		disclaimerDialog.setClosable(false);
-		disclaimerDialog.setModal(true);
-		disclaimerDialog.setPredefinedButtons(PredefinedButton.OK);
-		disclaimerDialog.getButton(PredefinedButton.OK).setId(
-				"disclaimer_ok_button");
-		disclaimerDialog.setBodyStyleName("pad-text");
-		disclaimerDialog.add(description);
-		disclaimerDialog.getBody().addClassName("pad-text");
-		disclaimerDialog.setHideOnButtonClick(true);
-		disclaimerDialog.setWidth(350);
-		disclaimerDialog.setHeight(400);
-		disclaimerDialog.setResizable(false);
-		disclaimerDialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
-
-			@Override
-			public void onSelect(final SelectEvent event) {
-				uRLVectorLayerInitializer.createLayerFromURL();				
-			}
-			
-		});
-		
-		disclaimerDialog.show();
 	}
+
 }

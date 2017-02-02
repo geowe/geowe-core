@@ -25,6 +25,7 @@ package org.geowe.client.local.main.tool.map.catalog.model;
 import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.format.GPX;
+import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.geowe.client.local.model.vector.format.TopoJSON;
 import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.StyleMap;
@@ -47,6 +48,7 @@ public abstract class VectorLayerDef extends LayerDef{
 	
 	public static final String KML = "KML";
 	public static final String GEOJSON = "GeoJSON";
+	public static final String GEOJSON_CSS = "GeoJSON_CSS";
 	public static final String WKT = "WKT";
 	public static final String GML = "GML";
 	public static final String TOPOJSON = "TopoJSON";
@@ -145,6 +147,9 @@ public abstract class VectorLayerDef extends LayerDef{
 		case TOPOJSON:
 			layerFormat = new TopoJSON();
 			break;
+		case GEOJSON_CSS:
+			layerFormat = new GeoJSONCSS();
+			break;	
 		default:
 			layerFormat = new GeoJSON();
 			break;

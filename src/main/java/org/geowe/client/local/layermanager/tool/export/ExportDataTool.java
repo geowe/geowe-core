@@ -42,10 +42,12 @@ import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.tool.project.StyleProjectLayer;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.format.GPX;
+import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
@@ -55,6 +57,7 @@ import org.gwtopenmaps.openlayers.client.format.KML;
 import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
+import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 import org.slf4j.Logger;
 
@@ -106,7 +109,7 @@ public class ExportDataTool extends LayerTool implements
 		exportDataDialog.getDownloadFileButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {
+					public void onSelect(SelectEvent event) {						
 						exporter = new FileExporter();
 						fileParameter = new FileParameter();
 						fileParameter.setFileName(getFileName());
@@ -115,8 +118,8 @@ public class ExportDataTool extends LayerTool implements
 						if (isSelectedFeatures()) {
 							confirmDownloadSelected();
 						} else {
-							fileParameter
-									.setContent(getContent((VectorLayer) getSelectedLayer()));
+							
+							fileParameter.setContent(getContent(exportDataDialog.getVectorLayer()));							
 							export();
 						}
 					}
@@ -260,9 +263,10 @@ public class ExportDataTool extends LayerTool implements
 
 	private boolean isSelectedFeatures() {
 		boolean isSelected = false;
-		if (isLayerToExportValid(exportDataDialog.getVectorLayer())) {
+		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
+		
+		if (isLayerToExportValid(selectedLayer)) {
 
-			final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
 			final VectorFeature[] selectedFeatures = selectedLayer
 					.getSelectedFeatures();
 
@@ -283,7 +287,8 @@ public class ExportDataTool extends LayerTool implements
 		gitHubParameter.setMessageCommit(gitHubExportDialog.getMessage());
 		gitHubParameter.setFileName(gitHubExportDialog.getFileName());
 		gitHubParameter.setExtension(getExtension());
-		VectorLayer layer = (VectorLayer) getSelectedLayer();
+
+		VectorLayer layer = exportDataDialog.getVectorLayer();
 		gitHubParameter.setContent(getContent(layer));
 		if (layer.getSource() != null) {
 			GitHubLayerVectorSource source = (GitHubLayerVectorSource) layer
@@ -298,7 +303,9 @@ public class ExportDataTool extends LayerTool implements
 	}
 
 	private String getFileName() {
-		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+
+		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
+				
 		return selectedLayer.getName();
 	}
 
@@ -330,6 +337,10 @@ public class ExportDataTool extends LayerTool implements
 			content = new CSV(exportDataDialog.getSelectedEpsg())
 					.write(selectedLayer);
 		}
+		else if (vectorFormat.getId() == VectorFormat.GEOJSON_CSS_FORMAT.getId()) {
+			format = new GeoJSONCSS();
+			((GeoJSONCSS)format).setStyle(getStyleLayer(selectedLayer));			
+		} 
 
 		if (content.isEmpty()) {
 			content = format.write(getTransformedFeatures(selectedLayer));
@@ -337,9 +348,25 @@ public class ExportDataTool extends LayerTool implements
 
 		return content;
 	}
+	
+	private StyleProjectLayer getStyleLayer(Vector vector) {
+		
+		JSObject styleMap = getDefaultStyle(vector);
+		String fillColor = styleMap.getPropertyAsString("fillColor");
+		Double fillOpacity = styleMap.getPropertyAsDouble("fillOpacity");
+		String strokeColor = styleMap.getPropertyAsString("strokeColor");
+		Double strokeWidth = styleMap.getPropertyAsDouble("strokeWidth");
+		
+		return new StyleProjectLayer(fillColor, fillOpacity, strokeColor, strokeWidth);
+	}
+	
+	protected JSObject getDefaultStyle(Vector layer) {
+		return layer.getStyleMap().getJSObject().getProperty("styles")
+				.getProperty("default").getProperty("defaultStyle");
+	}
 
 	private VectorLayer getLayerWithSelectedFeature() {
-		final VectorLayer selectedLayer = (VectorLayer) getSelectedLayer();
+		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
 		final FeatureSchema schema = selectedLayer.getSchema();
 		VectorFeature[] features = selectedLayer.getSelectedFeatures();
 
@@ -372,7 +399,7 @@ public class ExportDataTool extends LayerTool implements
 					@Override
 					public void onSelect(SelectEvent event) {
 						fileParameter
-								.setContent(getContent((VectorLayer) getSelectedLayer()));
+								.setContent(getContent(exportDataDialog.getVectorLayer()));
 						export();
 					}
 				});

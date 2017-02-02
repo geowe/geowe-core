@@ -75,13 +75,14 @@ public class VectorFormat {
 	public static List<VectorFormat> getSupportedImportFormat() {
 		final List<VectorFormat> vectorFormats = new ArrayList<VectorFormat>();
 		vectorFormats.add(GEO_JSON_FORMAT);
+		vectorFormats.add(GEOJSON_CSS_FORMAT);
 		vectorFormats.add(KML_FORMAT);
 		vectorFormats.add(GML_FORMAT);
 		vectorFormats.add(WKT_FORMAT);
 		vectorFormats.add(TOPO_JSON_FORMAT);
 		vectorFormats.add(GPX_FORMAT);
 		vectorFormats.add(CSV_FORMAT);
-		vectorFormats.add(GEOJSON_CSS_FORMAT);
+		
 		return vectorFormats;
 	}
 

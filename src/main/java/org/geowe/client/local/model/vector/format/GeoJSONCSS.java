@@ -72,13 +72,42 @@ public class GeoJSONCSS extends GeoJSON {
 		final JSONObject geoJSONCssObject = jsonValue.isObject();
 		JSONObject styleObject = geoJSONCssObject.get("style").isObject();
 
-		String fillColor = styleObject.get("fillColor").isString()
-				.stringValue();
-		Double fillOpacity = styleObject.get("fill-opacity").isNumber()
-				.doubleValue();
-		String strokeColor = styleObject.get("color").isString().stringValue();
-		Double strokeWidth = styleObject.get("weight").isNumber().doubleValue();
+		String fillColor = getStringValue(styleObject, "fillColor");
+		Double fillOpacity = getDoubleValue(styleObject, "fillOpacity");
+		String strokeColor = getStringValue(styleObject, "color");
+		Double strokeWidth = getDoubleValue(styleObject, "weight");
+
 		return new StyleProjectLayer(fillColor, fillOpacity, strokeColor,
 				strokeWidth);
+	}
+
+	private String getStringValue(JSONObject styleObject, String key) {
+		String newValue = "";
+
+		if (styleObject.containsKey(key)) {
+			try {
+				newValue = styleObject.get(key).isString().stringValue();
+			} catch (Exception e) {
+				// si el valor del atributo no está bien definido es ignorado
+			}
+		}
+
+		return newValue;
+
+	}
+
+	private Double getDoubleValue(JSONObject styleObject, String key) {
+		Double newValue = null;
+
+		if (styleObject.containsKey(key)) {
+			try {
+				newValue = styleObject.get(key).isNumber().doubleValue();
+			} catch (Exception e) {
+				// si el valor del atributo no está bien definido es ignorado
+			}
+		}
+
+		return newValue;
+
 	}
 }

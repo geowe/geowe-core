@@ -7,8 +7,20 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ### Added
 - More tools
 
-## [1.4.1]Beta - 2017-02-1
+## [1.4.3]Beta - 2017-02-2
 
+### Added
+- Layer Style enhancement
+
+### Fixed
+- issue [#213](https://github.com/geowe/geowe-core/issues/213)
+- issue [#273](https://github.com/geowe/geowe-core/issues/273)
+
+## [1.4.2]Beta - 2017-02-2
+### Fixed
+- issue [#286](https://github.com/geowe/geowe-core/issues/286)
+
+## [1.4.1]Beta - 2017-02-1
 ### Added
 - Added new vector format GeoJSON CSS (layer level Style)
 - Added new disclaimer dialog

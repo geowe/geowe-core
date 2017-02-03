@@ -5,12 +5,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
-- More tools
+- Feature level Style
+- GeoJson CSS: feature level Style
 
 ## [1.4.3]Beta - 2017-02-2
 
 ### Added
 - Layer Style enhancement
+- Vertex Style: now you can use custom icons.
 
 ### Fixed
 - issue [#213](https://github.com/geowe/geowe-core/issues/213)
@@ -31,7 +33,6 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#276](https://github.com/geowe/geowe-core/issues/276)
 - issue [#281](https://github.com/geowe/geowe-core/issues/281)
 - issue [#284](https://github.com/geowe/geowe-core/issues/284)
-
 
 
 ## [1.4.0]Beta - 2017-01-26

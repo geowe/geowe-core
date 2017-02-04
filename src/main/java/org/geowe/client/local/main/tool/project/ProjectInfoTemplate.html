@@ -1,0 +1,107 @@
+<!--
+  #%L
+  GeoWE Project
+  %%
+  Copyright (C) 2015 - 2016 GeoWE.org
+  %%
+  This file is part of GeoWE.org.
+  
+  GeoWE is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  GeoWE is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with GeoWE.  If not, see <http://www.gnu.org/licenses/>.
+  #L%
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
+<title>GeoWE Report Engine</title>
+<style>
+.features-table {
+	border-collapse: collapse;
+	width: 90%;
+	border: 1px solid #3291d6;
+}
+
+.features-th {
+	text-align: left;
+	padding: 8px;
+	background-color: #3291d6;
+	color: white;
+}
+
+.features-td {
+	text-align: left;
+	padding: 8px;
+}
+
+.tr:hover {
+	background-color: #f5f5f5
+}
+</style>
+</head>
+<body>
+	<h1 style="text-align: center;">{project.getTitle}</h1>
+	<hr>
+	<div style="padding-left: 15px;">
+	<br>
+	<p>
+		<span style="font-weight: bold;">{uimessages.lidProjectionLabel} </span> WGS84
+	</p>
+	<br>
+	<p>
+		<span style="font-weight: bold;">{uimessages.projectVersion} </span> {project.getVersion}
+	</p>
+	<br>
+	<p>
+		<span style="font-weight: bold;">{uimessages.projectDescription}
+		</span> {project.getDescription}
+	</p>
+	<br>
+	<p>
+		<span style="font-weight: bold;">{uimessages.projectDate}</span> {project.getDate}
+	</p>
+	</div>
+	<div style="padding-left: 10px;">
+		<br>
+		<p>
+			<span style="font-weight: bold;">{uimessages.projectTotalVectorLayer}:
+			</span> {project.vectors.size}
+		</p>
+		<br>
+		<p>
+			<span style="font-weight: bold;">{uimessages.lidElementsCountLabel}:
+			</span> {totalElements}
+		</p>
+		<table class="features-table">
+			<tr class="tr">
+				<th width="65%" class="features-th">{uimessages.fidNameCol}</th>
+				<th class="features-th">{uimessages.lidElementsCountLabel}</th>
+			</tr>
+
+			<tpl for='vectors'>
+			<tr class="tr">
+				<td class="features-td">{getName}</td>
+				<td class="features-td">{getNumElements}</td>
+			</tr>
+			</tpl>
+
+		</table>
+	</div>
+
+	<hr>
+	<div style="text-align: center;">
+		GeoWE Report Engine- <a href="http://www.geowe.org" target="_blank">geowe.org</a>
+	</div>
+</body>
+</html>

@@ -22,6 +22,8 @@
  */
 package org.geowe.client.local.style;
 
+import org.geowe.client.local.model.style.FillStyle;
+import org.geowe.client.local.model.style.LineStyle;
 import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
@@ -38,79 +40,103 @@ import com.google.gwt.user.client.Random;
  *
  */
 public final class StyleFactory {
-
 	private static final Logger LOG = LoggerFactory
 			.getLogger(StyleFactory.class.getName());
-
-	public static final String DEFAULT_NORMAL_COLOR = "#FF0000";
-	public static final String DEFAULT_SELECTED_COLOR = "#00FF00";
-	public static final String DEFAULT_HIGHLIGHTED_COLOR = "#0000FF";
-	public static final String DEFAULT_STROKE_COLOR = "#000000";
-	public static final String DEFAULT_SELECTED_STROKE_COLOR = "#ffff00";
 
 	private StyleFactory() {
 	}
 
+	/**
+	 * Crea un mapa de estilos por defecto, aplicando color normal
+	 * uno obtenido de manera aleatoria.
+	 * 
+	 * @return
+	 */
 	public static StyleMap createDefaultStyleMap() {
 		String default_normal_color = String.valueOf(Random.nextInt());
 		return createStyleMap(
 				StyleFactory.stringToColour(default_normal_color),
-				DEFAULT_SELECTED_COLOR, DEFAULT_HIGHLIGHTED_COLOR, null, null);
+				FillStyle.DEFAULT_SELECTED_COLOR, 
+				FillStyle.DEFAULT_HOVER_COLOR, null, null);
 	}
 
+	/**
+	 * Método para crear un mapa de estilos personalizando solamente
+	 * el color de relleno / color temático, y el etiquetado. En el resto
+	 * de parámetros se aplican los valores por defecto. Si se especifica
+	 * el color temático, se obvia el color de relleno normal.
+	 * 
+	 * @param normalColor
+	 * @param selectedColor
+	 * @param hoverColor
+	 * @param attributeLabel
+	 * @param colorThemingAttribute
+	 * @return
+	 */
 	public static StyleMap createStyleMap(String normalColor,
-			String selectedColor, String highlightedColor,
+			String selectedColor, String hoverColor,
 			String attributeLabel, String colorThemingAttribute) {
 
-		Style defaultStyle = new org.gwtopenmaps.openlayers.client.Style();
-		Style selectStyle = new org.gwtopenmaps.openlayers.client.Style();
-		Style temporaryStyle = new org.gwtopenmaps.openlayers.client.Style();
-
-		defaultStyle.setJSObject(createOpenLayersStyle(DEFAULT_STROKE_COLOR,
-				normalColor, attributeLabel, colorThemingAttribute));
-		selectStyle.setJSObject(createOpenLayersStyle(
-				DEFAULT_SELECTED_STROKE_COLOR, selectedColor, attributeLabel,
-				null));
-		temporaryStyle.setJSObject(createOpenLayersStyle(
-				DEFAULT_SELECTED_STROKE_COLOR, highlightedColor,
-				attributeLabel, null));
-
-		StyleMap styleMap = new StyleMap(defaultStyle, selectStyle,
-				temporaryStyle);
-
-		return styleMap;
+		return new StyleMap(
+				createStyle(LineStyle.DEFAULT_NORMAL_COLOR, LineStyle.DEFAULT_THICKNESS,
+						normalColor, FillStyle.DEFAULT_OPACITY / 100.0,
+						attributeLabel, colorThemingAttribute), 
+				createStyle(LineStyle.DEFAULT_SELECTED_COLOR, LineStyle.DEFAULT_THICKNESS,
+						selectedColor, FillStyle.DEFAULT_OPACITY / 100.0,
+						attributeLabel, null),
+				createStyle(LineStyle.DEFAULT_HOVER_COLOR, LineStyle.DEFAULT_THICKNESS,
+						hoverColor, FillStyle.DEFAULT_OPACITY / 100.0,
+						attributeLabel, null));
 	}
 
-	public static Style createStyle(String strokeColor, String fillColor,
+	/**
+	 * Método básico para creación de un estilo personalizado. Si se 
+	 * especifica el atributo para el color temático, se obvia el color
+	 * de relleno normal.
+	 * 
+	 * @param strokeColor
+	 * @param strokeWidth
+	 * @param fillColor
+	 * @param fillOpacity
+	 * @param attributeLabel
+	 * @param colorThemingAttribute
+	 * @return
+	 */
+	public static Style createStyle(String strokeColor, int strokeWidth,
+			String fillColor, double fillOpacity, 
 			String attributeLabel, String colorThemingAttribute) {
 
 		Style style = new org.gwtopenmaps.openlayers.client.Style();
-		style.setJSObject(createOpenLayersStyle(strokeColor, fillColor,
+		style.setJSObject(createOpenLayersStyle(strokeColor, strokeWidth,
+				fillColor, fillOpacity,
 				attributeLabel, colorThemingAttribute));
 
 		return style;
 	}
 
 	public static Style createReshapeStyle() {
-
 		Style reshapeStyle = new org.gwtopenmaps.openlayers.client.Style();
-		reshapeStyle.setJSObject(createOpenLayersStyle(DEFAULT_STROKE_COLOR,
-				DEFAULT_NORMAL_COLOR, null, null));
+		reshapeStyle.setJSObject(createOpenLayersStyle(
+				LineStyle.DEFAULT_NORMAL_COLOR, LineStyle.DEFAULT_THICKNESS,
+				FillStyle.DEFAULT_NORMAL_COLOR, FillStyle.DEFAULT_OPACITY / 100.0, 
+				null, null));
 		reshapeStyle.setLabel("");
 		return reshapeStyle;
 	}
 
-	private static native JSObject createOpenLayersStyle(String strokeColor,
-			String fillColor, String attributeLabel,
+	private static native JSObject createOpenLayersStyle(
+			String strokeColor, int strokeWidth,
+			String fillColor, double fillOpacity, 
+			String attributeLabel,
 			String colorThemingAttribute) /*-{
 		var style = new $wnd.OpenLayers.Style(
 				{
 					strokeColor : (colorThemingAttribute != null ? "${getColor}"
 							: strokeColor),
-					strokeWidth : 3,
+					strokeWidth : strokeWidth,
 					fillColor : (colorThemingAttribute != null ? "${getColor}"
 							: fillColor),
-					fillOpacity : 0.5,
+					fillOpacity : fillOpacity,
 					pointRadius : 5,
 					strokeOpacity : 1.0,
 					graphicName : "circle",

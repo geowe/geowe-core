@@ -10,7 +10,7 @@ The **geowe-core** is being developed using the following technologies:
 - Sencha GXT
 - GWT-OpenLayers
 
-More information available on the [GeoWE Web site](http://geowe.org/).
+More information available on the [GeoWE Web site](http://www.geowe.org/).
 
 ##Features
 

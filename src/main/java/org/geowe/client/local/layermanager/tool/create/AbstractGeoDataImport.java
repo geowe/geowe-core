@@ -103,7 +103,7 @@ public abstract class AbstractGeoDataImport extends ButtonTool {
 					.createVectorLayerFromGeoData(layerConfig);
 		} catch (Exception e) {
 			showAlert(UIMessages.INSTANCE.warning(),
-					UIMessages.INSTANCE.gditAlertMessage());
+					UIMessages.INSTANCE.gditAlertMessage() + ": " + e.getMessage());						
 		}
 
 		return layer;

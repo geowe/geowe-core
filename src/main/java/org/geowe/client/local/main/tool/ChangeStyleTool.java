@@ -30,12 +30,14 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.style.PointStyle;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.style.SimpleThemingVerticalLegend;
 import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
+import org.geowe.client.local.style.VertexStyles;
 import org.geowe.client.local.ui.ProgressBarDialog;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -45,9 +47,11 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
- * Show/hide Change Style dialog
+ * Herramienta de modificación de estilos de una capa vectorial. Muestra y 
+ * oculta el diálogo de estilos, e implementa la lógica de aplicación del
+ * estilo a la capa.
  * 
- * @author geowe
+ * @author Atanasio Muñoz (ata@geowe.org)
  *
  */
 @ApplicationScoped
@@ -79,8 +83,7 @@ public class ChangeStyleTool extends ButtonTool {
 		} else {
 			vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
 					.fadeToggle();
-			vectorLayerStyleWidget.asWidget().setVisible(true);
-			
+			vectorLayerStyleWidget.asWidget().setVisible(true);			
 		}
 	}
 
@@ -115,46 +118,75 @@ public class ChangeStyleTool extends ButtonTool {
 				final VectorLayer selectedLayer = vectorLayerStyleWidget
 						.getSelectedLayer();
 
-				/**
-				 * Antes de nada, si se ha activado el color tematico, se debe
-				 * aplicar este como primera operacion, ya que conlleva la
-				 * creacion de un nuevo StyleMap
-				 */
-				applyColorThemingStyle(selectedLayer);
-				applyLineAndColorStyle(selectedLayer);
-				applyLabelAndVertexStyle(selectedLayer);
+				applyChanges(selectedLayer);
+				
+				if(selectedLayer.getVectorStyle().isColorThemingEnabled()
+						|| selectedLayer.getVectorStyle().getLabel().isEnabled()) {						
+					applyLengendVisibility(selectedLayer);
+				} else {
+					hideLegendPanel();
+				}
 
 				selectedLayer.redraw();
 				progressDialog.hide();
 			}
-		});
-		
+		});		
 	}
 		
-	private void applyColorThemingStyle(final VectorLayer selectedLayer) {
-		if(vectorLayerStyleWidget.isEnableTheming()
-			 || vectorLayerStyleWidget.isEnableLabeling()) {
-			selectedLayer.setStyleMap(
-					StyleFactory.createStyleMap(
-							StyleFactory.DEFAULT_NORMAL_COLOR, 
-							StyleFactory.DEFAULT_SELECTED_COLOR, 
-							StyleFactory.DEFAULT_HIGHLIGHTED_COLOR, 
-							vectorLayerStyleWidget.isEnableLabeling() ? vectorLayerStyleWidget.getAttributeLabel() : null, 
-							vectorLayerStyleWidget.isEnableTheming() ? vectorLayerStyleWidget.getAttributeTheming() : null));
-
-			applyLengendVisibility(selectedLayer);
+	private void applyChanges(VectorLayer selectedLayer) {
+		VectorStyleDef style = selectedLayer.getVectorStyle();
+		
+		style.getFill().setNormalColor(vectorLayerStyleWidget.getFillColor());
+		style.getFill().setOpacity(vectorLayerStyleWidget.getFillOpacity());
+		style.getLine().setNormalColor(vectorLayerStyleWidget.getStrokeColor());
+		style.getLine().setThickness(vectorLayerStyleWidget.getStrokeWidth());
+		
+		if(vectorLayerStyleWidget.isBasicVertexStyle()) { 
+			style.getPoint().setVertexStyle(VertexStyles.getByStyleName(
+					vectorLayerStyleWidget.getVertexStyle()));
+			style.getPoint().setExternalGraphic(null);
 		} else {
-			hideLegendPanel();
+			int graphicWidth = vectorLayerStyleWidget.getGraphicWidth();
+			int graphicHeight = vectorLayerStyleWidget.getGraphicHeight();
+			
+			style.getPoint().setExternalGraphic(
+					vectorLayerStyleWidget.getExternalGraphic());
+			style.getPoint().setGraphicWidth(
+					graphicWidth > 0 ? graphicWidth : PointStyle.DEFAULT_GRAPHIC_WIDTH);
+			style.getPoint().setGraphicHeight(
+					graphicHeight > 0 ? graphicHeight : PointStyle.DEFAULT_GRAPHIC_HEIGHT);
+		}		
+		
+		if(vectorLayerStyleWidget.isEnableLabeling()) {
+			style.getLabel().setAttribute(
+					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeLabel()));
+			style.getLabel().setFontSize(vectorLayerStyleWidget.getFontSize());
+			style.getLabel().setBoldStyle(vectorLayerStyleWidget.isUseBoldLabel());
+			style.getLabel().setBackgroundColor(vectorLayerStyleWidget.getBackgroundColor());
+		} else {
+			style.getLabel().setAttribute(null);
 		}
+		
+		if(vectorLayerStyleWidget.isEnableTheming()) {
+			style.setColorThemingAttribute(
+					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeTheming()));
+			style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());
+		} else {
+			style.setColorThemingAttribute(null);
+			style.setEnableLegend(false);
+		}			
 	}
-
+	
 	private void applyLengendVisibility(VectorLayer selectedLayer) {
-		if (vectorLayerStyleWidget.isEnableLegend()) {
+		VectorStyleDef currentStyle = selectedLayer.getVectorStyle();
+		
+		if (currentStyle.isEnableLegend()) {
 			if (legendPanel != null) {
 				RootPanel.get().remove(legendPanel);				
 			}
+			
 			legendPanel = new SimpleThemingVerticalLegend(selectedLayer,
-					vectorLayerStyleWidget.getAttributeTheming());
+					currentStyle.getColorThemingAttribute().getName());
 
 			RootPanel.get().add(legendPanel);
 			legendPanel.getElement().<FxElement> cast().fadeToggle();
@@ -168,82 +200,5 @@ public class ChangeStyleTool extends ButtonTool {
 		if (legendPanel != null && legendPanel.isVisible()) {
 			legendPanel.getElement().<FxElement> cast().fadeToggle();
 		}
-	}
-	
-	private void applyLineAndColorStyle(final VectorLayer selectedLayer) {
-		// Estilo compuesto (StyleMap)
-		if (selectedLayer.getStyle() == null) {
-			final JSObject defaultStyle = getDefaultStyle(selectedLayer);
-
-			// Solo se aplica el FillColor si NO se ha activado el color tematico
-			if (!vectorLayerStyleWidget.isEnableTheming()) {
-				defaultStyle.setProperty("fillColor",
-						vectorLayerStyleWidget.getFillColor());
-			}
-			defaultStyle.setProperty("fillOpacity",
-					vectorLayerStyleWidget.getFillOpacity() / 100.0);
-			defaultStyle.setProperty("strokeColor",
-					vectorLayerStyleWidget.getStrokeColor());
-			defaultStyle.setProperty("strokeWidth",
-					vectorLayerStyleWidget.getStrokeWidth());
-
-			// Estilo simple
-		} else {
-			//Solo se aplica el FillColor si NO se ha activado el color tematico
-			if(!vectorLayerStyleWidget.isEnableTheming()) {
-				selectedLayer.getStyle().setFillColor(
-						vectorLayerStyleWidget.getFillColor());
-			}
-			
-			selectedLayer.getStyle().setFillOpacity(
-					vectorLayerStyleWidget.getFillOpacity() / 100.0);
-			selectedLayer.getStyle().setStrokeColor(
-					vectorLayerStyleWidget.getStrokeColor());
-			selectedLayer.getStyle().setStrokeWidth(
-					vectorLayerStyleWidget.getStrokeWidth().doubleValue());									
-		}
-	}
-	
-	private void applyLabelAndVertexStyle(final VectorLayer selectedLayer) {
-		// Estilo compuesto (StyleMap)
-		if (selectedLayer.getStyle() == null) {	
-			final JSObject defaultStyle = getDefaultStyle(selectedLayer);
-//			defaultStyle.unsetProperty("label");
-			if (vectorLayerStyleWidget.isEnableLabeling()) {
-//				defaultStyle.setProperty("label",
-//						"${" + vectorLayerStyleWidget.getAttributeLabel() + "}");
-				defaultStyle.setProperty("fontSize", 
-						vectorLayerStyleWidget.getFontSize() + "px");
-				defaultStyle.setProperty("fontWeight", 
-						vectorLayerStyleWidget.isUseBoldLabel() ? "bold" : "regular");
-				
-				final boolean labelBackgroung = vectorLayerStyleWidget.getBackgroundColor().length() > 0;				
-				defaultStyle.setProperty("labelOutlineWidth", (labelBackgroung ? 10 : 0));
-				defaultStyle.setProperty("labelOutlineColor", labelBackgroung ?
-						vectorLayerStyleWidget.getBackgroundColor() : "");				
-			} 
-			
-			defaultStyle.setProperty("graphicName", vectorLayerStyleWidget.getVertexStyle());
-
-			// Estilo simple
-		} else {
-			
-			selectedLayer.getStyle().setLabel("");
-			if (vectorLayerStyleWidget.isEnableLabeling()) {
-				selectedLayer.getStyle().setLabel(
-						"${" + vectorLayerStyleWidget.getAttributeLabel() + "}");
-				selectedLayer.getStyle().setFontSize(
-						vectorLayerStyleWidget.getFontSize() + "px");								
-				selectedLayer.getStyle().setFontWeight(
-						vectorLayerStyleWidget.isUseBoldLabel() ? "bold" : "regular");									
-			} 
-			
-			selectedLayer.getStyle().setGraphicName(vectorLayerStyleWidget.getVertexStyle());			
-		}	
-	}
-	
-	private JSObject getDefaultStyle(final VectorLayer layer) {
-		return layer.getStyleMap().getJSObject().getProperty("styles")
-				.getProperty("default").getProperty("defaultStyle");
-	}
+	}			
 }

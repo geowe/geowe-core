@@ -407,6 +407,18 @@ public interface UIMessages extends Messages {
 
 	String vlswStrokeWidth();
 
+	String vlswBasicVertexStyle();
+	
+	String vlswAdvancedVertexStyle();
+	
+	String vlswVertexIcon();
+	
+	String vlswVertexIconEmptyText();
+	
+	String vlswVertexIconWidth();
+	
+	String vlswVertexIconHeight();
+	
 	String vlswVertexStyle();
 
 	String vlswLabelAttribute();
@@ -822,4 +834,10 @@ public interface UIMessages extends Messages {
 	String projectTotalVectorLayer();
 	
 	String projectDescription();
+	
+	String projectVersion();
+	
+	String projectDate();
+	
+	String infoProjectToolTipText();
 }

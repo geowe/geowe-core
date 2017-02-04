@@ -69,7 +69,6 @@ public class SaveProjectDialog extends Dialog {
 	}
 	
 	public void clear() {		
-		//this.projectNameField.clear();
 		projectNameField.setValue(DEFAULT_PROJECT_NAME);
 		this.projectDescriptionField.clear();
 		this.projectTitleField.clear();
@@ -111,7 +110,7 @@ public class SaveProjectDialog extends Dialog {
 		projectVersionField.setValue(PROJECT_VERSION);
 		projectVersionField.setEnabled(false);
 		projectVersionField.setWidth("125px");
-		infoPanel.add(new Label("Version"));
+		infoPanel.add(new Label(UIMessages.INSTANCE.projectVersion()));
 		infoPanel.add(projectVersionField);
 		
 		vectorLayerCountField = new TextField();		

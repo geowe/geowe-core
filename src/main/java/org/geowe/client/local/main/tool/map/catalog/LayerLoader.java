@@ -23,6 +23,8 @@
 package org.geowe.client.local.main.tool.map.catalog;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.model.vector.VectorLayer;
+import org.gwtopenmaps.openlayers.client.feature.Feature;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -50,7 +52,7 @@ public final class LayerLoader {
 	public static void load(Layer layer) {
 		if (layer != null) {
 			if (layer instanceof Vector) {
-				layerManagerWidget.addVector(layer);
+				layerManagerWidget.addVector(layer);				
 				layerManagerWidget.setSelectedLayer(
 						LayerManagerWidget.VECTOR_TAB, layer);
 			} else {

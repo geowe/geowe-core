@@ -25,6 +25,8 @@ package org.geowe.client.local.main.tool.project;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtopenmaps.openlayers.client.format.GeoJSON;
+
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -50,7 +52,9 @@ public class Project {
 	public void add(String layerName, String geojsonContent, String fillColor, Double fillOpacity, String strokeColor, Double strokeWidth) {
 		final StyleProjectLayer style = new StyleProjectLayer(fillColor, fillOpacity, strokeColor, strokeWidth);		
 		final ProjectVectorLayer layer = new ProjectVectorLayer(layerName, geojsonContent, style);		
-		vectors.add(layer);
+		GeoJSON geoJSON = new GeoJSON();		
+		layer.setNumElements(geoJSON.read(geojsonContent).length);
+		vectors.add(layer);		
 	}
 
 	public String getName() {
@@ -114,5 +118,13 @@ public class Project {
 		projectObject.put("vectors", layersArray);
 
 		return projectObject.toString();
+	}
+
+	public int getNumElements() {
+		int total = 0;
+		for(ProjectVectorLayer layer: vectors) {
+			total = total + layer.getNumElements();
+		}
+		return total;
 	}
 }

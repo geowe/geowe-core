@@ -8,8 +8,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Feature level Style
 - GeoJson CSS: feature level Style
 
-## [1.4.3]Beta - 2017-02-2
+## [1.4.4]Beta - 2017-02-06
 
+### Fixed
+- issue [#289](https://github.com/geowe/geowe-core/issues/289)
+
+
+## [1.4.3]Beta - 2017-02-02
+version deployed for testing [map.geowe.org](http://map.geowe.org) 
 ### Added
 - Layer Style enhancement
 - Vertex Style: now you can use custom icons.
@@ -18,11 +24,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#213](https://github.com/geowe/geowe-core/issues/213)
 - issue [#273](https://github.com/geowe/geowe-core/issues/273)
 
-## [1.4.2]Beta - 2017-02-2
+## [1.4.2]Beta - 2017-02-02
 ### Fixed
-- issue [#286](https://github.com/geowe/geowe-core/issues/286)
+- issue [#286](https://github.com/geowe/geowe-core/issues/286) 
 
-## [1.4.1]Beta - 2017-02-1
+## [1.4.1]Beta - 2017-02-01
 ### Added
 - Added new vector format GeoJSON CSS (layer level Style)
 - Added new disclaimer dialog
@@ -36,7 +42,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [1.4.0]Beta - 2017-01-26
-version deployed for testing [map.geowe.org](http://map.geowe.org)
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Added Project Tab in main menu panel
 

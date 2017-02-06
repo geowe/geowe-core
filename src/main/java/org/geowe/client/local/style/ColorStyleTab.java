@@ -23,9 +23,9 @@
 package org.geowe.client.local.style;
 
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.ui.ColorPicker;
 import org.geowe.client.local.ui.KeyShortcutHandler;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.widget.core.client.Slider;
@@ -118,7 +118,7 @@ public class ColorStyleTab extends StyleTab implements
 	
 	@Override
 	public void onSelectedColorChanged(String selectedColor) {
-		lastFocusedTextField.setText(selectedColor);
+		lastFocusedTextField.setText(selectedColor);		
 		colorPicker.slide(false);		
 	}	
 		
@@ -135,28 +135,12 @@ public class ColorStyleTab extends StyleTab implements
 	@Override
 	protected void updateLayerStyleData() {
 		if (this.panel != null && this.selectedLayer != null) {			
-			// Estilo simple
-			if (selectedLayer.getStyle() != null) {
-				fillColor.setText(selectedLayer.getStyle().getFillColor());
-
-				fillOpacity.setValue((int) Math.floor(selectedLayer
-						.getStyle().getFillOpacity() * 100));
-
-				lineColor.setText(selectedLayer.getStyle().getStrokeColor());
-				lineThick.setValue((int) Math.floor(selectedLayer.getStyle()
-						.getStrokeWidth()));
-				// Estilo compuesto (StyleMap)
-			} else {				
-				JSObject defaultStyle = getDefaultStyle();
-
-				fillColor.setText(defaultStyle.getPropertyAsString("fillColor"));
-				fillOpacity.setValue((int) Math.floor(defaultStyle
-						.getPropertyAsDouble("fillOpacity") * 100));
-				lineColor.setText(defaultStyle
-						.getPropertyAsString("strokeColor"));
-				lineThick.setValue((int) Math.floor(defaultStyle
-						.getPropertyAsDouble("strokeWidth")));
-			}
+			VectorStyleDef style = selectedLayer.getVectorStyle();
+			
+			fillColor.setText(style.getFill().getNormalColor());
+			fillOpacity.setValue(style.getFill().getOpacity());
+			lineColor.setText(style.getLine().getNormalColor());
+			lineThick.setValue(style.getLine().getThickness());
 		}
 	}
 

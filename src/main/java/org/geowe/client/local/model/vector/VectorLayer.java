@@ -25,6 +25,7 @@ package org.geowe.client.local.model.vector;
 import java.util.Collection;
 
 import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.gwtopenmaps.openlayers.client.event.VectorFeatureAddedListener;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
@@ -43,11 +44,14 @@ import org.gwtopenmaps.openlayers.client.util.JSObject;
 public class VectorLayer extends Vector {
 	
 	private FeatureSchema featureSchema;
+	private LayerVectorSource source;	
+	private VectorStyleDef vectorStyle;
 
 	public VectorLayer(JSObject vector) {
 		super(vector);	
 		
 		this.featureSchema = new FeatureSchema();
+		this.vectorStyle = new VectorStyleDef();
 		addFeatureAddedListener();
 	}
 	
@@ -55,6 +59,7 @@ public class VectorLayer extends Vector {
     	super(name);
     	
     	this.featureSchema = new FeatureSchema();
+    	this.vectorStyle = new VectorStyleDef();
     	addFeatureAddedListener();
     }
     
@@ -62,17 +67,22 @@ public class VectorLayer extends Vector {
     	super(name, options);    
     	
     	this.featureSchema = new FeatureSchema();
+    	this.vectorStyle = new VectorStyleDef();
     	addFeatureAddedListener();
     }    
     
     public VectorLayer(String name, FeatureSchema schema) {
     	this(name);
     	this.featureSchema = schema;
+    	
+    	this.vectorStyle = new VectorStyleDef();
     }    
         
     public VectorLayer(String name, VectorOptions options, FeatureSchema schema) {
     	this(name, options);    	
     	this.featureSchema = schema;
+    	
+    	this.vectorStyle = new VectorStyleDef();
     }    
 
     @Override
@@ -223,9 +233,7 @@ public class VectorLayer extends Vector {
     		matches = false;
     	}
     	return matches;
-    }
-    
-    private LayerVectorSource source;
+    }       
     
     public void setSource(LayerVectorSource source) {
 		this.source = source;
@@ -235,4 +243,18 @@ public class VectorLayer extends Vector {
 		return source;
 	}
 
+	public VectorStyleDef getVectorStyle() {
+		return vectorStyle;
+	}
+
+	public void setVectorStyle(VectorStyleDef vectorStyle) {
+		this.vectorStyle = vectorStyle;
+		setStyleMap(this.vectorStyle.toStyleMap());
+	}
+	
+	@Override
+	public boolean redraw() {
+		setStyleMap(this.vectorStyle.toStyleMap());
+		return super.redraw();
+	}
 }

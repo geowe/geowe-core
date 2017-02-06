@@ -407,6 +407,18 @@ public interface UIMessages extends Messages {
 
 	String vlswStrokeWidth();
 
+	String vlswBasicVertexStyle();
+	
+	String vlswAdvancedVertexStyle();
+	
+	String vlswVertexIcon();
+	
+	String vlswVertexIconEmptyText();
+	
+	String vlswVertexIconWidth();
+	
+	String vlswVertexIconHeight();
+	
 	String vlswVertexStyle();
 
 	String vlswLabelAttribute();
@@ -416,6 +428,12 @@ public interface UIMessages extends Messages {
 	String vlswProgressBoxLabel();
 
 	String vlswProgressText();
+	
+	String vlswErrorDialogTitle();
+	
+	String vlswRequiredLabelDataText();
+	
+	String vlswRequiredThemingDataText();
 
 	String vlsLineAndColor();
 

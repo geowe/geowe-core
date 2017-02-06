@@ -116,9 +116,8 @@ public class GeometryValidator {
 	}
 
 	private VectorLayer createLayerResult(final String layerName, final List<ValidationResult> wktElements) {
-		String normalColor = StyleFactory.stringToColour("result" + (int) (Math.random() * 0x1000000));
-		final StyleMap style = StyleFactory.createStyleMap(normalColor, StyleFactory.DEFAULT_SELECTED_COLOR,
-				StyleFactory.DEFAULT_HIGHLIGHTED_COLOR, null, null);
+//		String normalColor = StyleFactory.stringToColour("result" + (int) (Math.random() * 0x1000000));
+		final StyleMap style = StyleFactory.createDefaultStyleMap();
 
 		final List<String> names = new ArrayList<String>();
 

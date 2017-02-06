@@ -160,7 +160,8 @@ public class VectorLayerStyleWidget implements IsWidget,
 
 		colorStyleTab.setSelectedLayer(selectedLayer);
 		labelStyleTab.setSelectedLayer(selectedLayer);
-		colorThemingStyleTab.setSelectedLayer(selectedLayer);
+		vertexStyleTab.setSelectedLayer(selectedLayer);
+		colorThemingStyleTab.setSelectedLayer(selectedLayer);		
 	}
 
 	public String getFillColor() {
@@ -179,10 +180,30 @@ public class VectorLayerStyleWidget implements IsWidget,
 		return colorStyleTab.getStrokeWidth();
 	}
 
+	public boolean isBasicVertexStyle() {
+		return vertexStyleTab.isBasicStyle();
+	}
+	
+	public boolean isAdvancedVertexStyle() {
+		return vertexStyleTab.isAdvancedStyle();
+	}	
+	
 	public String getVertexStyle() {
 		return vertexStyleTab.getVertexStyle();
 	}
 
+	public String getExternalGraphic() {
+		return vertexStyleTab.getExternalGraphic();
+	}
+	
+	public int getGraphicWidth() {
+		return vertexStyleTab.getGraphicWidth();
+	}
+	
+	public int getGraphicHeight() {
+		return vertexStyleTab.getGraphicHeight();
+	}
+	
 	public String getAttributeLabel() {
 		return labelStyleTab.getAttributeLabel();
 	}

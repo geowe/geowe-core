@@ -37,6 +37,7 @@ import org.geowe.client.local.style.SimpleThemingVerticalLegend;
 import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 import org.geowe.client.local.style.VertexStyles;
+import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
@@ -62,6 +63,8 @@ public class ChangeStyleTool extends ButtonTool {
 	private LayerManagerWidget layerTreeWidget;
 	@Inject
 	private ClientTaskManager taskManager;
+	@Inject
+	private MessageDialogBuilder dialogBuilder;
 
 	private SimpleThemingVerticalLegend legendPanel;
 
@@ -136,11 +139,20 @@ public class ChangeStyleTool extends ButtonTool {
 	private void applyChanges(VectorLayer selectedLayer) {
 		VectorStyleDef style = selectedLayer.getVectorStyle();
 		
+		applyColorStyle(style, selectedLayer);
+		applyVertextStyle(style, selectedLayer);
+		applyLabelStyle(style, selectedLayer);
+		applyColorThemingStyle(style, selectedLayer);					
+	}
+	
+	private void applyColorStyle(VectorStyleDef style, VectorLayer selectedLayer) {
 		style.getFill().setNormalColor(vectorLayerStyleWidget.getFillColor());
 		style.getFill().setOpacity(vectorLayerStyleWidget.getFillOpacity());
 		style.getLine().setNormalColor(vectorLayerStyleWidget.getStrokeColor());
 		style.getLine().setThickness(vectorLayerStyleWidget.getStrokeWidth());
-		
+	}
+	
+	private void applyVertextStyle(VectorStyleDef style, VectorLayer selectedLayer) {
 		if(vectorLayerStyleWidget.isBasicVertexStyle()) { 
 			style.getPoint().setVertexStyle(VertexStyles.getByStyleName(
 					vectorLayerStyleWidget.getVertexStyle()));
@@ -155,22 +167,38 @@ public class ChangeStyleTool extends ButtonTool {
 					graphicWidth > 0 ? graphicWidth : PointStyle.DEFAULT_GRAPHIC_WIDTH);
 			style.getPoint().setGraphicHeight(
 					graphicHeight > 0 ? graphicHeight : PointStyle.DEFAULT_GRAPHIC_HEIGHT);
-		}		
-		
+		}				
+	}
+	
+	private void applyLabelStyle(VectorStyleDef style, VectorLayer selectedLayer) {
 		if(vectorLayerStyleWidget.isEnableLabeling()) {
-			style.getLabel().setAttribute(
+			if(vectorLayerStyleWidget.getAttributeLabel() != null
+					&& vectorLayerStyleWidget.getFontSize() != null) {			
+				style.getLabel().setAttribute(
 					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeLabel()));
-			style.getLabel().setFontSize(vectorLayerStyleWidget.getFontSize());
+				style.getLabel().setFontSize(vectorLayerStyleWidget.getFontSize());
+			} else {
+				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
+						UIMessages.INSTANCE.vlswRequiredLabelDataText()).show();
+			}
 			style.getLabel().setBoldStyle(vectorLayerStyleWidget.isUseBoldLabel());
 			style.getLabel().setBackgroundColor(vectorLayerStyleWidget.getBackgroundColor());
 		} else {
 			style.getLabel().setAttribute(null);
 		}
-		
+	}
+	
+	private void applyColorThemingStyle(VectorStyleDef style, VectorLayer selectedLayer) {
 		if(vectorLayerStyleWidget.isEnableTheming()) {
-			style.setColorThemingAttribute(
+			if(vectorLayerStyleWidget.getAttributeTheming() != null) {
+				style.setColorThemingAttribute(
 					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeTheming()));
-			style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());
+				style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());
+			} else {
+				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
+						UIMessages.INSTANCE.vlswRequiredThemingDataText()).show();
+				style.setEnableLegend(false);
+			}			
 		} else {
 			style.setColorThemingAttribute(null);
 			style.setEnableLegend(false);

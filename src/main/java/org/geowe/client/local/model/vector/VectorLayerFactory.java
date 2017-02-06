@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.geowe.client.local.layermanager.tool.create.CSV;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
-import org.geowe.client.local.main.tool.project.StyleProjectLayer;
+import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.model.vector.format.GPX;
 import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.geowe.client.local.model.vector.format.TopoJSON;
@@ -185,7 +185,7 @@ public final class VectorLayerFactory {
 		
 		
 		JSObject style = getDefaultStyle(layer);
-		StyleProjectLayer styleProjectLayer = geoJsonReader.getStyle(layerConfig
+		ProjectLayerStyle styleProjectLayer = geoJsonReader.getStyle(layerConfig
 				.getGeoDataString());
 		
 		String fillColor = styleProjectLayer.getFillColor();

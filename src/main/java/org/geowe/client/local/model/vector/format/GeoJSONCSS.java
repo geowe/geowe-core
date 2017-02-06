@@ -23,7 +23,7 @@
 
 package org.geowe.client.local.model.vector.format;
 
-import org.geowe.client.local.main.tool.project.StyleProjectLayer;
+import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.GeoJSON;
 import org.gwtopenmaps.openlayers.client.format.GeoJSONImpl;
@@ -42,9 +42,9 @@ import com.google.gwt.json.client.JSONValue;
  */
 
 public class GeoJSONCSS extends GeoJSON {
-	private StyleProjectLayer style;
+	private ProjectLayerStyle style;
 
-	public void setStyle(StyleProjectLayer style) {
+	public void setStyle(ProjectLayerStyle style) {
 		this.style = style;
 	}
 
@@ -67,7 +67,7 @@ public class GeoJSONCSS extends GeoJSON {
 		return geoJSONCssObject.toString();
 	}
 
-	public StyleProjectLayer getStyle(String geoDataString) {
+	public ProjectLayerStyle getStyle(String geoDataString) {
 		final JSONValue jsonValue = JSONParser.parseLenient(geoDataString);
 		final JSONObject geoJSONCssObject = jsonValue.isObject();
 		JSONObject styleObject = geoJSONCssObject.get("style").isObject();
@@ -77,7 +77,7 @@ public class GeoJSONCSS extends GeoJSON {
 		String strokeColor = getStringValue(styleObject, "color");
 		Double strokeWidth = getDoubleValue(styleObject, "weight");
 
-		return new StyleProjectLayer(fillColor, fillOpacity, strokeColor,
+		return new ProjectLayerStyle(fillColor, fillOpacity, strokeColor,
 				strokeWidth);
 	}
 

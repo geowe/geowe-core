@@ -33,17 +33,22 @@ import com.google.gwt.json.client.JSONString;
  * @author jose@geowe.org
  *
  */
-public class StyleProjectLayer {
+public class ProjectLayerStyle {
+	public static final String FILL_COLOR_NAME = "fillColor";
+	public static final String FILL_OPACITY_NAME = "fillOpacity";
+	public static final String STROKE_COLOR_NAME = "strokeColor";
+	public static final String STROKE_WIDTH_NAME = "strokeWidth";
+	
 	private String fillColor;
 	private Double fillOpacity;
 	private String strokeColor;
 	private Double strokeWidth;
 	
-	public StyleProjectLayer() {
+	public ProjectLayerStyle() {
 		
 	}
 	
-	public StyleProjectLayer(String fillColor, Double fillOpacity, String strokeColor, Double strokeWidth) {
+	public ProjectLayerStyle(String fillColor, Double fillOpacity, String strokeColor, Double strokeWidth) {
 		this.fillColor = fillColor;
 		this.fillOpacity = fillOpacity;
 		this.strokeColor = strokeColor;
@@ -85,10 +90,10 @@ public class StyleProjectLayer {
 	public JSONObject getJSONObject() {
 		JSONObject projectLayerObject = new JSONObject();
 		
-		projectLayerObject.put("fillColor", new JSONString(getFillColor()));
-		projectLayerObject.put("fillOpacity", new JSONNumber(getFillOpacity()));
-		projectLayerObject.put("strokeColor", new JSONString(getStrokeColor()));
-		projectLayerObject.put("strokeWidth", new JSONNumber(getStrokeWidth()));
+		projectLayerObject.put(FILL_COLOR_NAME, new JSONString(getFillColor()));
+		projectLayerObject.put(FILL_OPACITY_NAME, new JSONNumber(getFillOpacity()));
+		projectLayerObject.put(STROKE_COLOR_NAME, new JSONString(getStrokeColor()));
+		projectLayerObject.put(STROKE_WIDTH_NAME, new JSONNumber(getStrokeWidth()));
 		
 		return projectLayerObject;		
 	}
@@ -110,5 +115,5 @@ public class StyleProjectLayer {
 	public String toJSON() {
 		return getJSONObject().toString();
 	}
-
+	
 }

@@ -42,7 +42,7 @@ import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
 import org.geowe.client.local.main.map.GeoMap;
-import org.geowe.client.local.main.tool.project.StyleProjectLayer;
+import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
@@ -349,7 +349,7 @@ public class ExportDataTool extends LayerTool implements
 		return content;
 	}
 	
-	private StyleProjectLayer getStyleLayer(Vector vector) {
+	private ProjectLayerStyle getStyleLayer(Vector vector) {
 		
 		JSObject styleMap = getDefaultStyle(vector);
 		String fillColor = styleMap.getPropertyAsString("fillColor");
@@ -357,7 +357,7 @@ public class ExportDataTool extends LayerTool implements
 		String strokeColor = styleMap.getPropertyAsString("strokeColor");
 		Double strokeWidth = styleMap.getPropertyAsDouble("strokeWidth");
 		
-		return new StyleProjectLayer(fillColor, fillOpacity, strokeColor, strokeWidth);
+		return new ProjectLayerStyle(fillColor, fillOpacity, strokeColor, strokeWidth);
 	}
 	
 	protected JSObject getDefaultStyle(Vector layer) {

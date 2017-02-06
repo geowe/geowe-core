@@ -428,6 +428,12 @@ public interface UIMessages extends Messages {
 	String vlswProgressBoxLabel();
 
 	String vlswProgressText();
+	
+	String vlswErrorDialogTitle();
+	
+	String vlswRequiredLabelDataText();
+	
+	String vlswRequiredThemingDataText();
 
 	String vlsLineAndColor();
 

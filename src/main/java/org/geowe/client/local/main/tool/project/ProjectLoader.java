@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.tool.map.catalog.LayerLoader;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
 import org.geowe.client.local.messages.UIMessages;
@@ -93,7 +92,7 @@ public class ProjectLoader {
 			ProjectLayerStyle styleProjectLayer = projectLayer.getStyle();
 			VectorStyleDef vectorStyleDef = vector.getVectorStyle();
 			vectorStyleDef.getFill().setNormalColor(styleProjectLayer.getFillColor());			
-			vectorStyleDef.getFill().setOpacity( new Double(styleProjectLayer.getFillOpacity() * 100).intValue() );
+			vectorStyleDef.getFill().setOpacity( styleProjectLayer.getFillOpacity() );
 			vectorStyleDef.getLine().setNormalColor(styleProjectLayer.getStrokeColor());
 			vectorStyleDef.getLine().setThickness((int) Math.floor(styleProjectLayer.getStrokeWidth()));
 			vector.setVectorStyle(vectorStyleDef);

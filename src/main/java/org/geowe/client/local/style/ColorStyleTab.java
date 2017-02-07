@@ -104,8 +104,8 @@ public class ColorStyleTab extends StyleTab implements
 		return fillColor.getText();
 	}
 	
-	public Integer getFillOpacity() {
-		return fillOpacity.getValue();
+	public Double getFillOpacity() {
+		return fillOpacity.getValue()/100.0;
 	}
 	
 	public String getStrokeColor() {
@@ -138,7 +138,7 @@ public class ColorStyleTab extends StyleTab implements
 			VectorStyleDef style = selectedLayer.getVectorStyle();
 			
 			fillColor.setText(style.getFill().getNormalColor());
-			fillOpacity.setValue(style.getFill().getOpacity());
+			fillOpacity.setValue(new Double(style.getFill().getOpacity()*100.0).intValue());
 			lineColor.setText(style.getLine().getNormalColor());
 			lineThick.setValue(style.getLine().getThickness());
 		}

@@ -135,10 +135,10 @@ public class SaveProjectTool extends ButtonTool {
 			
 			VectorStyleDef vectorStyleDef = ((VectorLayer) layer).getVectorStyle();
 						
-			String fillColor = vectorStyleDef.getFill().getNormalColor();											
-			Double fillOpacity =  new Double(vectorStyleDef.getFill().getOpacity()/100);					
+			String fillColor = vectorStyleDef.getFill().getNormalColor();				
+			Double fillOpacity =  vectorStyleDef.getFill().getOpacity();					
 			String strokeColor = vectorStyleDef.getLine().getNormalColor();					
-			Double strokeWidth =  new Double(vectorStyleDef.getLine().getThickness()/100);
+			Double strokeWidth =  new Double(vectorStyleDef.getLine().getThickness());
 					
 			project.add(layer.getName(), getContentAsGeoJSON((Vector)layer),
 					fillColor, fillOpacity, strokeColor, strokeWidth);

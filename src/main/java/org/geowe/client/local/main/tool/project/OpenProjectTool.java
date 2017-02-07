@@ -26,7 +26,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.ProgressBarDialog;

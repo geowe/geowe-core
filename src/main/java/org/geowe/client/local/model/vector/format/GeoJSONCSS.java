@@ -24,6 +24,7 @@
 package org.geowe.client.local.model.vector.format;
 
 import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
+import org.geowe.client.local.model.style.LeafletStyle;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.GeoJSON;
 import org.gwtopenmaps.openlayers.client.format.GeoJSONImpl;
@@ -43,6 +44,7 @@ import com.google.gwt.json.client.JSONValue;
 
 public class GeoJSONCSS extends GeoJSON {
 	private ProjectLayerStyle style;
+	public static final String STYLE_NAME = "style";
 
 	public void setStyle(ProjectLayerStyle style) {
 		this.style = style;
@@ -56,6 +58,9 @@ public class GeoJSONCSS extends GeoJSON {
 		this(GeoJSONImpl.create());
 	}
 
+	/**
+	 * Para exportar a formato GeoJSON CSS. Se incluye el atributo "style" a nivel de capa 
+	 */
 	public String write(VectorFeature[] vectorFeatures) {
 		GeoJSON geoJSONObject = new GeoJSON();
 		String geojson = geoJSONObject.write(vectorFeatures);
@@ -63,51 +68,8 @@ public class GeoJSONCSS extends GeoJSON {
 		final JSONValue jsonValue = JSONParser.parseLenient(geojson);
 		final JSONObject geoJSONCssObject = jsonValue.isObject();
 
-		geoJSONCssObject.put("style", style.getLeafletJSONObject());
+		geoJSONCssObject.put(STYLE_NAME, LeafletStyle.getStyle(style));
 		return geoJSONCssObject.toString();
 	}
-
-	public ProjectLayerStyle getStyle(String geoDataString) {
-		final JSONValue jsonValue = JSONParser.parseLenient(geoDataString);
-		final JSONObject geoJSONCssObject = jsonValue.isObject();
-		JSONObject styleObject = geoJSONCssObject.get("style").isObject();
-
-		String fillColor = getStringValue(styleObject, "fillColor");
-		Double fillOpacity = getDoubleValue(styleObject, "fillOpacity");
-		String strokeColor = getStringValue(styleObject, "color");
-		Double strokeWidth = getDoubleValue(styleObject, "weight");
-
-		return new ProjectLayerStyle(fillColor, fillOpacity, strokeColor,
-				strokeWidth);
-	}
-
-	private String getStringValue(JSONObject styleObject, String key) {
-		String newValue = "";
-
-		if (styleObject.containsKey(key)) {
-			try {
-				newValue = styleObject.get(key).isString().stringValue();
-			} catch (Exception e) {
-				// si el valor del atributo no está bien definido es ignorado
-			}
-		}
-
-		return newValue;
-
-	}
-
-	private Double getDoubleValue(JSONObject styleObject, String key) {
-		Double newValue = null;
-
-		if (styleObject.containsKey(key)) {
-			try {
-				newValue = styleObject.get(key).isNumber().doubleValue();
-			} catch (Exception e) {
-				// si el valor del atributo no está bien definido es ignorado
-			}
-		}
-
-		return newValue;
-
-	}
+	
 }

@@ -8,6 +8,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Feature level Style
 - GeoJson CSS: feature level Style
 
+## [1.4.5]Beta - 2017-02-07
+
+### Fixed
+- issue [#205](https://github.com/geowe/geowe-core/issues/205)
+
 ## [1.4.4]Beta - 2017-02-06
 
 ### Fixed

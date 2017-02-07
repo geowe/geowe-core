@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
-import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.core.client.resources.ThemeStyles;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -64,7 +64,6 @@ import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
@@ -85,7 +84,7 @@ import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 @ApplicationScoped
 public class AttributeSearchDialog extends Dialog {
 	public static final int FEATURES_PER_PAGE = 50;
-
+	private static final String FIELD_WIDTH = "225px";
 	@Inject
 	private Logger logger;
 	@Inject
@@ -94,7 +93,6 @@ public class AttributeSearchDialog extends Dialog {
 	private MessageDialogBuilder messageDialogBuilder;
 
 	private TextField layerNameField;
-	private TextField numElementsField;
 	private TextField valueAttributeField;
 	private TextButton searchButton;
 
@@ -110,7 +108,7 @@ public class AttributeSearchDialog extends Dialog {
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.asdTitle());
 		this.setPredefinedButtons(PredefinedButton.CLOSE);
-		this.setPixelSize(530, 340);
+		this.setPixelSize(560, 520);
 		this.setModal(false);
 		this.setResizable(false);
 		this.setHideOnButtonClick(true);
@@ -122,48 +120,81 @@ public class AttributeSearchDialog extends Dialog {
 		addKeyShortcuts();
 	}
 
-	public Widget createPanel() {
-		String fieldWidth = "225px";
+	private Widget createPanel() {
+
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setPixelSize(490, 420);
+		vPanel.setSpacing(5);
+		vPanel.add(createTopPanel());
+		vPanel.add(createBottomPanel());
+
+		return vPanel;
+	}
+
+	private HorizontalLayoutContainer createTopPanel() {
+		
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 
-		// Panel izquierdo
 		VerticalPanel infoPanel = new VerticalPanel();
 		infoPanel.setSpacing(5);
 
 		layerNameField = new TextField();
 		layerNameField.setEnabled(false);
-		layerNameField.setWidth(fieldWidth);
+		layerNameField.setWidth(FIELD_WIDTH);
 		infoPanel.add(new Label(UIMessages.INSTANCE.asdLayerNameLabel()));
 		infoPanel.add(layerNameField);
 
-		infoPanel.add(new Label(UIMessages.INSTANCE.asdAttributeLabel()));
-		initializeAttributeLabelCombo(fieldWidth);
-		infoPanel.add(attributeCombo);
 
-		valueAttributeField = new TextField();
-		valueAttributeField.setEnabled(true);
-		valueAttributeField.setWidth(fieldWidth);
-		infoPanel.add(new Label(UIMessages.INSTANCE.asdAttributeValueLabel()));
-		infoPanel.add(valueAttributeField);
-
+		infoPanel.add(createAttrPanel());
 		infoPanel.add(createSearchButtonPanel());
 
-		numElementsField = new TextField();
-		numElementsField.setEnabled(false);
-		numElementsField.setWidth(fieldWidth);
-		infoPanel.add(new Label(UIMessages.INSTANCE.asdElementsCountLabel()));
-		infoPanel.add(numElementsField);
+		hPanel.add(infoPanel);
 
-		// Panel derecho
-		VerticalPanel listPanel = new VerticalPanel();
-		listPanel.setSpacing(5);
-
-		listPanel.add(new Label(UIMessages.INSTANCE.asdFeaturesListLabel()));
+		return hPanel;
+	}
+	
+	private HorizontalPanel createAttrPanel(){
+		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.setSpacing(10);
+		hPanel.addStyleName(ThemeStyles.get().style().borderBottom());
+		hPanel.addStyleName(ThemeStyles.get().style().borderTop());
+		hPanel.add(getAttrCombo());
+		hPanel.add(getAttrValuePanel());
 		
+		return hPanel;
+	}
+	
+	private VerticalPanel getAttrCombo() {
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setSpacing(5);
+		vPanel.add(new Label(UIMessages.INSTANCE.asdAttributeLabel()));
+		initializeAttributeLabelCombo(FIELD_WIDTH);
+		vPanel.add(attributeCombo);
+
+		return vPanel;
+	}
+
+	private VerticalPanel getAttrValuePanel() {
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setSpacing(5);
+		valueAttributeField = new TextField();
+		valueAttributeField.setEnabled(true);
+		valueAttributeField.setWidth(FIELD_WIDTH);
+		vPanel.add(new Label(UIMessages.INSTANCE.asdAttributeValueLabel()));
+		vPanel.add(valueAttributeField);
+		
+		return vPanel;
+		
+	}
+
+	private HorizontalLayoutContainer createBottomPanel() {
+		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
+		hPanel.setSize("510px", "220px");
+
 		PagingToolBar toolBar = new PagingToolBar(FEATURES_PER_PAGE);
 		toolBar.setBorders(false);
-		
-		featureGrid = new PagingFeatureGrid(225, 200, toolBar);
+
+		featureGrid = new PagingFeatureGrid(toolBar);
 		featureGrid.getSelectionModel().addSelectionChangedHandler(
 				new SelectionChangedHandler<VectorFeature>() {
 					@Override
@@ -172,26 +203,22 @@ public class AttributeSearchDialog extends Dialog {
 						setSelectedElements();
 					}
 				});
-		
+
 		VerticalLayoutContainer gridContainer = new VerticalLayoutContainer();
-		gridContainer.setWidth(225);
-		gridContainer.setHeight(245);
+		gridContainer.setWidth(500);
+		gridContainer.setHeight(220);
 		gridContainer.add(featureGrid, new VerticalLayoutData(1, 1));
 		gridContainer.add(toolBar, new VerticalLayoutData(1, -1));
+
 		
-		listPanel.add(gridContainer);
-
-		hPanel.add(infoPanel);
-		hPanel.add(listPanel);
-		hPanel.add(layerSearchToolBar, new HorizontalLayoutData(1, 1,
-				new Margins(30, 0, 0, 0)));
-
+		hPanel.add(gridContainer);
+		hPanel.add(layerSearchToolBar);
 		return hPanel;
 	}
 
 	private HorizontalPanel createSearchButtonPanel() {
 		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.setSpacing(5);
+		hPanel.setSpacing(10);
 		searchButton = getSearchMenuButton();
 		hPanel.add(searchButton);
 
@@ -304,21 +331,19 @@ public class AttributeSearchDialog extends Dialog {
 					e.getMessage());
 			logger.error(e.getMessage());
 		}
-		
+
 		featureGrid.update(filteredFeatures);
-		numElementsField.setText(String.valueOf(filteredFeatures.size()));
 	}
 
 	public void setSelectedLayer(VectorLayer layer) {
 		selectedLayer = layer;
 		layerNameField.setText(selectedLayer.getName());
-				
-		//Initilize the featureGrid for the new layer
+
+		// Initilize the featureGrid for the new layer
 		featureGrid.rebuild(getFeatures(layer));
 		featureGrid.clear();
 		updateLayerAttributes();
-				
-		numElementsField.clear();
+
 		valueAttributeField.clear();
 	}
 
@@ -341,11 +366,11 @@ public class AttributeSearchDialog extends Dialog {
 					e);
 		}
 	}
-	
+
 	private void setSelectedElements() {
 		List<VectorFeature> selectedElements = featureGrid.getSelectionModel()
 				.getSelectedItems();
-		
+
 		if (selectedElements == null || selectedElements.isEmpty()) {
 			Info.display(UIMessages.INSTANCE.warning(),
 					UIMessages.INSTANCE.selectAtLeast(1));
@@ -356,10 +381,11 @@ public class AttributeSearchDialog extends Dialog {
 		}
 	}
 
-	private void setSelectedElement(List<VectorFeature> selectedElements, FeatureTool tool) {		
+	private void setSelectedElement(List<VectorFeature> selectedElements,
+			FeatureTool tool) {
 		tool.setSelectedLayer(selectedLayer);
-		
-		if (selectedElements.size() > 1) {			
+
+		if (selectedElements.size() > 1) {
 			tool.setSelectedFeatures(selectedElements);
 		} else {
 			tool.setSelectedFeature(selectedElements.get(0));
@@ -371,7 +397,6 @@ public class AttributeSearchDialog extends Dialog {
 				KeyCodes.KEY_ENTER);
 
 		layerNameField.addKeyDownHandler(keyShortcut);
-		numElementsField.addKeyDownHandler(keyShortcut);
 		valueAttributeField.addKeyDownHandler(keyShortcut);
 		attributeCombo.addKeyDownHandler(keyShortcut);
 	}

@@ -62,7 +62,7 @@ public class LayerSearchToolBar extends ContentPanel {
 
 	public LayerSearchToolBar() {
 		super();
-		setHeight("180px");
+		setHeight("200px");
 		setHeaderVisible(false);
 
 		tools = new ArrayList<FeatureTool>();

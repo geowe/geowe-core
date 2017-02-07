@@ -113,22 +113,20 @@ public class VectorStyleDef {
 	public StyleMap toStyleMap() {
 		String labelAttribute = getLabel().isEnabled() ? getLabel().getAttribute().getName() : null;
 		String colorThemingAttribute = isColorThemingEnabled() ? getColorThemingAttribute().getName() : null;
-		double fillOpacity = getFill().getOpacity() / 100.0;
-		int lineThickness = (int) Math.floor(getLine().getThickness());
-
+		
 		Style normalStyle = StyleFactory.createStyle(
-				getLine().getNormalColor(), lineThickness,
-				getFill().getNormalColor(), fillOpacity, 
+				getLine().getNormalColor(), getLine().getThickness(),
+				getFill().getNormalColor(), getFill().getOpacity(), 
 				labelAttribute, colorThemingAttribute);
 
 		Style selectedStyle = StyleFactory.createStyle(
-				getLine().getSelectedColor(), lineThickness,
-				getFill().getSelectedColor(), fillOpacity, 
+				getLine().getSelectedColor(), getLine().getThickness(),
+				getFill().getSelectedColor(), getFill().getOpacity(), 
 				labelAttribute, null);
 
 		Style hoverStyle = StyleFactory.createStyle(
-				getLine().getHoverColor(), lineThickness,
-				getFill().getHoverColor(), fillOpacity, 
+				getLine().getHoverColor(), getLine().getThickness(),
+				getFill().getHoverColor(), getFill().getOpacity(), 
 				labelAttribute, null);			
 				
 		JSObject jsStyle = normalStyle.getJSObject().getProperty("defaultStyle");						

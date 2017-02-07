@@ -35,7 +35,7 @@ import com.google.gwt.json.client.JSONString;
 public class ProjectVectorLayer {
 	private String name;
 	private String content;
-	private StyleProjectLayer style;
+	private ProjectLayerStyle style;
 	private int numElements;
 
 	public int getNumElements() {
@@ -46,17 +46,17 @@ public class ProjectVectorLayer {
 		this.numElements = numElements;
 	}
 
-	public ProjectVectorLayer(String name, String content, StyleProjectLayer style) {
+	public ProjectVectorLayer(String name, String content, ProjectLayerStyle style) {
 		this.name = name;
 		this.content = content;
 		this.style = style;
 	}
 
-	public StyleProjectLayer getStyle() {
+	public ProjectLayerStyle getStyle() {
 		return style;
 	}
 
-	public void setStyle(StyleProjectLayer style) {
+	public void setStyle(ProjectLayerStyle style) {
 		this.style = style;
 	}
 
@@ -75,6 +75,7 @@ public class ProjectVectorLayer {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	
 	
 	public JSONObject getJSONObject() {
 		JSONObject projectLayerObject = new JSONObject();

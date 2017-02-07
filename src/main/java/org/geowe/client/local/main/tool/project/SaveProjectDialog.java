@@ -155,6 +155,18 @@ public class SaveProjectDialog extends Dialog {
 		final String dateString = DateTimeFormat.getFormat("dd/MM/yyyy").format(date);
 		return dateString;
 	}
+	
+	public Project getProject() {
+		Project project = new Project();
+
+		project.setDate(getDate());
+		project.setDescription(getDescription());
+		project.setName(getName());
+		project.setTitle(getTitle());
+		project.setVersion(getVersion());
+		
+		return project;
+	}
 
 	public void setVectorLayerCount(int size) {
 		vectorLayerCountField.setValue("" +size);		

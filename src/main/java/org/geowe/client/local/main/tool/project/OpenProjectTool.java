@@ -22,29 +22,16 @@
  */
 package org.geowe.client.local.main.tool.project;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
-import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.tool.ButtonTool;
-import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.VectorLayerConfig;
-import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.ui.ProgressBarDialog;
-import org.gwtopenmaps.openlayers.client.layer.Layer;
-import org.gwtopenmaps.openlayers.client.layer.Vector;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.DOM;
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
@@ -68,18 +55,16 @@ public class OpenProjectTool extends ButtonTool {
 	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
-	private OpenProjectDialog openProjectDialog;
-	private LayerManagerWidget layerManagerWidget;
+	private OpenProjectDialog openProjectDialog;	
 	@Inject
-	private InfoProjectTool infoProjectTool;
+	private ProjectLoader projectLoader;
 
-	@Inject
-	public OpenProjectTool(final LayerManagerWidget layerManager) {
+	
+	public OpenProjectTool() {
 		super(UIMessages.INSTANCE.openProject(), ImageProvider.INSTANCE
 				.openProject24());
 		setToolTipConfig(createTooltipConfig(UIMessages.INSTANCE.openProject(),
-				UIMessages.INSTANCE.openProjectToolTipText(), Side.LEFT));
-		this.layerManagerWidget = layerManager;
+				UIMessages.INSTANCE.openProjectToolTipText(), Side.LEFT));		
 	}
 	
 	@Override
@@ -98,33 +83,18 @@ public class OpenProjectTool extends ButtonTool {
 				final Element label = DOM.createLabel();
 				label.setInnerHTML(event.getResults());
 
-				final String contentFile = label.getInnerText();
+				final String jsonProject = label.getInnerText();
 				
 				openProjectDialog.hide();
-				if (hasError(contentFile)) {
+				if (hasError(jsonProject)) {
 					autoMessageBox.hide();
-					showAlert("Error: " + contentFile);
+					showAlert("Error: " + jsonProject);
 					return;
 				}
 				
-				Project project = getProject(contentFile);
-				List<ProjectVectorLayer> projectLayers = project.getVectors();
-				for(final ProjectVectorLayer projectLayer: projectLayers) {
-					taskManager.execute(new Runnable() {
-
-						@Override
-						public void run() {
-							loadLayer( projectLayer);
-						}
-
-					});
-					
-				}
-				
+				projectLoader.load(jsonProject);				
 				autoMessageBox.hide();
-				infoProjectTool.setEnabled(true);
-				infoProjectTool.setProject(project);
-				
+								
 			}
 
 			private boolean hasError(final String contentFile) {
@@ -136,80 +106,6 @@ public class OpenProjectTool extends ButtonTool {
 		});
 	}
 	
-	private void loadLayer(ProjectVectorLayer projectLayer) {
-		VectorLayerConfig layerConfig = null;
-		Layer layer = null;
-
-		try {
-			layerConfig = new VectorLayerConfig();
-			layerConfig.setEpsg("WGS84");
-			layerConfig.setGeoDataFormat(VectorLayerDef.GEOJSON);
-			layerConfig.setLayerName(projectLayer.getName());
-			layerConfig.setGeoDataString(projectLayer.getContent());
-
-			layer = VectorLayerFactory.createVectorLayerFromGeoData(layerConfig);
-			Vector vector = (Vector)layer;
-			JSObject style = getDefaultStyle(vector);
-			StyleProjectLayer styleProjectLayer = projectLayer.getStyle();
-			
-			style.setProperty("fillColor", styleProjectLayer.getFillColor());
-			style.setProperty("fillOpacity", styleProjectLayer.getFillOpacity());
-			style.setProperty("strokeColor", styleProjectLayer.getStrokeColor());
-			style.setProperty("strokeWidth", styleProjectLayer.getStrokeWidth());
-
-		} catch (Exception e) {
-			showAlert(UIMessages.INSTANCE.gditAlertMessage());
-		}
-
-		layerManagerWidget.addVector(layer);
-		layerManagerWidget.setSelectedLayer(LayerManagerWidget.VECTOR_TAB, layer);
-	}
-	
-	protected JSObject getDefaultStyle(Vector layer) {
-		return layer.getStyleMap().getJSObject()
-				.getProperty("styles").getProperty("default")
-				.getProperty("defaultStyle");
-	}
-	
-	private Project getProject(String json) {
-		Project project = new Project();
-		
-		final JSONValue jsonValue = JSONParser.parseLenient(json);
-		final JSONObject jsonObject = jsonValue.isObject();
-		
-		//String projectName = jsonObject.get("name").isString().stringValue();
-		String projectDate = jsonObject.get("date").isString().stringValue();
-		String projectTitle = jsonObject.get("title").isString().stringValue();
-		String projectVersion = jsonObject.get("version").isString().stringValue();
-		String projectDescription = jsonObject.get("description").isString().stringValue();
-		
-		//project.setName(projectName);
-		project.setDate(projectDate);
-		project.setTitle(projectTitle);
-		project.setVersion(projectVersion);
-		project.setDescription(projectDescription);
-		
-		JSONArray layersArray = jsonObject.get("vectors").isArray();
-		
-		if (layersArray != null) {
-	        for (int i = 0; i < layersArray.size(); i++) {
-	            JSONObject projectLayerObj = layersArray.get(i).isObject();
-	            String name = projectLayerObj.get("name").isString().stringValue();
-	            String content = projectLayerObj.get("content").isString().stringValue();	            
-	            JSONObject styleProjectLayer = projectLayerObj.get("style").isObject();
-	            
-	            String fillColor = styleProjectLayer.get("fillColor").isString().stringValue();
-	            Double fillOpacity = styleProjectLayer.get("fillOpacity").isNumber().doubleValue();
-	            String strokeColor = styleProjectLayer.get("strokeColor").isString().stringValue();
-	            Double strokeWidth = styleProjectLayer.get("strokeWidth").isNumber().doubleValue();
-	            
-	            project.add(name, content, fillColor, fillOpacity, strokeColor, strokeWidth);	           
-	        }
-		
-		}
-		
-		return project;
-	}
 	
 	private void showAlert(final String errorMsg) {
 		AlertMessageBox messageBox = new AlertMessageBox(

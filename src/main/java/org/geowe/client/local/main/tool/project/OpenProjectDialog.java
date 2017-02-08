@@ -26,17 +26,37 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.main.AnchorBuilder;
 import org.geowe.client.local.messages.UIMessages;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.i18n.client.HasDirection.Direction;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.PlainTabPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FileUploadField;
 import com.sencha.gxt.widget.core.client.form.FormPanel;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Encoding;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
 
@@ -49,6 +69,12 @@ import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
 @ApplicationScoped
 public class OpenProjectDialog extends Dialog {
 	public static final int FEATURES_PER_PAGE = 50;
+	private PlainTabPanel tabPanel;
+	private TextField urlTextField;
+	private Anchor urlToShareAnchor;
+	private TextField urlShared;
+	private HorizontalPanel urlPanel;
+	
 	private FormPanel uploadPanel;
 	private FileUploadField file;
 	
@@ -57,7 +83,7 @@ public class OpenProjectDialog extends Dialog {
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.openProject());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(350, 150);
+		this.setPixelSize(490, 400);
 		this.setModal(true);
 		this.setResizable(false);
 	}
@@ -75,11 +101,94 @@ public class OpenProjectDialog extends Dialog {
 	private Widget createPanel() {
 
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setPixelSize(490, 150);
+		vPanel.setPixelSize(490, 300);
 		vPanel.setSpacing(5);
-		vPanel.add(getFilePanel());
+		vPanel.add(createTabPanel());
 
 		return vPanel;
+	}
+	
+	
+	private PlainTabPanel createTabPanel() {
+		tabPanel = new PlainTabPanel();
+		
+		tabPanel.setPixelSize(490, 300);//ancho antes 330
+		tabPanel.getElement().setId("tabPanel");
+		
+		tabPanel.add(getFilePanel(), UIMessages.INSTANCE.file());
+		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());		
+						
+		return tabPanel;
+	}
+	
+	private VerticalPanel getURLPanel() {
+		final VerticalPanel geoDataContainer = new VerticalPanel();
+		geoDataContainer.setWidth("400px");
+		geoDataContainer.setSpacing(3);
+
+		geoDataContainer.add(new Label(UIMessages.INSTANCE.messageURLPanel()));
+
+		urlTextField = new TextField();
+		urlTextField.setBorders(true);
+		urlTextField.setEmptyText("http://");
+		urlTextField.setWidth(400);
+		geoDataContainer.add(urlTextField);
+
+		HorizontalPanel horizontalContainer = new HorizontalPanel();
+		
+		TextButton createUrlButton = new TextButton(
+				UIMessages.INSTANCE.urlToShareButtonText());
+		
+		horizontalContainer.add(createUrlButton);
+		
+		createUrlButton.addSelectHandler(createUrlToShare(geoDataContainer));		
+		geoDataContainer.add(horizontalContainer);
+		geoDataContainer.add(createUrlToShareAnchor());
+
+		urlShared = new TextField();
+		urlShared.setBorders(true);
+		urlShared.setWidth(270);
+		urlShared.setVisible(false);
+		geoDataContainer.add(urlShared);
+
+		return geoDataContainer;
+	}
+	
+	private Widget createUrlToShareAnchor() {
+		urlPanel = new HorizontalPanel();
+		urlPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		urlPanel.setSpacing(1);
+		urlToShareAnchor = new AnchorBuilder().build();
+		urlPanel.add(urlToShareAnchor);
+		Image img = new Image(ImageProvider.INSTANCE.externalLink16());
+		urlPanel.add(img);
+		urlPanel.setVisible(false);
+		return urlPanel;
+	}
+	
+	private SelectHandler createUrlToShare(final VerticalPanel geoDataContainer) {
+		return new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				urlToShareAnchor.setHref(getHref());
+				urlToShareAnchor.setText(
+						UIMessages.INSTANCE.seeOtherWindow("GeoWE Project"),
+						Direction.LTR);
+
+				urlShared.setText(getHref());
+				urlPanel.setVisible(true);
+				urlShared.setVisible(true);
+			}
+
+			private String getHref() {
+				String baseUrl = GWT.getHostPageBaseURL();
+
+				baseUrl += "?projectUrl="
+						+ URL.encodeQueryString(urlTextField.getValue());
+
+				return baseUrl;
+			}
+		};
 	}
 
 	private FormPanel getFilePanel() {
@@ -105,5 +214,13 @@ public class OpenProjectDialog extends Dialog {
 
 	public FormPanel getUploadPanel() {
 		return uploadPanel;
-	}		
+	}
+	
+	public String getActiveTab() {
+		return tabPanel.getConfig(tabPanel.getActiveWidget()).getText();
+	}
+	
+	public String getUrl() {
+		return this.urlTextField.getText();
+	}
 }

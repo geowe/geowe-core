@@ -58,6 +58,8 @@ public class OpenProjectTool extends ButtonTool {
 	private OpenProjectDialog openProjectDialog;	
 	@Inject
 	private ProjectLoader projectLoader;
+	@Inject
+	private URLProjectLoader urlProjectLoader;
 
 	
 	public OpenProjectTool() {
@@ -117,14 +119,22 @@ public class OpenProjectTool extends ButtonTool {
 		openProjectDialog.getButton(PredefinedButton.OK).addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(final SelectEvent event) {
-				autoMessageBox = new ProgressBarDialog(false,
-						UIMessages.INSTANCE.processing());
+				
 				taskManager.execute(new Runnable() {
 
 					@Override
 					public void run() {
-						autoMessageBox.show();
-						openProjectDialog.getUploadPanel().submit();
+												
+						if (openProjectDialog.getActiveTab().equals(UIMessages.INSTANCE.file())) {
+							autoMessageBox = new ProgressBarDialog(false,
+									UIMessages.INSTANCE.processing());
+							autoMessageBox.show();
+							openProjectDialog.getUploadPanel().submit();
+						}
+						if (openProjectDialog.getActiveTab().equals(UIMessages.INSTANCE.url())) {
+							urlProjectLoader.open(urlProjectLoader, openProjectDialog.getUrl());
+						}
+												
 					}
 
 				});

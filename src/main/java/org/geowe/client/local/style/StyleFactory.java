@@ -79,13 +79,13 @@ public final class StyleFactory {
 
 		return new StyleMap(
 				createStyle(LineStyle.DEFAULT_NORMAL_COLOR, LineStyle.DEFAULT_THICKNESS,
-						normalColor, FillStyle.DEFAULT_OPACITY / 100.0,
+						normalColor, FillStyle.DEFAULT_OPACITY,
 						attributeLabel, colorThemingAttribute), 
 				createStyle(LineStyle.DEFAULT_SELECTED_COLOR, LineStyle.DEFAULT_THICKNESS,
-						selectedColor, FillStyle.DEFAULT_OPACITY / 100.0,
+						selectedColor, FillStyle.DEFAULT_OPACITY,
 						attributeLabel, null),
 				createStyle(LineStyle.DEFAULT_HOVER_COLOR, LineStyle.DEFAULT_THICKNESS,
-						hoverColor, FillStyle.DEFAULT_OPACITY / 100.0,
+						hoverColor, FillStyle.DEFAULT_OPACITY,
 						attributeLabel, null));
 	}
 
@@ -118,7 +118,7 @@ public final class StyleFactory {
 		Style reshapeStyle = new org.gwtopenmaps.openlayers.client.Style();
 		reshapeStyle.setJSObject(createOpenLayersStyle(
 				LineStyle.DEFAULT_NORMAL_COLOR, LineStyle.DEFAULT_THICKNESS,
-				FillStyle.DEFAULT_NORMAL_COLOR, FillStyle.DEFAULT_OPACITY / 100.0, 
+				FillStyle.DEFAULT_NORMAL_COLOR, FillStyle.DEFAULT_OPACITY, 
 				null, null));
 		reshapeStyle.setLabel("");
 		return reshapeStyle;

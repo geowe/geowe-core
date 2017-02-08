@@ -168,7 +168,7 @@ public class VectorLayerStyleWidget implements IsWidget,
 		return colorStyleTab.getFillColor();
 	}
 
-	public Integer getFillOpacity() {
+	public Double getFillOpacity() {
 		return colorStyleTab.getFillOpacity();
 	}
 

@@ -36,14 +36,14 @@ public class FillStyle {
 	public static final String DEFAULT_NORMAL_COLOR = "#FF0000";
 	public static final String DEFAULT_HOVER_COLOR = "#0000FF";
 	public static final String DEFAULT_SELECTED_COLOR = "#00FF00";	
-	public static final int DEFAULT_OPACITY = 50;
-	public static final int MIN_OPACITY = 0;
-	public static final int MAX_OPACITY = 100;
+	public static final Double DEFAULT_OPACITY = 0.5;
+	public static final Double MIN_OPACITY = 0.0;
+	public static final Double MAX_OPACITY = 1.0;
 	
 	private String normalColor;
 	private String hoverColor;
 	private String selectedColor;
-	private int fillOpacity;
+	private Double fillOpacity;
 	
 	public FillStyle() {
 		this.normalColor = StyleFactory.stringToColour(
@@ -77,11 +77,11 @@ public class FillStyle {
 		this.selectedColor = selectedColor;
 	}
 
-	public int getOpacity() {
+	public Double getOpacity() {
 		return fillOpacity;
 	}
 	
-	public void setOpacity(int fillOpacity) {
+	public void setOpacity(Double fillOpacity) {
 		
 		if(fillOpacity < MIN_OPACITY) {
 			this.fillOpacity = MIN_OPACITY;

@@ -36,6 +36,8 @@ import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.model.style.VectorStyleDef;
+import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.Projection;
@@ -43,7 +45,6 @@ import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.GeoJSON;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 import org.slf4j.Logger;
 
@@ -65,7 +66,6 @@ public class SaveProjectTool extends ButtonTool {
 
 	@Inject
 	private Logger logger;
-
 	@Inject
 	private LayerManagerWidget layerManagerWidget;
 	@Inject
@@ -80,7 +80,6 @@ public class SaveProjectTool extends ButtonTool {
 	private ProgressBarDialog progressBar;
 	private List<Layer> vectorLayers;
 	private static final String PROJECT_EXTENSION = "gpj";
-
 	
 	public SaveProjectTool() {
 		super(UIMessages.INSTANCE.saveProject(), ImageProvider.INSTANCE
@@ -130,34 +129,24 @@ public class SaveProjectTool extends ButtonTool {
 	}
 
 	private Project getProyect(List<Layer> layers) {
-		Project project = new Project();
-
-		project.setDate(saveProjectDialog.getDate());
-		project.setDescription(saveProjectDialog.getDescription());
-		project.setName(saveProjectDialog.getName());
-		project.setTitle(saveProjectDialog.getTitle());
-		project.setVersion(saveProjectDialog.getVersion());
+		Project project = saveProjectDialog.getProject();
 		
 		for (Layer layer : layers) {
-			Vector vector = (Vector) layer;
-			JSObject styleMap = getDefaultStyle(vector);
-			String fillColor = styleMap.getPropertyAsString("fillColor");
-			Double fillOpacity = styleMap.getPropertyAsDouble("fillOpacity");
-			String strokeColor = styleMap.getPropertyAsString("strokeColor");
-			Double strokeWidth = styleMap.getPropertyAsDouble("strokeWidth");
-
-			project.add(layer.getName(), getContentAsGeoJSON(vector),
+			
+			VectorStyleDef vectorStyleDef = ((VectorLayer) layer).getVectorStyle();
+						
+			String fillColor = vectorStyleDef.getFill().getNormalColor();				
+			Double fillOpacity =  vectorStyleDef.getFill().getOpacity();					
+			String strokeColor = vectorStyleDef.getLine().getNormalColor();					
+			Double strokeWidth =  new Double(vectorStyleDef.getLine().getThickness());
+					
+			project.add(layer.getName(), getContentAsGeoJSON((Vector)layer),
 					fillColor, fillOpacity, strokeColor, strokeWidth);
 		}
 
 		return project;
 
-	}
-
-	protected JSObject getDefaultStyle(Vector layer) {
-		return layer.getStyleMap().getJSObject().getProperty("styles")
-				.getProperty("default").getProperty("defaultStyle");
-	}
+	}	
 
 	private String getContentAsGeoJSON(Vector vectorLayer) {
 		org.gwtopenmaps.openlayers.client.format.VectorFormat format = new GeoJSON();

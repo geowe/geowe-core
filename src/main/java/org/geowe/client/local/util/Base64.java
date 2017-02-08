@@ -38,7 +38,7 @@ public final class Base64 {
 	private Base64() {
 	}
 
-	public static native String decode(String a) /*-{
+	public static native String decode(String str) /*-{
 		return decodeURIComponent(Array.prototype.map.call(
 				atob(str),
 				function(c) {
@@ -47,8 +47,8 @@ public final class Base64 {
 				}).join(''));
 	}-*/;
 
-	public static native String encode(String a) /*-{
-		return btoa(encodeURIComponent(a).replace(/%([0-9A-F]{2})/g,
+	public static native String encode(String str) /*-{
+		return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
 				function(match, p1) {
 					return String.fromCharCode('0x' + p1);
 				}));

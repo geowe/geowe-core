@@ -26,7 +26,9 @@ package org.geowe.client.local.util;
  * Utility Class to get base64 hash
  * 
  * @author jose@geowe.org, rafa@geowe.org
- *
+ * @since 08-02-2017
+ * @author rafa@geowe.org implementation changed to avoid UTF-8 encoding errors.
+ * 
  */
 public final class Base64 {
 
@@ -36,12 +38,20 @@ public final class Base64 {
 	private Base64() {
 	}
 
-
 	public static native String decode(String a) /*-{
-		return window.atob(a);
+		return decodeURIComponent(Array.prototype.map.call(
+				atob(str),
+				function(c) {
+					return '%'
+							+ ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+				}).join(''));
 	}-*/;
-	
+
 	public static native String encode(String a) /*-{
-		return window.btoa(a);
+		return btoa(encodeURIComponent(a).replace(/%([0-9A-F]{2})/g,
+				function(match, p1) {
+					return String.fromCharCode('0x' + p1);
+				}));
 	}-*/;
+
 }

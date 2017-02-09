@@ -83,7 +83,7 @@ public class OpenProjectDialog extends Dialog {
 		this.getHeader().setIcon(ImageProvider.INSTANCE.layer16());
 		this.setHeadingText(UIMessages.INSTANCE.openProject());
 		this.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		this.setPixelSize(490, 400);
+		this.setPixelSize(490, 350);
 		this.setModal(true);
 		this.setResizable(false);
 	}
@@ -101,7 +101,7 @@ public class OpenProjectDialog extends Dialog {
 	private Widget createPanel() {
 
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setPixelSize(490, 300);
+		//vPanel.setPixelSize(490, 420);
 		vPanel.setSpacing(5);
 		vPanel.add(createTabPanel());
 
@@ -112,7 +112,7 @@ public class OpenProjectDialog extends Dialog {
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
 		
-		tabPanel.setPixelSize(490, 300);//ancho antes 330
+		tabPanel.setPixelSize(490, 270);
 		tabPanel.getElement().setId("tabPanel");
 		
 		tabPanel.add(getFilePanel(), UIMessages.INSTANCE.file());
@@ -147,7 +147,7 @@ public class OpenProjectDialog extends Dialog {
 
 		urlShared = new TextField();
 		urlShared.setBorders(true);
-		urlShared.setWidth(270);
+		urlShared.setWidth(400);
 		urlShared.setVisible(false);
 		geoDataContainer.add(urlShared);
 

@@ -133,6 +133,7 @@ public class OpenProjectTool extends ButtonTool {
 						}
 						if (openProjectDialog.getActiveTab().equals(UIMessages.INSTANCE.url())) {
 							urlProjectLoader.open(urlProjectLoader, openProjectDialog.getUrl());
+							openProjectDialog.hide();
 						}
 												
 					}

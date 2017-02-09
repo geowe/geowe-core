@@ -32,6 +32,7 @@ import org.geowe.client.local.main.tool.map.catalog.model.LayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.MultiLayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.URLVectorLayerDef;
 import org.geowe.client.local.main.tool.map.catalog.model.VectorLayerDef;
+import org.geowe.client.local.main.tool.project.URLProjectLoader;
 import org.geowe.client.local.messages.UICatalogMessages;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.MessageDialogBuilder;
@@ -56,6 +57,8 @@ public class URLVectorLayerInitializer {
 	private MessageDialogBuilder messageDialogBuilder;
 	@Inject
 	private AppLayerCatalog appLayerCatalog;
+	@Inject
+	private URLProjectLoader urlProjectLoader;
 
 	public void createLayerFromURL() {
 		if (hasParam(getLayerinfo("layerCatalog"))) {
@@ -64,6 +67,10 @@ public class URLVectorLayerInitializer {
 
 		if (hasParam(getLayerinfo("layerUrl"))) {
 			createLayer(getLayerinfo("layerUrl"));
+		}
+		
+		if (hasParam(getLayerinfo("projectUrl"))) {
+			createProject(getLayerinfo("projectUrl"));
 		}
 	}
 
@@ -111,6 +118,16 @@ public class URLVectorLayerInitializer {
 			urlLayerDef.setUrl(layerUri);
 			urlLayerDef.setType(LayerDef.VECTOR_TYPE);
 			urlLayerDef.load();		
+			
+		} catch (Exception e) {
+			messageDialogBuilder.createError("error", e.getMessage()).show();
+		}
+	}
+	
+	private void createProject(final String projectUrl) {
+		try {
+			
+			urlProjectLoader.open(urlProjectLoader, projectUrl);
 			
 		} catch (Exception e) {
 			messageDialogBuilder.createError("error", e.getMessage()).show();

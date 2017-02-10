@@ -103,9 +103,7 @@ public final class VectorLayerFactory {
 
 	public static VectorLayer createEmptyVectorLayer(
 			final VectorLayerConfig layerConfig) {
-		final VectorOptions vectorOptions = new VectorOptions();
-
-		vectorOptions.setStyleMap(layerConfig.getStyleMap());
+		final VectorOptions vectorOptions = new VectorOptions();		
 		vectorOptions.setProjection(layerConfig.getEpsg());
 
 		return new VectorLayer(layerConfig.getLayerName(), vectorOptions);
@@ -240,7 +238,7 @@ public final class VectorLayerFactory {
 		return createVectorLayer(layerConfig);
 	}
 
-	// TODO: Crea todas las features con los mismos atributos
+	// TODO: Crear todas las features con los mismos atributos
 	public static VectorLayer createGpxVectorLayer(VectorLayerConfig layerConfig) {
 		GPX gpxReader = new GPX();
 		VectorFeature[] features = gpxReader.read(layerConfig

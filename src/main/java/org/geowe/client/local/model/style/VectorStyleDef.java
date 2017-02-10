@@ -27,8 +27,6 @@ import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Esta clase modela de una manera estructurada los estilos de una capa
@@ -39,9 +37,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class VectorStyleDef {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(VectorStyleDef.class.getName());
-		
 	private PointStyle point;
 	private LineStyle line;
 	private FillStyle fill;
@@ -145,9 +140,7 @@ public class VectorStyleDef {
 		jsStyle.setProperty("externalGraphic", getPoint().getExternalGraphic());
 		jsStyle.setProperty("graphicWidth", getPoint().getGraphicWidth());
 		jsStyle.setProperty("graphicHeight", getPoint().getGraphicHeight());
-		
-		LOG.info(jsStyle.getPropertyNames());
-		
+					
 		return new StyleMap(normalStyle, selectedStyle, hoverStyle);
 	}
 }

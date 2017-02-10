@@ -106,10 +106,13 @@ public class W3wTool extends ToggleTool {
 		if (getW3wLayer() == null) {			
 			
 			final VectorLayerConfig layerConfig = new VectorLayerConfig();
-			layerConfig.setLayerName(W3W_LAYER_NAME);
-			layerConfig.setStyleMap(getStyleMap());
+			layerConfig.setLayerName(W3W_LAYER_NAME);			
 			final VectorLayer layer = VectorLayerFactory.createEmptyVectorLayer(layerConfig);
-
+			//TODO Adaptar la asignación de estilo usando el VectorStyleDef del VectorLayer,
+			//     una vez que se hayan añadido a este modelo las propiedades de graphicOffset
+			//     y backgroundGraphic
+			layer.setStyleMap(getStyleMap());
+			
 			LayerLoader.load(layer);
 		}
 	}
@@ -136,7 +139,7 @@ public class W3wTool extends ToggleTool {
 		return pointFeature;
 	}
 
-	private StyleMap getStyleMap() {
+	private StyleMap getStyleMap() {				
 		final Style style = createStyle(ImageProvider.INSTANCE.w3wRed24()
 				.getSafeUri().asString());
 

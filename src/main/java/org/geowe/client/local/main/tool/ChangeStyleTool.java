@@ -30,20 +30,24 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.style.PointStyle;
+import org.geowe.client.local.model.style.VectorStyleAssistant;
 import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.style.SimpleThemingVerticalLegend;
 import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
-import org.geowe.client.local.style.VertexStyles;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
+import org.gwtopenmaps.openlayers.client.control.SelectFeature;
+import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.core.client.Style.Side;
 import com.sencha.gxt.fx.client.FxElement;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -64,7 +68,11 @@ public class ChangeStyleTool extends ButtonTool {
 	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
-	private MessageDialogBuilder dialogBuilder;
+	private VectorStyleAssistant vectorStyleAssistant;
+	@Inject
+	private MessageDialogBuilder dialogBuilder;	
+	@Inject
+	private GeoMap geoMap;
 
 	private SimpleThemingVerticalLegend legendPanel;
 
@@ -84,6 +92,7 @@ public class ChangeStyleTool extends ButtonTool {
 			vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
 					.fadeToggle();
 		} else {
+			vectorLayerStyleWidget.setSelectedLayer((VectorLayer) layer);
 			vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
 					.fadeToggle();
 			vectorLayerStyleWidget.asWidget().setVisible(true);			
@@ -109,7 +118,65 @@ public class ChangeStyleTool extends ButtonTool {
 	}
 	
 	private void onApplyButtonSelected(final SelectEvent event) {
+		if(checkStyleSettings()) {
+			if(!isFeatureStyleMode() && isFeatureStyleApplied()) {
+				clearFeatureStyleConfirmRequest();
+			} else {
+				applyStyleSettings(false);
+			}
+		}
+	}
+	
+	private boolean checkStyleSettings() {
+		if(vectorLayerStyleWidget.isEnableLabeling()) {
+			if(vectorLayerStyleWidget.getAttributeLabel() == null
+					|| vectorLayerStyleWidget.getFontSize() == null) {				
+				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
+						UIMessages.INSTANCE.vlswRequiredLabelDataText()).show();			
+				return false;
+			}
+		}
+		
+		if(vectorLayerStyleWidget.isEnableTheming()) {
+			if(vectorLayerStyleWidget.getAttributeTheming() == null) {
+				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
+						UIMessages.INSTANCE.vlswRequiredThemingDataText()).show();
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private void clearFeatureStyleConfirmRequest() {
+		ConfirmMessageBox messageBox = dialogBuilder
+				.createConfirm(UIMessages.INSTANCE.vlswHeading(), 
+						UIMessages.INSTANCE.vlswOverrideFeatureStyle(), 
+						ImageProvider.INSTANCE.layerIcon());
+								
+		messageBox.getButton(PredefinedButton.YES).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						applyStyleSettings(true);							
+					}
+				});
+		
+		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {							
+						applyStyleSettings(false);
+					}
+				});
 
+		messageBox.show();
+	}
+	
+	private void applyStyleSettings(final boolean clearFeatureStyle) {
+		final VectorLayer selectedLayer = vectorLayerStyleWidget
+				.getSelectedLayer();
+		
 		final ProgressBarDialog progressDialog = new ProgressBarDialog(true,
 				UIMessages.INSTANCE.vlswProgressBoxLabel(),
 				UIMessages.INSTANCE.vlswProgressText());
@@ -117,93 +184,35 @@ public class ChangeStyleTool extends ButtonTool {
 
 		taskManager.execute(new Runnable() {
 			@Override
-			public void run() {
-				final VectorLayer selectedLayer = vectorLayerStyleWidget
-						.getSelectedLayer();
-
-				applyChanges(selectedLayer);
-				
-				if(selectedLayer.getVectorStyle().isColorThemingEnabled()
-						|| selectedLayer.getVectorStyle().getLabel().isEnabled()) {						
-					applyLengendVisibility(selectedLayer);
+			public void run() {				
+				final VectorFeature[] selectedFeatures = selectedLayer
+						.getSelectedFeatures();
+						
+				if(selectedFeatures != null && selectedFeatures.length > 0) {
+					vectorStyleAssistant.applyFeatureStyle(selectedFeatures, selectedLayer);
+					unSelectFeatures(selectedFeatures);
 				} else {
-					hideLegendPanel();
+					if(clearFeatureStyle) {
+						clearFeatureStyles();
+					}					
+					vectorStyleAssistant.applyLayerStyle(selectedLayer);
+					
+					if(selectedLayer.getVectorStyle().isColorThemingEnabled()
+							|| selectedLayer.getVectorStyle().getLabel().isEnabled()) {						
+						applyLengendVisibility(selectedLayer);
+					} else {
+						hideLegendPanel();
+					}
 				}
-
+								
 				selectedLayer.redraw();
 				progressDialog.hide();
+				
+				vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
+					.fadeToggle();							
 			}
-		});		
-	}
-		
-	private void applyChanges(VectorLayer selectedLayer) {
-		VectorStyleDef style = selectedLayer.getVectorStyle();
-		
-		applyColorStyle(style, selectedLayer);
-		applyVertextStyle(style, selectedLayer);
-		applyLabelStyle(style, selectedLayer);
-		applyColorThemingStyle(style, selectedLayer);					
-	}
-	
-	private void applyColorStyle(VectorStyleDef style, VectorLayer selectedLayer) {
-		style.getFill().setNormalColor(vectorLayerStyleWidget.getFillColor());
-		style.getFill().setOpacity(vectorLayerStyleWidget.getFillOpacity());
-		style.getLine().setNormalColor(vectorLayerStyleWidget.getStrokeColor());
-		style.getLine().setThickness(vectorLayerStyleWidget.getStrokeWidth());
-	}
-	
-	private void applyVertextStyle(VectorStyleDef style, VectorLayer selectedLayer) {
-		if(vectorLayerStyleWidget.isBasicVertexStyle()) { 
-			style.getPoint().setVertexStyle(VertexStyles.getByStyleName(
-					vectorLayerStyleWidget.getVertexStyle()));
-			style.getPoint().setExternalGraphic(null);
-		} else {
-			int graphicWidth = vectorLayerStyleWidget.getGraphicWidth();
-			int graphicHeight = vectorLayerStyleWidget.getGraphicHeight();
-			
-			style.getPoint().setExternalGraphic(
-					vectorLayerStyleWidget.getExternalGraphic());
-			style.getPoint().setGraphicWidth(
-					graphicWidth > 0 ? graphicWidth : PointStyle.DEFAULT_GRAPHIC_WIDTH);
-			style.getPoint().setGraphicHeight(
-					graphicHeight > 0 ? graphicHeight : PointStyle.DEFAULT_GRAPHIC_HEIGHT);
-		}				
-	}
-	
-	private void applyLabelStyle(VectorStyleDef style, VectorLayer selectedLayer) {
-		if(vectorLayerStyleWidget.isEnableLabeling()) {
-			if(vectorLayerStyleWidget.getAttributeLabel() != null
-					&& vectorLayerStyleWidget.getFontSize() != null) {			
-				style.getLabel().setAttribute(
-					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeLabel()));
-				style.getLabel().setFontSize(vectorLayerStyleWidget.getFontSize());
-			} else {
-				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
-						UIMessages.INSTANCE.vlswRequiredLabelDataText()).show();
-			}
-			style.getLabel().setBoldStyle(vectorLayerStyleWidget.isUseBoldLabel());
-			style.getLabel().setBackgroundColor(vectorLayerStyleWidget.getBackgroundColor());
-		} else {
-			style.getLabel().setAttribute(null);
-		}
-	}
-	
-	private void applyColorThemingStyle(VectorStyleDef style, VectorLayer selectedLayer) {
-		if(vectorLayerStyleWidget.isEnableTheming()) {
-			if(vectorLayerStyleWidget.getAttributeTheming() != null) {
-				style.setColorThemingAttribute(
-					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeTheming()));
-				style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());
-			} else {
-				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
-						UIMessages.INSTANCE.vlswRequiredThemingDataText()).show();
-				style.setEnableLegend(false);
-			}			
-		} else {
-			style.setColorThemingAttribute(null);
-			style.setEnableLegend(false);
-		}			
-	}
+		});				
+	}	
 	
 	private void applyLengendVisibility(VectorLayer selectedLayer) {
 		VectorStyleDef currentStyle = selectedLayer.getVectorStyle();
@@ -222,11 +231,51 @@ public class ChangeStyleTool extends ButtonTool {
 		} else {			
 			hideLegendPanel();
 		}
-	}
+	}	
 
 	private void hideLegendPanel() {
 		if (legendPanel != null && legendPanel.isVisible()) {
 			legendPanel.getElement().<FxElement> cast().fadeToggle();
 		}
-	}			
+	}
+	
+	private boolean isFeatureStyleMode() {			
+		final VectorFeature[] selectedFeatures = vectorLayerStyleWidget
+				.getSelectedLayer().getSelectedFeatures();
+		
+		return selectedFeatures != null && selectedFeatures.length > 0;
+	}
+		
+	private boolean isFeatureStyleApplied() {
+		VectorLayer selectedLayer = vectorLayerStyleWidget.getSelectedLayer();
+		
+		for(VectorFeature feature : selectedLayer.getFeatures()) {
+			if(feature.getStyle() != null) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void clearFeatureStyles() {
+		VectorLayer selectedLayer = vectorLayerStyleWidget.getSelectedLayer();
+		for(VectorFeature feature : selectedLayer.getFeatures()) {
+			feature.getJSObject().unsetProperty("style");			
+		}
+	}
+	
+	private void unSelectFeatures(VectorFeature[] selectedFeatures) {
+		SelectFeature selectFeatureControl = new SelectFeature(
+				(Vector)vectorLayerStyleWidget.getSelectedLayer());
+		geoMap.addControl(selectFeatureControl);
+		selectFeatureControl.activate();		
+		
+		for(VectorFeature feature : selectedFeatures) {
+			selectFeatureControl.unSelect(feature);
+		}
+		
+		selectFeatureControl.deactivate();
+		geoMap.getMap().removeControl(selectFeatureControl);
+	}
 }

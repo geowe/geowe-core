@@ -22,8 +22,10 @@
  */
 package org.geowe.client.local.style;
 
+import org.geowe.client.local.model.style.VectorFeatureStyleDef;
+import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.model.vector.VectorLayer;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
+import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -32,43 +34,52 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 
 /**
- * Implementacion base abstracta de una pestaña del dialogo de 
- * gestion de estilos de una capa vectorial. 
+ * Implementacion base abstracta de una pestaña del dialogo de gestion de
+ * estilos de una capa vectorial.
  * 
  * @author Atanasio Muñoz
  *
  */
 public abstract class StyleTab implements IsWidget {
-	
+
 	protected VerticalPanel panel;
 	protected VectorLayer selectedLayer;
-	
+	protected VectorFeature[] selectedFeatures;
+
 	@Override
 	public Widget asWidget() {
-		if (panel == null) {			
+		if (panel == null) {
 			panel = new VerticalPanel();
 			panel.setWidth("480px");
 			panel.setLayoutData(new MarginData(10));
-			
+
 			initializePanel();
 			this.setSelectedLayer(null);
 		}
-		
+
 		return panel;
-	}	
-	
+	}
+
 	public void setSelectedLayer(VectorLayer selectedLayer) {
-		this.selectedLayer = selectedLayer;	
-		updateLayerStyleData();
+		this.selectedLayer = selectedLayer;
+
+		if (this.panel != null && this.selectedLayer != null) {
+			selectedFeatures = this.selectedLayer.getSelectedFeatures();
+
+			if (selectedFeatures != null && selectedFeatures.length > 0) {
+				VectorFeatureStyleDef style = 
+						new VectorFeatureStyleDef(selectedFeatures[0], selectedLayer);
+
+				updateStyleData(style);
+			} else {
+				updateStyleData(selectedLayer.getVectorStyle());
+			}
+		}
 	}
-	
-	protected JSObject getDefaultStyle() {
-		return selectedLayer.getStyleMap().getJSObject()
-				.getProperty("styles").getProperty("default")
-				.getProperty("defaultStyle");
-	}
-	
-	protected abstract void initializePanel();	
-	protected abstract void updateLayerStyleData();
+
+	protected abstract void initializePanel();
+
+	protected abstract void updateStyleData(VectorStyleDef style);
+
 	protected abstract void addKeyShortcut(TextButton button, int keyCode);
 }

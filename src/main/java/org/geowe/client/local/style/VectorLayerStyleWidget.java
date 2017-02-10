@@ -64,6 +64,7 @@ public class VectorLayerStyleWidget implements IsWidget,
 	private static String HEADING_TEXT = UIMessages.INSTANCE.vlswHeading();
 	private FramedPanel panel;
 	private VectorLayer selectedLayer;
+	private PlainTabPanel tabPanel;
 	private ColorStyleTab colorStyleTab;
 	private LabelStyleTab labelStyleTab;
 	private VertexStyleTab vertexStyleTab;
@@ -90,7 +91,7 @@ public class VectorLayerStyleWidget implements IsWidget,
 
 			panel = new FramedPanel();
 			panel.setWidth(500);
-			panel.setHeight(265);
+			panel.setHeight(275);
 			panel.setLayoutData(new MarginData(10));
 
 			mainPanel.add(vlc);
@@ -115,8 +116,8 @@ public class VectorLayerStyleWidget implements IsWidget,
 	}
 
 	private PlainTabPanel createTabPanel() {
-		PlainTabPanel tabPanel = new PlainTabPanel();
-		tabPanel.setPixelSize(480, 150);
+		tabPanel = new PlainTabPanel();
+		tabPanel.setPixelSize(480, 160);
 
 		colorStyleTab = new ColorStyleTab();
 		labelStyleTab = new LabelStyleTab();
@@ -128,7 +129,6 @@ public class VectorLayerStyleWidget implements IsWidget,
 		tabPanel.add(vertexStyleTab, UIMessages.INSTANCE.vlswVertexStyle());
 		tabPanel.add(colorThemingStyleTab,
 				UIMessages.INSTANCE.vlsColorTheming());
-
 
 		return tabPanel;
 	}
@@ -153,15 +153,28 @@ public class VectorLayerStyleWidget implements IsWidget,
 
 	public void setSelectedLayer(VectorLayer selectedLayer) {
 		this.selectedLayer = selectedLayer;
-		panel.setHeadingText(HEADING_TEXT
-				+ (this.selectedLayer != null ? ": "
-						+ this.selectedLayer.getName() : UIMessages.INSTANCE
-						.noSelectedLayer()));
-
+		
 		colorStyleTab.setSelectedLayer(selectedLayer);
 		labelStyleTab.setSelectedLayer(selectedLayer);
 		vertexStyleTab.setSelectedLayer(selectedLayer);
-		colorThemingStyleTab.setSelectedLayer(selectedLayer);		
+		colorThemingStyleTab.setSelectedLayer(selectedLayer);	
+		
+		boolean featuresSelected = selectedLayer != null 
+				&& selectedLayer.getSelectedFeatures() != null
+				&& selectedLayer.getSelectedFeatures().length > 0;
+		String title = HEADING_TEXT
+				+ (this.selectedLayer != null 
+				? ": "+ this.selectedLayer.getName() 
+				: UIMessages.INSTANCE.noSelectedLayer());		
+				
+		tabPanel.getConfig(colorThemingStyleTab.asWidget())
+			.setEnabled(!featuresSelected);
+		if(featuresSelected) {
+			title += " (" + selectedLayer.getSelectedFeatures().length +
+					" " + UIMessages.INSTANCE.selectedFeatures() + ")";			
+		}			
+		
+		panel.setHeadingText(title);
 	}
 
 	public String getFillColor() {

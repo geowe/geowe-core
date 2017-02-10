@@ -38,8 +38,9 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * Pestaña de configuracion de estilos de color, opaciadad y grosor de linea, 
- * perteneciente al dialogo de gestion de estilos.
+ * Pestaña de configuración de estilos de color de línea y relleno, 
+ * opacidad y grosor de línea, perteneciente al diálogo de gestión
+ * de estilos.
  * 
  * @author Atanasio Muñoz
  *
@@ -133,15 +134,11 @@ public class ColorStyleTab extends StyleTab implements
 	}	
 	
 	@Override
-	protected void updateLayerStyleData() {
-		if (this.panel != null && this.selectedLayer != null) {			
-			VectorStyleDef style = selectedLayer.getVectorStyle();
-			
-			fillColor.setText(style.getFill().getNormalColor());
-			fillOpacity.setValue(new Double(style.getFill().getOpacity()*100.0).intValue());
-			lineColor.setText(style.getLine().getNormalColor());
-			lineThick.setValue(style.getLine().getThickness());
-		}
+	protected void updateStyleData(VectorStyleDef style) {	
+		fillColor.setText(style.getFill().getNormalColor());
+		fillOpacity.setValue(new Double(style.getFill().getOpacity() * 100.0).intValue());
+		lineColor.setText(style.getLine().getNormalColor());
+		lineThick.setValue(style.getLine().getThickness());		
 	}
 
 	@Override

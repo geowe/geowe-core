@@ -42,7 +42,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * Pestaña de configuracion del estilo de representacion de los vertices, 
  * perteneciente al dialogo de gestion de estilos.
  * 
- * @author Atanasio Muñoz
+ * @author Atanasio Muñoz (ata@geowe.org)
  *
  */
 public class VertexStyleTab extends StyleTab {
@@ -148,17 +148,13 @@ public class VertexStyleTab extends StyleTab {
 	}
 		
 	@Override
-	protected void updateLayerStyleData() {	
-		if (this.panel != null && this.selectedLayer != null) {
-			VectorStyleDef style = selectedLayer.getVectorStyle();
-			
-			basicStyleOption.setValue(style.getPoint().getExternalGraphic() == null, true);
-			advancedStyleOption.setValue(style.getPoint().getExternalGraphic() != null, true);
-			vertexStyle.setValue(style.getPoint().getVertexStyle());
-			externalGraphic.setValue(style.getPoint().getExternalGraphic());
-			graphicWidth.setValue(style.getPoint().getGraphicWidth());
-			graphicHeight.setValue(style.getPoint().getGraphicHeight());
-		}
+	protected void updateStyleData(VectorStyleDef style) {					 	
+		basicStyleOption.setValue(style.getPoint().getExternalGraphic() == null, true);
+		advancedStyleOption.setValue(style.getPoint().getExternalGraphic() != null, true);
+		vertexStyle.setValue(style.getPoint().getVertexStyle());
+		externalGraphic.setValue(style.getPoint().getExternalGraphic());
+		graphicWidth.setValue(style.getPoint().getGraphicWidth());
+		graphicHeight.setValue(style.getPoint().getGraphicHeight());		
 	}
 
 	@Override

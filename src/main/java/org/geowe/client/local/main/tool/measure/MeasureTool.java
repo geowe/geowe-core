@@ -38,7 +38,6 @@ import org.gwtopenmaps.openlayers.client.control.Measure;
 import org.gwtopenmaps.openlayers.client.event.MeasureEvent;
 import org.gwtopenmaps.openlayers.client.event.MeasureListener;
 import org.gwtopenmaps.openlayers.client.event.MeasurePartialListener;
-import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
@@ -51,8 +50,7 @@ import com.sencha.gxt.core.client.Style.Side;
 @ApplicationScoped
 public class MeasureTool extends ToggleTool {
 
-	@Inject
-	private Logger logger;
+
 	@Inject
 	private MapControlFactory mapControlFactory;
 	@Inject
@@ -75,7 +73,6 @@ public class MeasureTool extends ToggleTool {
 		measure = mapControlFactory.createMesaureControl();
 		measure.addMeasureListener(getMeasureListener());
 		measure.addMeasurePartialListener(getPartialListener());
-
 		add(measure);
 	}
 
@@ -118,4 +115,5 @@ public class MeasureTool extends ToggleTool {
 				+ getReoundedMeasure(eventObject.getMeasure(), 3)
 				+ " " + eventObject.getUnits();
 	}
+
 }

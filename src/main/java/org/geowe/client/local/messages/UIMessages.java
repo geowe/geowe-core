@@ -434,6 +434,8 @@ public interface UIMessages extends Messages {
 	String vlswRequiredLabelDataText();
 	
 	String vlswRequiredThemingDataText();
+	
+	String vlswOverrideFeatureStyle();
 
 	String vlsLineAndColor();
 
@@ -614,6 +616,8 @@ public interface UIMessages extends Messages {
 	String layerCatalogToolTip();
 
 	String noSelectedLayer();
+	
+	String selectedFeatures();
 
 	String background();
 

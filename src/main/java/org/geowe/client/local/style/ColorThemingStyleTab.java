@@ -36,8 +36,8 @@ import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 
 /**
- * Pestaña de configuracion de color tematico o cartografia tematica, 
- * perteneciente al dialogo de gestion de estilos.
+ * Pestaña de configuración de color temático o cartografia temática, 
+ * perteneciente al diálogo de gestión de estilos.
  * 
  * @author Atanasio Muñoz
  *
@@ -96,28 +96,24 @@ public class ColorThemingStyleTab extends StyleTab {
 	}
 	
 	@Override
-	protected void updateLayerStyleData() {
-		if (this.panel != null && this.selectedLayer != null) {
-			attributeTheming.loadValues(selectedLayer);
-			
-			VectorStyleDef style = selectedLayer.getVectorStyle();
+	protected void updateStyleData(VectorStyleDef style) {		
+		attributeTheming.loadValues(selectedLayer);
 							
-			enableTheming.setValue(style.isColorThemingEnabled(), true);
-			if(style.isColorThemingEnabled()) {
-				attributeTheming.setValue(style.getColorThemingAttribute());
-				enableLegend.setValue(style.isEnableLegend(), true);
-			} else {
-				attributeTheming.setValue(null);
-				attributeTheming.setEmptyText(UIMessages.INSTANCE
-						.sbLayerComboEmptyText());
-				enableLegend.setValue(false, true);
-			}
-		}
+		enableTheming.setValue(style.isColorThemingEnabled(), true);
+		if(style.isColorThemingEnabled()) {
+			attributeTheming.setValue(style.getColorThemingAttribute());
+			enableLegend.setValue(style.isEnableLegend(), true);
+		} else {
+			attributeTheming.setValue(null);
+			attributeTheming.setEmptyText(UIMessages.INSTANCE
+					.sbLayerComboEmptyText());
+			enableLegend.setValue(false, true);
+		}	
 	}
 
 	@Override
 	protected void addKeyShortcut(TextButton button, int keyCode) {
 		KeyShortcutHandler keyShortcut = new KeyShortcutHandler(button, keyCode);
 		attributeTheming.addKeyDownHandler(keyShortcut);		
-	}	
+	}
 }

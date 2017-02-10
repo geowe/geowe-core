@@ -5,11 +5,22 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
-- Feature level Style
 - GeoJson CSS: feature level Style
 
-## [1.4.7]Beta - 2017-02-08
 
+## [1.4.8]Beta - 2017-02-10
+version deployed for testing [map.geowe.org](http://map.geowe.org) 
+### Added
+- Feature level Style
+- Load GeoWE Project from URL
+- Improvement in the measure tool (now you can see partial measurement)
+- Improvement in lineString drawing tool (now you can see partial measurement)
+
+### Fixed
+- issue [#280](https://github.com/geowe/geowe-core/issues/280)
+- issue [#297](https://github.com/geowe/geowe-core/issues/297)
+
+## [1.4.7]Beta - 2017-02-08
 ### Fixed
 - issue [#277](https://github.com/geowe/geowe-core/issues/277)
 - issue [#292](https://github.com/geowe/geowe-core/issues/292)
@@ -32,7 +43,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [1.4.3]Beta - 2017-02-02
-version deployed for testing [map.geowe.org](http://map.geowe.org) 
+version deployed for testing [map.geowe.org](http://map.geowe.org) no longer available
 ### Added
 - Layer Style enhancement
 - Vertex Style: now you can use custom icons.

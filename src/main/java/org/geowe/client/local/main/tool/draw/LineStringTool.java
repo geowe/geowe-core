@@ -27,12 +27,20 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.ToggleTool;
 import org.geowe.client.local.messages.UIMessages;
+import org.gwtopenmaps.openlayers.client.Style;
+import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.DrawFeature;
+import org.gwtopenmaps.openlayers.client.control.Measure;
+import org.gwtopenmaps.openlayers.client.control.MeasureOptions;
+import org.gwtopenmaps.openlayers.client.event.MeasureEvent;
+import org.gwtopenmaps.openlayers.client.event.MeasurePartialListener;
 import org.gwtopenmaps.openlayers.client.handler.PathHandler;
+import org.gwtopenmaps.openlayers.client.handler.PathHandlerOptions;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
@@ -48,6 +56,8 @@ import com.sencha.gxt.core.client.Style.Side;
 @ApplicationScoped
 public class LineStringTool extends ToggleTool implements DrawTool {
 
+	@Inject
+	private BasicToolBar basicToolBar;
 	
 	@Inject
 	public LineStringTool(GeoMap geoMap, LayerManagerWidget layerManager) {
@@ -62,14 +72,44 @@ public class LineStringTool extends ToggleTool implements DrawTool {
 	@PostConstruct
 	private void initialize() {
 		add(createDrawTool(new Vector("Empty")));
+		add(createMeasure());
 		setCancelable();
 		setUndoadable();
 		setRedoadable();
 	}
 
+
 	@Override
 	public Control createDrawTool(Layer layer) {
 		return new DrawFeature((Vector) layer, new PathHandler());
+	}
+	
+	private Control createMeasure() {
+		MeasureOptions measOpts = new MeasureOptions();
+		measOpts.setGeodesic(true);
+		measOpts.getJSObject().setProperty("immediate", true);
+		PathHandlerOptions phOpt = new PathHandlerOptions();
+
+		phOpt.setStyleMap(createMeasureStyleMap());
+		measOpts.setHandlerOptions(phOpt);
+		Measure measure = new Measure(new PathHandler(), measOpts);
+		
+		measure.addMeasurePartialListener(new MeasurePartialListener() {
+			@Override
+			public void onMeasurePartial(MeasureEvent eventObject) {
+				basicToolBar.setWhat3Words(String.valueOf(eventObject
+						.getMeasure()) + " " + eventObject.getUnits());
+			}
+		});
+
+		return measure;
+	}
+
+	private StyleMap createMeasureStyleMap() {
+		final Style measureStyle = new Style();
+		measureStyle.setStrokeOpacity(0D);
+
+		return new StyleMap(measureStyle);
 	}
 
 }

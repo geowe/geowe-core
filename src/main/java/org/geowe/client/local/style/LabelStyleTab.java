@@ -100,10 +100,6 @@ public class LabelStyleTab extends StyleTab implements
 				labelBackColor.setEnabled(event.getValue());
 				colorPicker.slide(event.getValue());
 				colorPicker.setEnabled(event.getValue());
-//				if (!event.getValue()) {
-//					selectedLayer.setStyleMap(StyleFactory
-//							.createDefaultStyleMap());
-//				}
 			}
 		});
 		HorizontalPanel mainPanel = new HorizontalPanel();
@@ -153,22 +149,19 @@ public class LabelStyleTab extends StyleTab implements
 	}
 	
 	@Override
-	protected void updateLayerStyleData() {	
-		if (this.panel != null && this.selectedLayer != null) {
-			attributeLabel.loadValues(selectedLayer);					
-			VectorStyleDef style = selectedLayer.getVectorStyle();
+	protected void updateStyleData(VectorStyleDef style) {	
+		attributeLabel.loadValues(selectedLayer);							
 			
-			this.enableLabeling.setValue(style.getLabel().isEnabled(), true);
-			
-			if(style.getLabel().isEnabled()) {
-				this.attributeLabel.setValue(style.getLabel().getAttribute());
-				this.fontSize.setValue(style.getLabel().getFontSize());
-				this.boldFont.setValue(style.getLabel().isBoldStyle());
-				this.labelBackColor.setText(style.getLabel().getBackgroundColor());
-			} else {
-				this.attributeLabel.setValue(null);
-			}
-		}
+		this.enableLabeling.setValue(style.getLabel().isEnabled(), true);
+		
+		if(style.getLabel().isEnabled()) {
+			this.attributeLabel.setValue(style.getLabel().getAttribute());
+			this.fontSize.setValue(style.getLabel().getFontSize());
+			this.boldFont.setValue(style.getLabel().isBoldStyle());
+			this.labelBackColor.setText(style.getLabel().getBackgroundColor());
+		} else {
+			this.attributeLabel.setValue(null);
+		}			
 	}
 
 	@Override

@@ -25,17 +25,22 @@ package org.geowe.client.local.model.vector;
 import java.util.Collection;
 
 import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
+import org.geowe.client.local.model.style.FillStyle;
+import org.geowe.client.local.model.style.LineStyle;
 import org.geowe.client.local.model.style.VectorStyleDef;
+import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.event.VectorFeatureAddedListener;
+import org.gwtopenmaps.openlayers.client.event.VectorFeatureSelectedListener;
+import org.gwtopenmaps.openlayers.client.event.VectorFeatureUnselectedListener;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.gwtopenmaps.openlayers.client.layer.VectorOptions;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 /**
- * Implementacion mejorada de una capa vectorial. Se ha extendido la clase Vector
+ * Implementación mejorada de una capa vectorial. Se ha extendido la clase Vector
  * para incluir a nivel de capa el esquema o conjunto de atributos que comparten 
- * todas y cada una de las features de la misma, asi como las operaciones necesarias
+ * todas y cada una de las features de la misma, así como las operaciones necesarias
  * para gestionar dicho esquema.
  * 
  * @author Atanasio Muñoz
@@ -51,40 +56,39 @@ public class VectorLayer extends Vector {
 		super(vector);	
 		
 		this.featureSchema = new FeatureSchema();
-		this.vectorStyle = new VectorStyleDef();
+		setVectorStyle(new VectorStyleDef());
 		addFeatureAddedListener();
+		addFeatureSelectListeners();
 	}
 	
     public VectorLayer(String name) {
     	super(name);
     	
     	this.featureSchema = new FeatureSchema();
-    	this.vectorStyle = new VectorStyleDef();
+    	setVectorStyle(new VectorStyleDef());
     	addFeatureAddedListener();
+    	addFeatureSelectListeners();
     }
     
     public VectorLayer(String name, VectorOptions options) {
     	super(name, options);    
     	
     	this.featureSchema = new FeatureSchema();
-    	this.vectorStyle = new VectorStyleDef();
+    	setVectorStyle(new VectorStyleDef());
     	addFeatureAddedListener();
+    	addFeatureSelectListeners();
     }    
     
     public VectorLayer(String name, FeatureSchema schema) {
     	this(name);
-    	this.featureSchema = schema;
-    	
-    	this.vectorStyle = new VectorStyleDef();
+    	this.featureSchema = schema;    	    
     }    
         
     public VectorLayer(String name, VectorOptions options, FeatureSchema schema) {
     	this(name, options);    	
-    	this.featureSchema = schema;
-    	
-    	this.vectorStyle = new VectorStyleDef();
+    	this.featureSchema = schema;    	    
     }    
-
+    
     @Override
     public void addFeature(VectorFeature f) {    	
     	initializeLayerFeatureSchema(f);
@@ -195,6 +199,45 @@ public class VectorLayer extends Vector {
 		});
     }
     
+    /**
+     * Agrega listeners de selección y deselección de features para simular los
+     * estilos correspondientes cuando se ha aplicado estilos por feature.
+     */
+    private void addFeatureSelectListeners() {
+    	this.addVectorFeatureSelectedListener(new VectorFeatureSelectedListener() {
+    		@Override
+            public void onFeatureSelected(FeatureSelectedEvent eventObject) {                
+                Style style = eventObject.getVectorFeature().getStyle();
+                
+                if(style != null) {
+                	style.setFillColor(FillStyle.DEFAULT_SELECTED_COLOR);
+                	style.setStrokeColor(LineStyle.DEFAULT_SELECTED_COLOR);
+                	redraw();
+                }
+            }
+        });
+    	
+    	this.addVectorFeatureUnselectedListener(new VectorFeatureUnselectedListener() {
+			@Override
+			public void onFeatureUnselected(FeatureUnselectedEvent eventObject) {
+				Style style = eventObject.getVectorFeature().getStyle();
+                
+                if(style != null) {
+            		JSObject jsStyle = style.getJSObject();
+            		/**
+            		 * El color asignado al feature esta guardado tambien en las
+            		 * propiedades hoverFillColor y hoverStrokeColor, por lo que 
+            		 * las usaremos para recuperar el color cuando se deseleeciona
+            		 * la feature.
+            		 */            		
+                	style.setFillColor(jsStyle.getPropertyAsString("userFillColor"));
+                	style.setStrokeColor(jsStyle.getPropertyAsString("userStrokeColor"));
+                	redraw();
+                }			
+			}
+        });
+    }
+    
 	/**
 	 * Si es la primera feature que agregamos a la capa y el VectorLayer no
 	 * tiene aun definido el esquema, se define este a partir de los atributos
@@ -203,7 +246,6 @@ public class VectorLayer extends Vector {
 	 * @param feature
 	 */
     public void initializeLayerFeatureSchema(VectorFeature feature) {
-
     	if(this.featureSchema == null || this.featureSchema.getNumAttributes() == 0) {
     		if(feature != null  && feature.getAttributes().getAttributeNames().size() > 0) {
     			this.featureSchema = FeatureSchema.createFromFeature(feature);
@@ -212,7 +254,6 @@ public class VectorLayer extends Vector {
     }
 
     private void checkFeature(VectorFeature feature) {    	    
-
     	if(feature != null && !featureMatchesSchema(feature)) {
     		feature.setAttributes(FeatureSchema.toFeatureAttributes(featureSchema));
     	}

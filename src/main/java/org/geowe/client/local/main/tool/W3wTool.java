@@ -30,9 +30,9 @@ import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.map.catalog.LayerLoader;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.gwtopenmaps.openlayers.client.LonLat;
 import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.StyleMap;
@@ -77,10 +77,13 @@ public class W3wTool extends ToggleTool {
 
 				if (event.getValue()) {
 					setActive(true);
+					basicToolBar.setAnchorVisible(true);
 					basicToolBar.setAnchorColor(GREEN);
+					basicToolBar.setWhat3Words("");
 					createW3wLayer();
 				} else {
 					setActive(false);
+					basicToolBar.setAnchorVisible(false);
 					basicToolBar.setAnchorColor(RED);
 				}
 			}
@@ -103,10 +106,13 @@ public class W3wTool extends ToggleTool {
 		if (getW3wLayer() == null) {			
 			
 			final VectorLayerConfig layerConfig = new VectorLayerConfig();
-			layerConfig.setLayerName(W3W_LAYER_NAME);
-			layerConfig.setStyleMap(getStyleMap());
+			layerConfig.setLayerName(W3W_LAYER_NAME);			
 			final VectorLayer layer = VectorLayerFactory.createEmptyVectorLayer(layerConfig);
-
+			//TODO Adaptar la asignación de estilo usando el VectorStyleDef del VectorLayer,
+			//     una vez que se hayan añadido a este modelo las propiedades de graphicOffset
+			//     y backgroundGraphic
+			layer.setStyleMap(getStyleMap());
+			
 			LayerLoader.load(layer);
 		}
 	}
@@ -133,7 +139,7 @@ public class W3wTool extends ToggleTool {
 		return pointFeature;
 	}
 
-	private StyleMap getStyleMap() {
+	private StyleMap getStyleMap() {				
 		final Style style = createStyle(ImageProvider.INSTANCE.w3wRed24()
 				.getSafeUri().asString());
 

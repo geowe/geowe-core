@@ -72,7 +72,7 @@ import com.sencha.gxt.widget.core.client.tips.ToolTipConfig;
 public abstract class ToggleTool extends ToggleButton implements
 		ChangeSelectedLayerListener {
 
-	private static Logger lOGGER = LoggerFactory.getLogger(ToggleTool.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ToggleTool.class);
 
 	private final List<Control> controls = new ArrayList<Control>();
 	protected static final String WIDTH = "80px";
@@ -139,7 +139,7 @@ public abstract class ToggleTool extends ToggleButton implements
 						try {
 							((DrawFeature) control).cancel();
 						} catch (Exception e) {
-							lOGGER.error("ACTION CANCELED: "
+							LOGGER.error("ACTION CANCELED: "
 									+ control.getControlId());
 						}
 					}
@@ -162,7 +162,7 @@ public abstract class ToggleTool extends ToggleButton implements
 						try {
 							((DrawFeature) control).undo();
 						} catch (Exception e) {
-							lOGGER.error(
+							LOGGER.error(
 									"ACTION UNDO: " + control.getControlId(), e);
 						}
 					}
@@ -185,7 +185,7 @@ public abstract class ToggleTool extends ToggleButton implements
 						try {
 							((DrawFeature) control).redo();
 						} catch (Exception e) {
-							lOGGER.error("ACTION REDO: "
+							LOGGER.error("ACTION REDO: "
 									+ control.getControlId());
 						}
 					}
@@ -208,7 +208,7 @@ public abstract class ToggleTool extends ToggleButton implements
 				control.deactivate();
 				geoMap.getMap().removeControl(control);
 			} catch (Exception e) {
-				lOGGER.info("con el DragTool hay un bug. Propiedad no establecida");
+				LOGGER.info("con el DragTool hay un bug. Propiedad no establecida");
 			}
 		}
 	}
@@ -261,7 +261,8 @@ public abstract class ToggleTool extends ToggleButton implements
 				((Snapping) control).setLayer((Vector) layer);
 				((Snapping) control).setTargetLayer((Vector) layer);
 			} else {
-				Info.display(UIMessages.INSTANCE.warning(),
+				LOGGER.info(UIMessages.INSTANCE.warning() + ": "
+						+
 						"No implemented yet!!! " + control.getClassName());
 			}
 		}

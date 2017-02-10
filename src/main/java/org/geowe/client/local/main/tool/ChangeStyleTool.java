@@ -38,7 +38,9 @@ import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
+import org.gwtopenmaps.openlayers.client.control.SelectFeature;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -68,7 +70,9 @@ public class ChangeStyleTool extends ButtonTool {
 	@Inject
 	private VectorStyleAssistant vectorStyleAssistant;
 	@Inject
-	private MessageDialogBuilder dialogBuilder;
+	private MessageDialogBuilder dialogBuilder;	
+	@Inject
+	private GeoMap geoMap;
 
 	private SimpleThemingVerticalLegend legendPanel;
 
@@ -114,36 +118,62 @@ public class ChangeStyleTool extends ButtonTool {
 	}
 	
 	private void onApplyButtonSelected(final SelectEvent event) {
-		if(!isFeatureStyleMode() && isFeatureStyleApplied()) {
-			ConfirmMessageBox messageBox = dialogBuilder
-					.createConfirm(UIMessages.INSTANCE.vlswHeading(), 
-							UIMessages.INSTANCE.vlswOverrideFeatureStyle(), 
-							ImageProvider.INSTANCE.layerIcon());
-									
-			messageBox.getButton(PredefinedButton.YES).addSelectHandler(
-					new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							clearFeatureStyles();
-							applyStyleSettings();
-						}
-					});
-			
-			messageBox.getButton(PredefinedButton.NO).addSelectHandler(
-					new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {							
-							applyStyleSettings();
-						}
-					});
-
-			messageBox.show();
-		} else {
-			applyStyleSettings();
-		}		
+		if(checkStyleSettings()) {
+			if(!isFeatureStyleMode() && isFeatureStyleApplied()) {
+				clearFeatureStyleConfirmRequest();
+			} else {
+				applyStyleSettings(false);
+			}
+		}
 	}
 	
-	private void applyStyleSettings() {
+	private boolean checkStyleSettings() {
+		if(vectorLayerStyleWidget.isEnableLabeling()) {
+			if(vectorLayerStyleWidget.getAttributeLabel() == null
+					|| vectorLayerStyleWidget.getFontSize() == null) {				
+				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
+						UIMessages.INSTANCE.vlswRequiredLabelDataText()).show();			
+				return false;
+			}
+		}
+		
+		if(vectorLayerStyleWidget.isEnableTheming()) {
+			if(vectorLayerStyleWidget.getAttributeTheming() == null) {
+				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
+						UIMessages.INSTANCE.vlswRequiredThemingDataText()).show();
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private void clearFeatureStyleConfirmRequest() {
+		ConfirmMessageBox messageBox = dialogBuilder
+				.createConfirm(UIMessages.INSTANCE.vlswHeading(), 
+						UIMessages.INSTANCE.vlswOverrideFeatureStyle(), 
+						ImageProvider.INSTANCE.layerIcon());
+								
+		messageBox.getButton(PredefinedButton.YES).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {
+						applyStyleSettings(true);							
+					}
+				});
+		
+		messageBox.getButton(PredefinedButton.NO).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(SelectEvent event) {							
+						applyStyleSettings(false);
+					}
+				});
+
+		messageBox.show();
+	}
+	
+	private void applyStyleSettings(final boolean clearFeatureStyle) {
 		final VectorLayer selectedLayer = vectorLayerStyleWidget
 				.getSelectedLayer();
 		
@@ -160,7 +190,11 @@ public class ChangeStyleTool extends ButtonTool {
 						
 				if(selectedFeatures != null && selectedFeatures.length > 0) {
 					vectorStyleAssistant.applyFeatureStyle(selectedFeatures, selectedLayer);
+					unSelectFeatures(selectedFeatures);
 				} else {
+					if(clearFeatureStyle) {
+						clearFeatureStyles();
+					}					
 					vectorStyleAssistant.applyLayerStyle(selectedLayer);
 					
 					if(selectedLayer.getVectorStyle().isColorThemingEnabled()
@@ -175,7 +209,7 @@ public class ChangeStyleTool extends ButtonTool {
 				progressDialog.hide();
 				
 				vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
-					.fadeToggle();
+					.fadeToggle();							
 			}
 		});				
 	}	
@@ -211,7 +245,7 @@ public class ChangeStyleTool extends ButtonTool {
 		
 		return selectedFeatures != null && selectedFeatures.length > 0;
 	}
-	
+		
 	private boolean isFeatureStyleApplied() {
 		VectorLayer selectedLayer = vectorLayerStyleWidget.getSelectedLayer();
 		
@@ -229,5 +263,19 @@ public class ChangeStyleTool extends ButtonTool {
 		for(VectorFeature feature : selectedLayer.getFeatures()) {
 			feature.getJSObject().unsetProperty("style");			
 		}
+	}
+	
+	private void unSelectFeatures(VectorFeature[] selectedFeatures) {
+		SelectFeature selectFeatureControl = new SelectFeature(
+				(Vector)vectorLayerStyleWidget.getSelectedLayer());
+		geoMap.addControl(selectFeatureControl);
+		selectFeatureControl.activate();		
+		
+		for(VectorFeature feature : selectedFeatures) {
+			selectFeatureControl.unSelect(feature);
+		}
+		
+		selectFeatureControl.deactivate();
+		geoMap.getMap().removeControl(selectFeatureControl);
 	}
 }

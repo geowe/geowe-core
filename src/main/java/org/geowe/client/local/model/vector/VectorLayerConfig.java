@@ -1,12 +1,8 @@
 package org.geowe.client.local.model.vector;
 
-import java.util.Arrays;
-
 import org.geowe.client.local.layermanager.tool.create.vector.source.LayerVectorSource;
 import org.geowe.client.local.main.map.GeoMap;
-import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.Projection;
-import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 /**
@@ -22,7 +18,6 @@ public class VectorLayerConfig {
 	
 	private String layerName;
 	private String epsg;
-	private StyleMap styleMap;
 	private String geoDataString;
 	private String geoDataFormat;
 	private VectorFeature[] features;
@@ -56,19 +51,6 @@ public class VectorLayerConfig {
 	
 	public Projection getDefaultProjection() {
 		return DEFAUL_PROJECTION;
-	}
-
-	public StyleMap getStyleMap() {
-		StyleMap vectorStyleMap = styleMap;
-		
-		if (vectorStyleMap == null) {
-			vectorStyleMap = StyleFactory.createDefaultStyleMap();
-		}
-		return vectorStyleMap;
-	}
-
-	public void setStyleMap(StyleMap styleMap) {
-		this.styleMap = styleMap;
 	}
 
 	public String getGeoDataString() {
@@ -105,10 +87,8 @@ public class VectorLayerConfig {
 
 	@Override
 	public String toString() {
-		return "VectorLayerConfig [layerName=" + layerName + ", epsg=" + epsg + ", styleMap=" + styleMap
+		return "VectorLayerConfig [layerName=" + layerName + ", epsg=" + epsg  
 				+ ", geoDataString=" + geoDataString + ", geoDataFormat=" + geoDataFormat + ", numFeatures="
 				+ (features == null ? "null" : features.length) + "]";
 	}
-	
-	
 }

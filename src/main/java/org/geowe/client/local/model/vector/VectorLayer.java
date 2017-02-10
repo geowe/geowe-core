@@ -56,7 +56,7 @@ public class VectorLayer extends Vector {
 		super(vector);	
 		
 		this.featureSchema = new FeatureSchema();
-		this.vectorStyle = new VectorStyleDef();
+		setVectorStyle(new VectorStyleDef());
 		addFeatureAddedListener();
 		addFeatureSelectListeners();
 	}
@@ -65,7 +65,7 @@ public class VectorLayer extends Vector {
     	super(name);
     	
     	this.featureSchema = new FeatureSchema();
-    	this.vectorStyle = new VectorStyleDef();
+    	setVectorStyle(new VectorStyleDef());
     	addFeatureAddedListener();
     	addFeatureSelectListeners();
     }
@@ -74,23 +74,19 @@ public class VectorLayer extends Vector {
     	super(name, options);    
     	
     	this.featureSchema = new FeatureSchema();
-    	this.vectorStyle = new VectorStyleDef();
+    	setVectorStyle(new VectorStyleDef());
     	addFeatureAddedListener();
     	addFeatureSelectListeners();
     }    
     
     public VectorLayer(String name, FeatureSchema schema) {
     	this(name);
-    	this.featureSchema = schema;
-    	
-    	this.vectorStyle = new VectorStyleDef();
+    	this.featureSchema = schema;    	    
     }    
         
     public VectorLayer(String name, VectorOptions options, FeatureSchema schema) {
     	this(name, options);    	
-    	this.featureSchema = schema;
-    	
-    	this.vectorStyle = new VectorStyleDef();
+    	this.featureSchema = schema;    	    
     }    
     
     @Override

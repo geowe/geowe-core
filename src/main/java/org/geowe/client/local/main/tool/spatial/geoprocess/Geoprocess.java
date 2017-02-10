@@ -28,12 +28,10 @@ import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
 import org.geowe.client.local.model.vector.VectorLayerFactory;
-import org.geowe.client.local.style.StyleFactory;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.shared.jts.JTSService;
 import org.geowe.client.shared.jts.JTSServiceAsync;
-import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 
@@ -114,12 +112,8 @@ public abstract class Geoprocess implements IGeoprocess {
 	}				
 	
 	protected VectorLayer getResultLayer(final List<String> elements) {
-//		final String normalColor = StyleFactory.stringToColour("result"
-//				+ (int) (Math.random() * 0x1000000));
-		final StyleMap styleMap = StyleFactory.createDefaultStyleMap();
 		final VectorLayerConfig layerConfig = new VectorLayerConfig();
-		layerConfig.setLayerName("geoprocess_result");
-		layerConfig.setStyleMap(styleMap);
+		layerConfig.setLayerName("geoprocess_result");		
 		final VectorLayer layer = VectorLayerFactory.createEmptyVectorLayer(layerConfig);
 
 		for (final String wkt : elements) {			

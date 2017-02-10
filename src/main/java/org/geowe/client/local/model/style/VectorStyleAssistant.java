@@ -25,11 +25,9 @@ package org.geowe.client.local.model.style;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 import org.geowe.client.local.style.VertexStyles;
-import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 /**
@@ -44,8 +42,6 @@ import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 public class VectorStyleAssistant {	
 	@Inject
 	private VectorLayerStyleWidget vectorLayerStyleWidget;
-	@Inject
-	private MessageDialogBuilder dialogBuilder;
 	
 	public void applyLayerStyle(final VectorLayer selectedLayer) {
 		VectorStyleDef style = selectedLayer.getVectorStyle();
@@ -98,15 +94,9 @@ public class VectorStyleAssistant {
 	
 	private void applyLabelStyle(VectorStyleDef style, VectorLayer selectedLayer) {
 		if(vectorLayerStyleWidget.isEnableLabeling()) {
-			if(vectorLayerStyleWidget.getAttributeLabel() != null
-					&& vectorLayerStyleWidget.getFontSize() != null) {			
-				style.getLabel().setAttribute(
+			style.getLabel().setAttribute(
 					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeLabel()));
-				style.getLabel().setFontSize(vectorLayerStyleWidget.getFontSize());
-			} else {
-				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
-						UIMessages.INSTANCE.vlswRequiredLabelDataText()).show();
-			}
+			style.getLabel().setFontSize(vectorLayerStyleWidget.getFontSize());
 			style.getLabel().setBoldStyle(vectorLayerStyleWidget.isUseBoldLabel());
 			style.getLabel().setBackgroundColor(vectorLayerStyleWidget.getBackgroundColor());
 		} else {
@@ -116,15 +106,9 @@ public class VectorStyleAssistant {
 	
 	private void applyColorThemingStyle(VectorStyleDef style, VectorLayer selectedLayer) {
 		if(vectorLayerStyleWidget.isEnableTheming()) {
-			if(vectorLayerStyleWidget.getAttributeTheming() != null) {
-				style.setColorThemingAttribute(
+			style.setColorThemingAttribute(
 					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeTheming()));
-				style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());
-			} else {
-				dialogBuilder.createError(UIMessages.INSTANCE.vlswErrorDialogTitle(), 
-						UIMessages.INSTANCE.vlswRequiredThemingDataText()).show();
-				style.setEnableLegend(false);
-			}			
+			style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());					
 		} else {
 			style.setColorThemingAttribute(null);
 			style.setEnableLegend(false);

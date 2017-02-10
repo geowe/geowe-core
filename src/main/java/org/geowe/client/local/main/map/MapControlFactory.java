@@ -151,6 +151,7 @@ public class MapControlFactory {
 		MeasureOptions measOpts = new MeasureOptions();
 		measOpts.setPersist(true);
 		measOpts.setGeodesic(true);
+		measOpts.getJSObject().setProperty("immediate", true);
 
 		final Style measureStyle = new Style();
 		measureStyle.setFillColor("white");

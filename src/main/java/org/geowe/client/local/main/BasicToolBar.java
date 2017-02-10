@@ -104,6 +104,7 @@ public class BasicToolBar implements IsWidget {
 				.setText(UIMessages.INSTANCE.what3Words())
 				.setTitle("https://what3words.com/").build();
 		w3wAnchor.getElement().getStyle().setColor("#FF0000");
+		w3wAnchor.setVisible(false);
 		w3wPanel.add(w3wAnchor);
 		w3wPanel.add(wordsLabel);
 	}
@@ -159,4 +160,7 @@ public class BasicToolBar implements IsWidget {
 		widget.show();
 	}
 
+	public void setAnchorVisible(boolean isVisible) {
+		w3wAnchor.setVisible(isVisible);
+	}
 }

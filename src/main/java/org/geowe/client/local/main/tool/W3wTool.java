@@ -30,9 +30,9 @@ import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.map.catalog.LayerLoader;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.VectorLayerFactory;
 import org.gwtopenmaps.openlayers.client.LonLat;
 import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.StyleMap;
@@ -77,10 +77,13 @@ public class W3wTool extends ToggleTool {
 
 				if (event.getValue()) {
 					setActive(true);
+					basicToolBar.setAnchorVisible(true);
 					basicToolBar.setAnchorColor(GREEN);
+					basicToolBar.setWhat3Words("");
 					createW3wLayer();
 				} else {
 					setActive(false);
+					basicToolBar.setAnchorVisible(false);
 					basicToolBar.setAnchorColor(RED);
 				}
 			}

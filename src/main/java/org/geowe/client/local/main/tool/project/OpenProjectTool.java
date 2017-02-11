@@ -46,6 +46,9 @@ import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitComplet
  * Responsable de cargar la configuración de un proyecto de geowe
  * 
  * @author jose@geowe.org
+ * @since 11-02-2017
+ * @author rafa@geowe.org 
+ * fix issue 303
  *
  */
 @ApplicationScoped
@@ -126,16 +129,23 @@ public class OpenProjectTool extends ButtonTool {
 					public void run() {
 												
 						if (openProjectDialog.getActiveTab().equals(UIMessages.INSTANCE.file())) {
-							autoMessageBox = new ProgressBarDialog(false,
-									UIMessages.INSTANCE.processing());
-							autoMessageBox.show();
-							openProjectDialog.getUploadPanel().submit();
+							if(openProjectDialog.isFileFieldCorrectFilled()){
+								autoMessageBox = new ProgressBarDialog(false,
+										UIMessages.INSTANCE.processing());
+								autoMessageBox.show();
+								openProjectDialog.getUploadPanel().submit();	
+							}else{
+								showAlert(UIMessages.INSTANCE.lrasterdAlertMessageBoxLabel(UIMessages.INSTANCE.file()));
+							}
 						}
 						if (openProjectDialog.getActiveTab().equals(UIMessages.INSTANCE.url())) {
-							urlProjectLoader.open(urlProjectLoader, openProjectDialog.getUrl());
-							openProjectDialog.hide();
+							if(openProjectDialog.isurlFieldCorrectFilled()){
+								urlProjectLoader.open(urlProjectLoader, openProjectDialog.getUrl());
+								openProjectDialog.hide();	
+							}else{
+								showAlert(UIMessages.INSTANCE.lrasterdAlertMessageBoxLabel(UIMessages.INSTANCE.url()));
+							}
 						}
-												
 					}
 
 				});

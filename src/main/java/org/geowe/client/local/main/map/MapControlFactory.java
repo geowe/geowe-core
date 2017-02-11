@@ -39,7 +39,6 @@ import org.gwtopenmaps.openlayers.client.control.GraticuleOptions;
 import org.gwtopenmaps.openlayers.client.control.Measure;
 import org.gwtopenmaps.openlayers.client.control.MeasureOptions;
 import org.gwtopenmaps.openlayers.client.control.ModifyFeature;
-import org.gwtopenmaps.openlayers.client.control.ModifyFeature.OnModificationStartListener;
 import org.gwtopenmaps.openlayers.client.control.ModifyFeatureOptions;
 import org.gwtopenmaps.openlayers.client.control.SelectFeature;
 import org.gwtopenmaps.openlayers.client.control.SelectFeature.ClickFeatureListener;
@@ -173,7 +172,8 @@ public class MapControlFactory {
 		MeasureOptions measOpts = new MeasureOptions();
 		measOpts.setPersist(true);
 		measOpts.setGeodesic(true);
-
+		measOpts.getJSObject().setProperty("immediate", true);
+		
 		final Style measureStyle = new Style();
 		measureStyle.setFillColor("white");
 		measureStyle.setFillOpacity(0.3);
@@ -300,6 +300,20 @@ public class MapControlFactory {
 		rotationHandlerStyle.setStrokeColor("yellow");
 
 		return rotationHandlerStyle;
+	}
+	
+	public Measure createNonPersistImmediateMeasure() {
+		MeasureOptions measOpts = new MeasureOptions();
+		measOpts.setGeodesic(true);
+		measOpts.getJSObject().setProperty("immediate", true);
+		PathHandlerOptions phOpt = new PathHandlerOptions();
+		final Style measureStyle = new Style();
+		measureStyle.setStrokeOpacity(0D);
+		phOpt.setStyleMap(new StyleMap(measureStyle));
+		measOpts.setHandlerOptions(phOpt);
+		Measure measure = new Measure(new PathHandler(), measOpts);
+		
+		return measure;
 	}
 
 }

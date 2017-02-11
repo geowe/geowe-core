@@ -28,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
+import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.map.MapControlFactory;
 import org.geowe.client.local.main.tool.ToggleTool;
@@ -36,6 +37,7 @@ import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.gwtopenmaps.openlayers.client.control.Measure;
 import org.gwtopenmaps.openlayers.client.event.MeasureEvent;
 import org.gwtopenmaps.openlayers.client.event.MeasureListener;
+import org.gwtopenmaps.openlayers.client.event.MeasurePartialListener;
 
 import com.google.inject.Inject;
 import com.sencha.gxt.core.client.Style.Side;
@@ -54,6 +56,9 @@ public class MeasureAreaTool extends ToggleTool {
 
 	@Inject
 	private MessageDialogBuilder messageDialogBuilder;
+	
+	@Inject
+	private BasicToolBar basicToolBar;
 
 	@Inject
 	public MeasureAreaTool(GeoMap geoMap) {
@@ -68,6 +73,7 @@ public class MeasureAreaTool extends ToggleTool {
 	private void initialize() {
 		Measure measure = mapControlFactory.createMesaureAreaControl();
 		measure.addMeasureListener(getMeasureListener());
+		measure.addMeasurePartialListener(getPartialListener());
 		add(measure);
 	}
 
@@ -84,12 +90,29 @@ public class MeasureAreaTool extends ToggleTool {
 										+ " " + eventObject.getUnits() + "²")
 						.show();
 			}
-
-			private float getReoundedMeasure(Float measure, int decimal) {
-				BigDecimal bd = new BigDecimal(Float.toString(measure));
-				bd = bd.setScale(decimal, BigDecimal.ROUND_HALF_UP);
-				return bd.floatValue();
+		};
+	}
+	
+	private MeasurePartialListener getPartialListener() {
+		return new MeasurePartialListener() {
+			@Override
+			public void onMeasurePartial(MeasureEvent eventObject) {
+				String partialMeasure = getToolBarMessage(eventObject);
+				basicToolBar.setWhat3Words(partialMeasure);
 			}
 		};
+	}
+	
+	private float getReoundedMeasure(Float measure, int decimal) {
+		BigDecimal bd = new BigDecimal(Float.toString(measure));
+		bd = bd.setScale(decimal, BigDecimal.ROUND_HALF_UP);
+		return bd.floatValue();
+	}
+	
+	private String getToolBarMessage(MeasureEvent eventObject) {
+		return UIMessages.INSTANCE.measure()
+				+ ": "
+				+ getReoundedMeasure(eventObject.getMeasure(), 3)
+				+ " " + eventObject.getUnits() + "²";
 	}
 }

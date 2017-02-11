@@ -27,11 +27,16 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.map.MapControlFactory;
 import org.geowe.client.local.main.tool.ToggleTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.DrawFeature;
+import org.gwtopenmaps.openlayers.client.control.Measure;
+import org.gwtopenmaps.openlayers.client.event.MeasureEvent;
+import org.gwtopenmaps.openlayers.client.event.MeasurePartialListener;
 import org.gwtopenmaps.openlayers.client.handler.PolygonHandler;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
@@ -46,33 +51,48 @@ import com.sencha.gxt.core.client.Style.Side;
  *
  */
 @ApplicationScoped
-public class PolygonTool extends ToggleTool implements DrawTool{
-	
+public class PolygonTool extends ToggleTool implements DrawTool {
+
+	@Inject
+	private BasicToolBar basicToolBar;
+
+	@Inject
+	private MapControlFactory mapControlFactory;
+
 	@Inject
 	public PolygonTool(GeoMap geoMap, LayerManagerWidget layerManager) {
-		super(UIMessages.INSTANCE.polygonToolText(), ImageProvider.INSTANCE
-				.polygon(), geoMap, layerManager);
-		setToolTipConfig(createTooltipConfig(
-				UIMessages.INSTANCE.polygonToolText(),
+		super(UIMessages.INSTANCE.polygonToolText(), ImageProvider.INSTANCE.polygon(), geoMap, layerManager);
+		setToolTipConfig(createTooltipConfig(UIMessages.INSTANCE.polygonToolText(),
 				UIMessages.INSTANCE.drawPolygonToolTip(), Side.LEFT));
 		setEnabled(false);
 	}
-	
+
 	@PostConstruct
 	private void initialize() {
 		add(createDrawTool(new Vector("Empty")));
+		add(createMeasure());
 		setCancelable();
 		setUndoadable();
 		setRedoadable();
 	}
 
-
 	@Override
 	public Control createDrawTool(Layer layer) {
-		DrawFeature drawFeature = new DrawFeature((Vector) layer,
-				new PolygonHandler());
+		DrawFeature drawFeature = new DrawFeature((Vector) layer, new PolygonHandler());
 
 		return drawFeature;
+	}
+
+	private Control createMeasure() {
+		Measure measure = mapControlFactory.createNonPersistImmediateMeasure();
+		measure.addMeasurePartialListener(new MeasurePartialListener() {
+			@Override
+			public void onMeasurePartial(MeasureEvent eventObject) {
+				basicToolBar.setWhat3Words(String.valueOf(eventObject.getMeasure())
+						+ " " + eventObject.getUnits());
+			}
+		});
+		return measure;
 	}
 
 }

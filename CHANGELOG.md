@@ -8,6 +8,15 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - GeoJson CSS: feature level Style
 
 
+## [1.4.9]Beta - 2017-02-11
+ 
+### Added
+- Added immediate measure in area measure tool.
+- Added immediate measure in draw polygon tool. 
+
+### Fixed
+- issue [#190](https://github.com/geowe/geowe-core/issues/190)
+
 ## [1.4.8]Beta - 2017-02-10
 version deployed for testing [map.geowe.org](http://map.geowe.org) 
 ### Added

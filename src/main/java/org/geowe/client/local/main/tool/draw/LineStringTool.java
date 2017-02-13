@@ -29,18 +29,15 @@ import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.map.MapControlFactory;
 import org.geowe.client.local.main.tool.ToggleTool;
 import org.geowe.client.local.messages.UIMessages;
-import org.gwtopenmaps.openlayers.client.Style;
-import org.gwtopenmaps.openlayers.client.StyleMap;
 import org.gwtopenmaps.openlayers.client.control.Control;
 import org.gwtopenmaps.openlayers.client.control.DrawFeature;
 import org.gwtopenmaps.openlayers.client.control.Measure;
-import org.gwtopenmaps.openlayers.client.control.MeasureOptions;
 import org.gwtopenmaps.openlayers.client.event.MeasureEvent;
 import org.gwtopenmaps.openlayers.client.event.MeasurePartialListener;
 import org.gwtopenmaps.openlayers.client.handler.PathHandler;
-import org.gwtopenmaps.openlayers.client.handler.PathHandlerOptions;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 
@@ -58,17 +55,18 @@ public class LineStringTool extends ToggleTool implements DrawTool {
 
 	@Inject
 	private BasicToolBar basicToolBar;
-	
+
+	@Inject
+	private MapControlFactory mapControlFactory;
+
 	@Inject
 	public LineStringTool(GeoMap geoMap, LayerManagerWidget layerManager) {
-		super(UIMessages.INSTANCE.lineStringToolText(), ImageProvider.INSTANCE
-				.lineString(), geoMap, layerManager);
-		setToolTipConfig(createTooltipConfig(
-				UIMessages.INSTANCE.lineStringToolText(),
+		super(UIMessages.INSTANCE.lineStringToolText(), ImageProvider.INSTANCE.lineString(), geoMap, layerManager);
+		setToolTipConfig(createTooltipConfig(UIMessages.INSTANCE.lineStringToolText(),
 				UIMessages.INSTANCE.drawLineToolTip(), Side.LEFT));
 		setEnabled(false);
 	}
-	
+
 	@PostConstruct
 	private void initialize() {
 		add(createDrawTool(new Vector("Empty")));
@@ -78,38 +76,22 @@ public class LineStringTool extends ToggleTool implements DrawTool {
 		setRedoadable();
 	}
 
-
 	@Override
 	public Control createDrawTool(Layer layer) {
 		return new DrawFeature((Vector) layer, new PathHandler());
 	}
-	
-	private Control createMeasure() {
-		MeasureOptions measOpts = new MeasureOptions();
-		measOpts.setGeodesic(true);
-		measOpts.getJSObject().setProperty("immediate", true);
-		PathHandlerOptions phOpt = new PathHandlerOptions();
 
-		phOpt.setStyleMap(createMeasureStyleMap());
-		measOpts.setHandlerOptions(phOpt);
-		Measure measure = new Measure(new PathHandler(), measOpts);
-		
+	private Control createMeasure() {
+		Measure measure = mapControlFactory.createNonPersistImmediateMeasure();
 		measure.addMeasurePartialListener(new MeasurePartialListener() {
 			@Override
 			public void onMeasurePartial(MeasureEvent eventObject) {
-				basicToolBar.setWhat3Words(String.valueOf(eventObject
-						.getMeasure()) + " " + eventObject.getUnits());
+				basicToolBar.setWhat3Words(String.valueOf(eventObject.getMeasure())
+						+ " " + eventObject.getUnits());
 			}
 		});
 
 		return measure;
-	}
-
-	private StyleMap createMeasureStyleMap() {
-		final Style measureStyle = new Style();
-		measureStyle.setStrokeOpacity(0D);
-
-		return new StyleMap(measureStyle);
 	}
 
 }

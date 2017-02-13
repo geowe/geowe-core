@@ -30,12 +30,6 @@ import org.geowe.client.local.main.AnchorBuilder;
 import org.geowe.client.local.messages.UIMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.Anchor;
@@ -47,7 +41,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
-import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -56,19 +49,20 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.FileUploadField;
 import com.sencha.gxt.widget.core.client.form.FormPanel;
-import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Encoding;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * Ventana encargada de realizar la carga de la sesión de trabajo
  * 
  * @author jose@geowe.org
- *
+ * @since 11-02-2017
+ * @author rafa@geowe.org 
+ * fix issue 303
  */
 @ApplicationScoped
 public class OpenProjectDialog extends Dialog {
-	public static final int FEATURES_PER_PAGE = 50;
 	private PlainTabPanel tabPanel;
 	private TextField urlTextField;
 	private Anchor urlToShareAnchor;
@@ -132,6 +126,7 @@ public class OpenProjectDialog extends Dialog {
 		urlTextField.setBorders(true);
 		urlTextField.setEmptyText("http://");
 		urlTextField.setWidth(400);
+		urlTextField.setAllowBlank(false);
 		geoDataContainer.add(urlTextField);
 
 		HorizontalPanel horizontalContainer = new HorizontalPanel();
@@ -222,5 +217,13 @@ public class OpenProjectDialog extends Dialog {
 	
 	public String getUrl() {
 		return this.urlTextField.getText();
+	}
+	
+	public boolean isFileFieldCorrectFilled(){
+		return file.isValid();
+	}
+	
+	public boolean isurlFieldCorrectFilled(){
+		return urlTextField.isValid();
 	}
 }

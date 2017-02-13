@@ -25,6 +25,7 @@ package org.geowe.client.local.model.style;
 
 import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.model.vector.format.GeoJSONCSS;
+import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
@@ -92,17 +93,25 @@ public class LeafletStyle {
 	}
 	
 	
-	public static JSONObject getFeatureStyle(VectorFeatureStyleDef def) {
-		ProjectLayerStyle style = null;
+	public static JSObject getFeatureStyle(VectorFeatureStyleDef def) {
+//		ProjectLayerStyle style = null;
 		String fillColor = def.getFill().getNormalColor();
 		Double fillOpacity = def.getFill().getOpacity();
 		String strokeColor = def.getLine().getNormalColor();
 		Double strokeWidth = new Double(def.getLine().getThickness());
 		
-		style = new ProjectLayerStyle(fillColor, fillOpacity, strokeColor,
-				strokeWidth);
+		JSObject object = JSObject.createJSObject();
+		object.setProperty(FILL_NAME, true);
+		object.setProperty(FILL_COLOR_NAME, fillColor);
+		object.setProperty(FILL_OPACITY_NAME, fillOpacity);
+		object.setProperty(STROKE_COLOR_NAME, strokeColor);
+		object.setProperty(STROKE_WIDTH_NAME, strokeWidth);
 		
-		return getStyle(style);
+		return object;
+//		style = new ProjectLayerStyle(fillColor, fillOpacity, strokeColor,
+//				strokeWidth);
+		
+//		return getStyle(style);
 	}
 
 	private static String getStringValue(JSONObject styleObject, String key) {

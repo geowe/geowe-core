@@ -197,6 +197,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
         if(bbox) {
             feature.bounds = OpenLayers.Bounds.fromArray(bbox);
         }
+        
+        if(obj.style) {
+        	feature.style = obj.style;
+        }
+        
         if(obj.id) {
             feature.fid = obj.id;
         }
@@ -530,12 +535,23 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
          */
         'feature': function(feature) {
             var geom = this.extract.geometry.apply(this, [feature.geometry]);
+            
             var json = {
-                "type": "Feature",
-                "properties": feature.attributes,
-                "geometry": geom,
-                "style": feature.style
-            };
+	                "type": "Feature",
+	                "properties": feature.attributes,
+	                "geometry": geom
+	            };
+            
+            if(feature.style) {
+	             json = {
+	                "type": "Feature",
+	                "properties": feature.attributes,
+	                "geometry": geom,
+	                "style": feature.style
+	            };
+            }
+            
+            
             if (feature.fid != null) {
                 json.id = feature.fid;
             }

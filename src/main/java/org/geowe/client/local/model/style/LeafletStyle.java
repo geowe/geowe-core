@@ -90,6 +90,20 @@ public class LeafletStyle {
 
 		return style;
 	}
+	
+	
+	public static JSONObject getFeatureStyle(VectorFeatureStyleDef def) {
+		ProjectLayerStyle style = null;
+		String fillColor = def.getFill().getNormalColor();
+		Double fillOpacity = def.getFill().getOpacity();
+		String strokeColor = def.getLine().getNormalColor();
+		Double strokeWidth = new Double(def.getLine().getThickness());
+		
+		style = new ProjectLayerStyle(fillColor, fillOpacity, strokeColor,
+				strokeWidth);
+		
+		return getStyle(style);
+	}
 
 	private static String getStringValue(JSONObject styleObject, String key) {
 		String newValue = "";

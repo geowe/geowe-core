@@ -25,14 +25,17 @@ package org.geowe.client.local.model.vector.format;
 
 import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.model.style.LeafletStyle;
+import org.geowe.client.local.model.style.VectorFeatureStyleDef;
+import org.geowe.client.local.model.vector.VectorLayer;
+import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
-import org.gwtopenmaps.openlayers.client.format.GeoJSON;
-import org.gwtopenmaps.openlayers.client.format.GeoJSONImpl;
+import org.gwtopenmaps.openlayers.client.format.VectorFormat;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+
 
 /**
  * Representa el formato vectorial GeoJSON CSS según la especificación Leaflet
@@ -42,9 +45,15 @@ import com.google.gwt.json.client.JSONValue;
  * @author jose@geowe.org
  */
 
-public class GeoJSONCSS extends GeoJSON {
+
+public class GeoJSONCSS extends VectorFormat {
 	private ProjectLayerStyle style;
 	public static final String STYLE_NAME = "style";
+	private VectorLayer layer;
+
+	public void setLaver(VectorLayer layer) {
+		this.layer = layer;
+	}
 
 	public void setStyle(ProjectLayerStyle style) {
 		this.style = style;
@@ -55,16 +64,32 @@ public class GeoJSONCSS extends GeoJSON {
 	}
 
 	public GeoJSONCSS() {
-		this(GeoJSONImpl.create());
+		this(GeoJSONCSSImpl.create());
 	}
 
 	/**
 	 * Para exportar a formato GeoJSON CSS. Se incluye el atributo "style" a nivel de capa 
 	 */
 	public String write(VectorFeature[] vectorFeatures) {
-		GeoJSON geoJSONObject = new GeoJSON();
-		String geojson = geoJSONObject.write(vectorFeatures);
-
+		
+		
+		for(VectorFeature vf: vectorFeatures) {
+			Style style = vf.getStyle();
+			if(style != null) {
+				VectorFeatureStyleDef def = new VectorFeatureStyleDef(vf, layer);
+				
+				vf.getJSObject().setProperty("style", LeafletStyle.getFeatureStyle(def).toString());
+			}
+			
+			 
+		}
+		
+	
+		//GeoJSONCSS geoJSONObject = new GeoJSONCSS();
+		//String geojson = geoJSONObject.write(vectorFeatures);
+		
+		String geojson = super.write(vectorFeatures);
+		
 		final JSONValue jsonValue = JSONParser.parseLenient(geojson);
 		final JSONObject geoJSONCssObject = jsonValue.isObject();
 

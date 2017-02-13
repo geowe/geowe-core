@@ -339,6 +339,7 @@ public class ExportDataTool extends LayerTool implements
 		}
 		else if (vectorFormat.getId() == VectorFormat.GEOJSON_CSS_FORMAT.getId()) {
 			format = new GeoJSONCSS();
+			((GeoJSONCSS)format).setLaver(selectedLayer);
 			((GeoJSONCSS)format).setStyle(getStyleLayer(selectedLayer));			
 		} 
 

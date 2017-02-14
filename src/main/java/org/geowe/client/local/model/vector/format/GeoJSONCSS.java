@@ -106,11 +106,12 @@ public class GeoJSONCSS extends VectorFormat {
 				String strokeColor = styleObject.getPropertyAsString(LeafletStyle.STROKE_COLOR_NAME);
 				Double strokeWidth = styleObject.getPropertyAsDouble(LeafletStyle.STROKE_WIDTH_NAME);
 
-				VectorFeatureStyleDef def = new VectorFeatureStyleDef(vf, null);
+				VectorFeatureStyleDef def = new VectorFeatureStyleDef();
 				def.getFill().setNormalColor(fillColor);
 				def.getFill().setOpacity(fillOpacity);
 				def.getLine().setNormalColor(strokeColor);
 				def.getLine().setThickness(strokeWidth.intValue());
+				vf.setStyle(def.toStyle(vf));
 			}
 
 			vfs[i] = vf;

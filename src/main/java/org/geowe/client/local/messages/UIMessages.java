@@ -431,11 +431,15 @@ public interface UIMessages extends Messages {
 	
 	String vlswErrorDialogTitle();
 	
+	String vlswWarningDialogTitle();
+	
 	String vlswRequiredLabelDataText();
 	
 	String vlswRequiredThemingDataText();
 	
 	String vlswOverrideFeatureStyle();
+	
+	String vlswClearFeatureStyleText();
 
 	String vlsLineAndColor();
 

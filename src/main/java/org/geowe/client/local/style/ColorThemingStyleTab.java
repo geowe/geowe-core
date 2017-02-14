@@ -24,11 +24,14 @@ package org.geowe.client.local.style;
 
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.style.VectorStyleDef;
+import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.ui.FeatureAttributeComboBox;
 import org.geowe.client.local.ui.KeyShortcutHandler;
+import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -64,6 +67,9 @@ public class ColorThemingStyleTab extends StyleTab {
 				enableLegend.setValue(event.getValue());
 				enableLegend.setEnabled(event.getValue());
 
+				if(event.getValue() && isFeatureStyleApplied(selectedLayer)) {
+					showColorThemingStyleWarning();
+				}
 			}
 		});
 
@@ -115,5 +121,24 @@ public class ColorThemingStyleTab extends StyleTab {
 	protected void addKeyShortcut(TextButton button, int keyCode) {
 		KeyShortcutHandler keyShortcut = new KeyShortcutHandler(button, keyCode);
 		attributeTheming.addKeyDownHandler(keyShortcut);		
+	}
+	
+	private boolean isFeatureStyleApplied(final VectorLayer selectedLayer) {		
+		for(VectorFeature feature : selectedLayer.getFeatures()) {
+			if(feature.getStyle() != null) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void showColorThemingStyleWarning() {
+		final MessageBox messageBox = new MessageBox(
+				UIMessages.INSTANCE.vlswWarningDialogTitle(), 
+				UIMessages.INSTANCE.vlswClearFeatureStyleText());
+		messageBox.setIcon(MessageBox.ICONS.info());
+		
+		messageBox.show();
 	}
 }

@@ -120,7 +120,13 @@ public class ChangeStyleTool extends ButtonTool {
 	private void onApplyButtonSelected(final SelectEvent event) {
 		if(checkStyleSettings()) {
 			if(!isFeatureStyleMode() && isFeatureStyleApplied()) {
-				clearFeatureStyleConfirmRequest();
+				if(!vectorLayerStyleWidget.isEnableTheming()) {
+					clearFeatureStyleConfirmRequest();
+				} else {
+					//Al activar el color temático, se eliminan de oficio 
+					//todos existentes los estilos a nivel de feature
+					applyStyleSettings(true);
+				}
 			} else {
 				applyStyleSettings(false);
 			}
@@ -193,7 +199,7 @@ public class ChangeStyleTool extends ButtonTool {
 					unSelectFeatures(selectedFeatures);
 				} else {
 					if(clearFeatureStyle) {
-						clearFeatureStyles();
+						vectorStyleAssistant.clearFeatureStyles(selectedLayer);
 					}					
 					vectorStyleAssistant.applyLayerStyle(selectedLayer);
 					
@@ -245,24 +251,10 @@ public class ChangeStyleTool extends ButtonTool {
 		
 		return selectedFeatures != null && selectedFeatures.length > 0;
 	}
-		
-	private boolean isFeatureStyleApplied() {
-		VectorLayer selectedLayer = vectorLayerStyleWidget.getSelectedLayer();
-		
-		for(VectorFeature feature : selectedLayer.getFeatures()) {
-			if(feature.getStyle() != null) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
-	private void clearFeatureStyles() {
-		VectorLayer selectedLayer = vectorLayerStyleWidget.getSelectedLayer();
-		for(VectorFeature feature : selectedLayer.getFeatures()) {
-			feature.getJSObject().unsetProperty("style");			
-		}
+	private boolean isFeatureStyleApplied() {
+		return vectorStyleAssistant.isFeatureStyleApplied(
+				vectorLayerStyleWidget.getSelectedLayer());
 	}
 	
 	private void unSelectFeatures(VectorFeature[] selectedFeatures) {

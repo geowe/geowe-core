@@ -42,7 +42,7 @@ import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 public class VectorStyleAssistant {	
 	@Inject
 	private VectorLayerStyleWidget vectorLayerStyleWidget;
-	
+
 	public void applyLayerStyle(final VectorLayer selectedLayer) {
 		VectorStyleDef style = selectedLayer.getVectorStyle();
 		applyStyle(style, selectedLayer);						
@@ -58,6 +58,22 @@ public class VectorStyleAssistant {
 		VectorFeatureStyleDef featureStyle = new VectorFeatureStyleDef(feature, layer);
 		applyStyle(featureStyle, layer);
 		feature.setStyle(featureStyle.toStyle(feature));
+	}
+	
+	public void clearFeatureStyles(final VectorLayer selectedLayer) {		
+		for(VectorFeature feature : selectedLayer.getFeatures()) {
+			feature.getJSObject().unsetProperty("style");			
+		}
+	}
+	
+	public boolean isFeatureStyleApplied(final VectorLayer selectedLayer) {		
+		for(VectorFeature feature : selectedLayer.getFeatures()) {
+			if(feature.getStyle() != null) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private void applyStyle(VectorStyleDef style, VectorLayer selectedLayer) {
@@ -108,7 +124,7 @@ public class VectorStyleAssistant {
 		if(vectorLayerStyleWidget.isEnableTheming()) {
 			style.setColorThemingAttribute(
 					selectedLayer.getAttribute(vectorLayerStyleWidget.getAttributeTheming()));
-			style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());					
+			style.setEnableLegend(vectorLayerStyleWidget.isEnableLegend());											
 		} else {
 			style.setColorThemingAttribute(null);
 			style.setEnableLegend(false);

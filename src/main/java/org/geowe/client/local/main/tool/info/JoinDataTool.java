@@ -83,7 +83,7 @@ public class JoinDataTool extends LayerTool {
 
 	@Override
 	public ImageResource getIcon() {
-		return ImageProvider.INSTANCE.fileText24();
+		return ImageProvider.INSTANCE.attributeList24();
 	}
 
 	@PostConstruct

@@ -177,11 +177,9 @@ public class CSV {
 		for (int i = 1; i < csvLines.length; i++) {
 			String[] csvItem = csvLines[i].split(CSV_SEPARATOR);
 
-			CsvItem item = null;
 			if (isCsvLineValid(csvAttrNames, csvItem)) {
-				item = getCsvItem(csvAttrNames, csvItem);
+				items.add(getCsvItem(csvAttrNames, csvItem));
 			}
-			items.add(item);
 		}
 
 		return items;

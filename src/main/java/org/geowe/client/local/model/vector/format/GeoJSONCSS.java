@@ -25,9 +25,14 @@ package org.geowe.client.local.model.vector.format;
 
 import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.model.style.LeafletStyle;
+import org.geowe.client.local.model.style.VectorFeatureStyleDef;
+import org.geowe.client.local.model.style.VectorStyleDef;
+import org.geowe.client.local.model.vector.VectorLayer;
+import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
-import org.gwtopenmaps.openlayers.client.format.GeoJSON;
-import org.gwtopenmaps.openlayers.client.format.GeoJSONImpl;
+import org.gwtopenmaps.openlayers.client.format.FormatImpl;
+import org.gwtopenmaps.openlayers.client.format.VectorFormat;
+import org.gwtopenmaps.openlayers.client.util.JObjectArray;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
 import com.google.gwt.json.client.JSONObject;
@@ -42,12 +47,13 @@ import com.google.gwt.json.client.JSONValue;
  * @author jose@geowe.org
  */
 
-public class GeoJSONCSS extends GeoJSON {
-	private ProjectLayerStyle style;
+public class GeoJSONCSS extends VectorFormat {
+	
 	public static final String STYLE_NAME = "style";
+	private VectorLayer layer;
 
-	public void setStyle(ProjectLayerStyle style) {
-		this.style = style;
+	public void setLayer(VectorLayer layer) {
+		this.layer = layer;		
 	}
 
 	protected GeoJSONCSS(JSObject geoJSONFormat) {
@@ -55,21 +61,70 @@ public class GeoJSONCSS extends GeoJSON {
 	}
 
 	public GeoJSONCSS() {
-		this(GeoJSONImpl.create());
+		this(GeoJSONCSSImpl.create());
 	}
 
 	/**
-	 * Para exportar a formato GeoJSON CSS. Se incluye el atributo "style" a nivel de capa 
+	 * Para exportar a formato GeoJSON CSS. Se incluye el atributo "style" a
+	 * nivel de capa
 	 */
 	public String write(VectorFeature[] vectorFeatures) {
-		GeoJSON geoJSONObject = new GeoJSON();
-		String geojson = geoJSONObject.write(vectorFeatures);
+
+		for (VectorFeature vf : vectorFeatures) {
+			Style style = vf.getStyle();
+			if (style != null) {
+				VectorFeatureStyleDef def = new VectorFeatureStyleDef(vf, layer);
+				vf.getJSObject().setProperty("style", LeafletStyle.getFeatureStyle(def));
+			}
+		}
+
+		String geojson = super.write(vectorFeatures);
 
 		final JSONValue jsonValue = JSONParser.parseLenient(geojson);
 		final JSONObject geoJSONCssObject = jsonValue.isObject();
 
-		geoJSONCssObject.put(STYLE_NAME, LeafletStyle.getStyle(style));
+		geoJSONCssObject.put(STYLE_NAME, LeafletStyle.getStyle(getStyleLayer(layer)));
 		return geoJSONCssObject.toString();
 	}
+
+	public VectorFeature[] read(String vectorFormatString) {
+		JSObject out = FormatImpl.read(getJSObject(), vectorFormatString);
+		JObjectArray jObjectArray = JObjectArray.narrowToJObjectArray(out.ensureOpaqueArray());
+		int nr = jObjectArray.length();
+		VectorFeature[] vfs = new VectorFeature[nr];
+		for (int i = 0; i < nr; i++) {
+
+			VectorFeature vf = VectorFeature.narrowToVectorFeature(jObjectArray.get(i));
+
+			JSObject styleObject = jObjectArray.get(i).getProperty("style");
+			if (styleObject != null) {
+				String fillColor = styleObject.getPropertyAsString(LeafletStyle.FILL_COLOR_NAME);
+				Double fillOpacity = styleObject.getPropertyAsDouble(LeafletStyle.FILL_OPACITY_NAME);
+				String strokeColor = styleObject.getPropertyAsString(LeafletStyle.STROKE_COLOR_NAME);
+				Double strokeWidth = styleObject.getPropertyAsDouble(LeafletStyle.STROKE_WIDTH_NAME);
+
+				VectorFeatureStyleDef def = new VectorFeatureStyleDef();
+				def.getFill().setNormalColor(fillColor);
+				def.getFill().setOpacity(fillOpacity);
+				def.getLine().setNormalColor(strokeColor);
+				def.getLine().setThickness(strokeWidth.intValue());
+				vf.setStyle(def.toStyle(vf));
+			}
+
+			vfs[i] = vf;
+		}
+
+		return vfs;
+	}
 	
+	private ProjectLayerStyle getStyleLayer(VectorLayer vector) {
+		
+		VectorStyleDef vectorStyleDef = vector.getVectorStyle();
+		String fillColor = vectorStyleDef.getFill().getNormalColor();
+		Double fillOpacity = vectorStyleDef.getFill().getOpacity(); 
+		String strokeColor = vectorStyleDef.getLine().getNormalColor();
+		Double strokeWidth = new Double(vectorStyleDef.getLine().getThickness());
+		
+		return new ProjectLayerStyle(fillColor, fillOpacity, strokeColor, strokeWidth);
+	}
 }

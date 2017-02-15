@@ -80,6 +80,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private CopyLayerTool copyLayerTool;
 	@Inject
 	private LayerManagerWidget layerManagerWidget;
+	@Inject
+	private JoinDataTool joinDataTool;
 
 	private TextField layerNameField;
 	private TextField projectionField;
@@ -181,6 +183,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		infoPanel2.add(numElementsField);
 
 		infoPanel2.add(htmlReportLayerTool);
+		infoPanel2.add(joinDataTool);
 
 		HorizontalLayoutContainer hPanel = new HorizontalLayoutContainer();
 

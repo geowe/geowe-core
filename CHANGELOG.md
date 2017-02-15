@@ -8,6 +8,18 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - GeoJson CSS: feature level Style
 
 
+## [1.4.11]Beta - 2017-02-15
+ 
+### Added
+- Added layer-level and feature-level basic styles for GeoJSON CSS support.
+
+
+## [1.4.10]Beta - 2017-02-14
+ 
+### Fixed
+- issue [#1304](https://github.com/geowe/geowe-core/issues/304)
+
+
 ## [1.4.9]Beta - 2017-02-11
  
 ### Added

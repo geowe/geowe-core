@@ -94,7 +94,7 @@ public class LeafletStyle {
 	
 	
 	public static JSObject getFeatureStyle(VectorFeatureStyleDef def) {
-//		ProjectLayerStyle style = null;
+
 		String fillColor = def.getFill().getNormalColor();
 		Double fillOpacity = def.getFill().getOpacity();
 		String strokeColor = def.getLine().getNormalColor();
@@ -108,10 +108,6 @@ public class LeafletStyle {
 		object.setProperty(STROKE_WIDTH_NAME, strokeWidth);
 		
 		return object;
-//		style = new ProjectLayerStyle(fillColor, fillOpacity, strokeColor,
-//				strokeWidth);
-		
-//		return getStyle(style);
 	}
 
 	private static String getStringValue(JSONObject styleObject, String key) {

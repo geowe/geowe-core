@@ -16,9 +16,9 @@
  */
 
 /**
- * Class: OpenLayers.Format.GeoJSON
- * Read and write GeoJSON. Create a new parser with the
- *     <OpenLayers.Format.GeoJSON> constructor.
+ * Class: OpenLayers.Format.GeoJSONCSS
+ * Read and write GeoJSONCSS. Create a new parser with the
+ *     <OpenLayers.Format.GeoJSONCSS> constructor.
  *
  * Inherits from:
  *  - <OpenLayers.Format.JSON>
@@ -33,7 +33,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
     ignoreExtraDims: false,
     
     /**
-     * Constructor: OpenLayers.Format.GeoJSON
+     * Constructor: OpenLayers.Format.GeoJSONCSS
      * Create a new parser for GeoJSON.
      *
      * Parameters:
@@ -43,7 +43,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
 
     /**
      * APIMethod: read
-     * Deserialize a GeoJSON string.
+     * Deserialize a GeoJSONCSS string.
      *
      * Parameters:
      * json - {String} A GeoJSON string
@@ -136,10 +136,10 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
     
     /**
      * Method: isValidType
-     * Check if a GeoJSON object is a valid representative of the given type.
+     * Check if a GeoJSONCSS object is a valid representative of the given type.
      *
      * Returns:
-     * {Boolean} The object is valid GeoJSON object of the given type.
+     * {Boolean} The object is valid GeoJSONCSS object of the given type.
      */
     isValidType: function(obj, type) {
         var valid = false;
@@ -174,11 +174,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
     
     /**
      * Method: parseFeature
-     * Convert a feature object from GeoJSON into an
+     * Convert a feature object from GeoJSONCSS into an
      *     <OpenLayers.Feature.Vector>.
      *
      * Parameters:
-     * obj - {Object} An object created from a GeoJSON object
+     * obj - {Object} An object created from a GeoJSONCSS object
      *
      * Returns:
      * {<OpenLayers.Feature.Vector>} A feature.
@@ -213,7 +213,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
      * Convert a geometry object from GeoJSON into an <OpenLayers.Geometry>.
      *
      * Parameters:
-     * obj - {Object} An object created from a GeoJSON object
+     * obj - {Object} An object created from a GeoJSONCSS object
      *
      * Returns: 
      * {<OpenLayers.Geometry>} A geometry.
@@ -263,17 +263,17 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
     
     /**
      * Property: parseCoords
-     * Object with properties corresponding to the GeoJSON geometry types.
+     * Object with properties corresponding to the GeoJSONCSS geometry types.
      *     Property values are functions that do the actual parsing.
      */
     parseCoords: {
         /**
          * Method: parseCoords.point
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Parameters:
-         * array - {Object} The coordinates array from the GeoJSON fragment.
+         * array - {Object} The coordinates array from the GeoJSONCSS fragment.
          *
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
@@ -288,11 +288,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
         
         /**
          * Method: parseCoords.multipoint
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Parameters:
-         * array - {Object} The coordinates array from the GeoJSON fragment.
+         * array - {Object} The coordinates array from the GeoJSONCSS fragment.
          *
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
@@ -313,11 +313,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
 
         /**
          * Method: parseCoords.linestring
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Parameters:
-         * array - {Object} The coordinates array from the GeoJSON fragment.
+         * array - {Object} The coordinates array from the GeoJSONCSS fragment.
          *
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
@@ -338,11 +338,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
         
         /**
          * Method: parseCoords.multilinestring
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Parameters:
-         * array - {Object} The coordinates array from the GeoJSON fragment.
+         * array - {Object} The coordinates array from the GeoJSONCSS fragment.
          *
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
@@ -363,7 +363,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
         
         /**
          * Method: parseCoords.polygon
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Returns:
@@ -386,11 +386,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
 
         /**
          * Method: parseCoords.multipolygon
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Parameters:
-         * array - {Object} The coordinates array from the GeoJSON fragment.
+         * array - {Object} The coordinates array from the GeoJSONCSS fragment.
          *
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
@@ -411,11 +411,11 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
 
         /**
          * Method: parseCoords.box
-         * Convert a coordinate array from GeoJSON into an
+         * Convert a coordinate array from GeoJSONCSS into an
          *     <OpenLayers.Geometry>.
          *
          * Parameters:
-         * array - {Object} The coordinates array from the GeoJSON fragment.
+         * array - {Object} The coordinates array from the GeoJSONCSS fragment.
          *
          * Returns:
          * {<OpenLayers.Geometry>} A geometry.
@@ -439,7 +439,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
 
     /**
      * APIMethod: write
-     * Serialize a feature, geometry, array of features into a GeoJSON string.
+     * Serialize a feature, geometry, array of features into a GeoJSONCSS string.
      *
      * Parameters:
      * obj - {Object} An <OpenLayers.Feature.Vector>, <OpenLayers.Geometry>,
@@ -448,7 +448,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
      *     Default is false.
      *
      * Returns:
-     * {String} The GeoJSON string representation of the input geometry,
+     * {String} The GeoJSONCSS string representation of the input geometry,
      *     features, or array of features.
      */
     write: function(obj, pretty) {
@@ -491,7 +491,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
      *
      * Returns:
      * {Object} An object which can be assigned to the crs property
-     * of a GeoJSON object.
+     * of a GeoJSONCSS object.
      */
     createCRSObject: function(object) {
        var proj = object.layer.projection.toString();
@@ -519,13 +519,13 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
     
     /**
      * Property: extract
-     * Object with properties corresponding to the GeoJSON types.
+     * Object with properties corresponding to the GeoJSONCSS types.
      *     Property values are functions that do the actual value extraction.
      */
     extract: {
         /**
          * Method: extract.feature
-         * Return a partial GeoJSON object representing a single feature.
+         * Return a partial GeoJSONCSS object representing a single feature.
          *
          * Parameters:
          * feature - {<OpenLayers.Feature.Vector>}
@@ -560,7 +560,7 @@ OpenLayers.Format.GeoJSONCSS = OpenLayers.Class(OpenLayers.Format.JSON, {
         
         /**
          * Method: extract.geometry
-         * Return a GeoJSON object representing a single geometry.
+         * Return a GeoJSONCSS object representing a single geometry.
          *
          * Parameters:
          * geometry - {<OpenLayers.Geometry>}

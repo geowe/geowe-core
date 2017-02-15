@@ -42,7 +42,6 @@ import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
 import org.geowe.client.local.main.map.GeoMap;
-import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
@@ -57,7 +56,6 @@ import org.gwtopenmaps.openlayers.client.format.KML;
 import org.gwtopenmaps.openlayers.client.format.WKT;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
-import org.gwtopenmaps.openlayers.client.util.JSObject;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 import org.slf4j.Logger;
 
@@ -339,8 +337,7 @@ public class ExportDataTool extends LayerTool implements
 		}
 		else if (vectorFormat.getId() == VectorFormat.GEOJSON_CSS_FORMAT.getId()) {
 			format = new GeoJSONCSS();
-			((GeoJSONCSS)format).setLaver(selectedLayer);
-			((GeoJSONCSS)format).setStyle(getStyleLayer(selectedLayer));			
+			((GeoJSONCSS)format).setLayer(selectedLayer);					
 		} 
 
 		if (content.isEmpty()) {
@@ -350,22 +347,6 @@ public class ExportDataTool extends LayerTool implements
 		return content;
 	}
 	
-	private ProjectLayerStyle getStyleLayer(Vector vector) {
-		
-		JSObject styleMap = getDefaultStyle(vector);
-		String fillColor = styleMap.getPropertyAsString("fillColor");
-		Double fillOpacity = styleMap.getPropertyAsDouble("fillOpacity");
-		String strokeColor = styleMap.getPropertyAsString("strokeColor");
-		Double strokeWidth = styleMap.getPropertyAsDouble("strokeWidth");
-		
-		return new ProjectLayerStyle(fillColor, fillOpacity, strokeColor, strokeWidth);
-	}
-	
-	protected JSObject getDefaultStyle(Vector layer) {
-		return layer.getStyleMap().getJSObject().getProperty("styles")
-				.getProperty("default").getProperty("defaultStyle");
-	}
-
 	private VectorLayer getLayerWithSelectedFeature() {
 		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
 		final FeatureSchema schema = selectedLayer.getSchema();

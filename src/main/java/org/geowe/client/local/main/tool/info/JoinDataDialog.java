@@ -58,13 +58,13 @@ public class JoinDataDialog extends Dialog {
 
 	public JoinDataDialog() {
 		super();
-		setHeadingText("Add alphanumeric data to layer");
+		setHeadingText(UIMessages.INSTANCE.joinDialogHeadingText());
 		setSize("420px", "250px");
 		setResizable(true);
 		setHideOnButtonClick(false);
 		setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CLOSE);
 		setBodyStyleName("pad-text");
-		loadFileButton = new TextButton(UIMessages.INSTANCE.loadFiles());
+		loadFileButton = new TextButton(UIMessages.INSTANCE.loadFile());
 
 		initialize();
 	}
@@ -128,7 +128,8 @@ public class JoinDataDialog extends Dialog {
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setSpacing(2);
 		vPanel.add(uploadPanel);
-		vPanel.add(new FieldLabel(attributeCombo, "Join Attribute"));
+		vPanel.add(new FieldLabel(attributeCombo, UIMessages.INSTANCE
+				.bindableAttribute()));
 		return vPanel;
 	}
 

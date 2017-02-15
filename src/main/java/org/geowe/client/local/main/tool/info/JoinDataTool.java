@@ -73,12 +73,12 @@ public class JoinDataTool extends LayerTool {
 	@Inject
 	public JoinDataTool(LayerManagerWidget layerManagerWidget, GeoMap geoMap) {
 		super(layerManagerWidget, geoMap);
-		setText("Join Data");
+		setText(UIMessages.INSTANCE.joinData());
 	}
 
 	@Override
 	public String getName() {
-		return "Join Data";
+		return UIMessages.INSTANCE.joinData();
 	}
 
 	@Override
@@ -168,16 +168,16 @@ public class JoinDataTool extends LayerTool {
 										UIMessages.INSTANCE.processing());
 								autoMessageBox.center();
 								autoMessageBox.show();
+								String selectedAttribute = joinDataDialog
+										.getAttributeCombo().getValue();
 
-								if (existAttributeInLayer(joinDataDialog
-										.getAttributeCombo().getValue())) {
+								if (existAttributeInLayer(selectedAttribute)) {
 
 									addAttributesToLayer(joinDataDialog
 											.getAttributeCombo().getStore()
 											.getAll());
 
-									addValuesToLayer(joinDataDialog
-											.getAttributeCombo().getValue());
+									addValuesToLayer(selectedAttribute);
 
 									layerManagerWidget.setSelectedLayer(
 											LayerManagerWidget.VECTOR_TAB,
@@ -187,7 +187,8 @@ public class JoinDataTool extends LayerTool {
 									joinDataDialog.hide();
 								} else {
 									autoMessageBox.hide();
-									showAlert("El atributo seleccionado para vincular los datos debe existir en la capa");
+									showAlert(UIMessages.INSTANCE
+											.joinAttributeNotExist(selectedAttribute));
 								}
 							}
 
@@ -196,7 +197,6 @@ public class JoinDataTool extends LayerTool {
 								return (getSelectedVectorLayer().getAttribute(
 										attrName) != null);
 							}
-
 						});
 					}
 				});

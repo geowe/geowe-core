@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.PlainTabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -42,6 +43,7 @@ import com.sencha.gxt.widget.core.client.form.FormPanel;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Encoding;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * Join Data to layer dialog.
@@ -52,14 +54,17 @@ import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 @ApplicationScoped
 public class JoinDataDialog extends Dialog {
 
+	private PlainTabPanel tabPanel;
 	private FormPanel uploadPanel;
+	
+	private TextField urlTextField;
 	private SimpleComboBox<String> attributeCombo;
 	private TextButton loadFileButton;
 
 	public JoinDataDialog() {
 		super();
 		setHeadingText(UIMessages.INSTANCE.joinDialogHeadingText());
-		setSize("420px", "250px");
+		setSize("420px", "280px");
 		setResizable(true);
 		setHideOnButtonClick(false);
 		setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CLOSE);
@@ -69,17 +74,40 @@ public class JoinDataDialog extends Dialog {
 		initialize();
 	}
 
+	public void init() {
+		attributeCombo.clear();
+		attributeCombo.setVisible(false);
+	}
+	
 	@PostConstruct
 	private void initialize() {
 		createFilePanel();
 		createAttributeComboBox();
 		add(createPanel());
 	}
-
-	public void init() {
-		attributeCombo.clear();
-		attributeCombo.setVisible(false);
+	
+	private Widget createPanel() {
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setSpacing(2);
+		vPanel.add(createTabPanel());
+		vPanel.add(new FieldLabel(attributeCombo, UIMessages.INSTANCE
+				.bindableAttribute()));
+		return vPanel;
 	}
+	
+	private PlainTabPanel createTabPanel() {
+		tabPanel = new PlainTabPanel();
+		
+		tabPanel.setPixelSize(400, 200);
+		tabPanel.getElement().setId("tabPanel");
+		
+		tabPanel.add(uploadPanel, UIMessages.INSTANCE.file());
+		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());		
+						
+		return tabPanel;
+	}
+
+	
 
 	private FormPanel createFilePanel() {
 		VerticalLayoutContainer layoutContainer = new VerticalLayoutContainer();
@@ -104,6 +132,25 @@ public class JoinDataDialog extends Dialog {
 
 		return uploadPanel;
 	}
+	
+	private VerticalPanel getURLPanel() {
+		final VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setWidth("400px");
+		vPanel.setSpacing(3);
+
+		vPanel.add(new Label(UIMessages.INSTANCE.messageURLPanel()));
+
+		urlTextField = new TextField();
+		urlTextField.setBorders(true);
+		urlTextField.setEmptyText("http://");
+		urlTextField.setWidth(400);
+		urlTextField.setAllowBlank(false);
+		vPanel.add(urlTextField);
+
+		
+		
+		return vPanel;
+	}
 
 	private void createAttributeComboBox() {
 		attributeCombo = new SimpleComboBox<String>(
@@ -124,14 +171,6 @@ public class JoinDataDialog extends Dialog {
 		attributeCombo.enableEvents();
 	}
 
-	private Widget createPanel() {
-		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setSpacing(2);
-		vPanel.add(uploadPanel);
-		vPanel.add(new FieldLabel(attributeCombo, UIMessages.INSTANCE
-				.bindableAttribute()));
-		return vPanel;
-	}
 
 	public SimpleComboBox<String> getAttributeCombo() {
 		return attributeCombo;

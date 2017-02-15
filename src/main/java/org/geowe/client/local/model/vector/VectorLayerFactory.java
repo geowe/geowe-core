@@ -177,13 +177,12 @@ public final class VectorLayerFactory {
 			VectorLayerConfig layerConfig) {
 		GeoJSONCSS geoJSONCSSReader = new GeoJSONCSS();
 		geoJSONCSSReader.getJSObject().setProperty("ignoreExtraDims", true);
-		VectorFeature[] features = geoJSONCSSReader.read(layerConfig
-				.getGeoDataString());
+		VectorFeature[] features = geoJSONCSSReader.read(layerConfig.getGeoDataString());
 		layerConfig.setFeatures(features);
 		VectorLayer vector = createVectorLayer(layerConfig);
 		
-		
-		ProjectLayerStyle layerStyle = LeafletStyle.getStyle(layerConfig.getGeoDataString());
+		VectorStyleDef vectorStyleDef = geoJSONCSSReader.getLayerStyle(layerConfig.getGeoDataString());
+		/*ProjectLayerStyle layerStyle = LeafletStyle.getStyle(layerConfig.getGeoDataString());
 		if(layerStyle != null) {
 		
 			VectorStyleDef vectorStyleDef = vector.getVectorStyle();
@@ -206,8 +205,8 @@ public final class VectorLayerFactory {
 			Double strokeWidth = layerStyle.getStrokeWidth();
 			if(strokeWidth != null) {		
 				vectorStyleDef.getLine().setThickness((int) Math.floor(strokeWidth));
-			}
-												
+			}*/
+		if(vectorStyleDef != null) {												
 			vector.setVectorStyle(vectorStyleDef);
 		
 		}

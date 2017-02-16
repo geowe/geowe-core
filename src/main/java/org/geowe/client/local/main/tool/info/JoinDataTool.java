@@ -22,7 +22,7 @@
  */
 package org.geowe.client.local.main.tool.info;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -37,10 +37,17 @@ import org.geowe.client.local.layermanager.tool.create.CSV.CsvItem;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.ui.ProgressBarDialog;
+import org.geowe.client.shared.rest.URLFileRestService;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
+import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -115,8 +122,29 @@ public class JoinDataTool extends LayerTool {
 										UIMessages.INSTANCE.processing());
 								autoMessageBox.center();
 								autoMessageBox.show();
+								if (joinDataDialog.getActiveTab().equals(
+										UIMessages.INSTANCE.file())) {
+									if (joinDataDialog
+											.isFileFieldCorrectFilled()) {
+										joinDataDialog.getUploadFormPanel()
+												.submit();
+									} else {
 
-								joinDataDialog.getUploadFormPanel().submit();
+										showAlert(UIMessages.INSTANCE
+												.lrasterdAlertMessageBoxLabel(UIMessages.INSTANCE
+														.file()));
+									}
+								} else {
+									if (joinDataDialog
+											.isUrlFieldCorrectFilled()) {
+										lodaDataFromURL(joinDataDialog.getUrl());
+									} else {
+										showAlert(UIMessages.INSTANCE
+												.lrasterdAlertMessageBoxLabel(UIMessages.INSTANCE
+														.url()));
+									}
+								}
+								autoMessageBox.hide();
 							}
 						});
 					}
@@ -132,15 +160,7 @@ public class JoinDataTool extends LayerTool {
 
 				final String csvData = label.getInnerText();
 				if (!hasError(csvData)) {
-					CSV csv = new CSV();
-					String[] attrNames = csv.readAttributeNames(csvData);
-
-					joinDataDialog.getAttributeCombo().getStore().clear();
-					joinDataDialog.getAttributeCombo().getStore()
-							.addAll(Arrays.asList(attrNames));
-					joinDataDialog.getAttributeCombo().enable();
-					joinDataDialog.getAttributeCombo().setVisible(true);
-					csvItems = csv.getItems(csvData);
+					parseCsvData(csvData);
 					autoMessageBox.hide();
 				} else {
 					showAlert("Error: " + csvData);
@@ -152,6 +172,60 @@ public class JoinDataTool extends LayerTool {
 						|| contentFile.startsWith("500");
 			}
 		};
+	}
+
+	private void parseCsvData(final String csvData) {
+		CSV csv = new CSV();
+		String[] attrNames = csv.readAttributeNames(csvData);
+
+		joinDataDialog.getAttributeCombo().getStore().clear();
+		joinDataDialog.getAttributeCombo().getStore()
+				.addAll(getBindableAttributes(attrNames));
+		joinDataDialog.getAttributeCombo().enable();
+		joinDataDialog.getAttributeCombo().setVisible(true);
+		csvItems = csv.getItems(csvData);
+	}
+
+	private List<String> getBindableAttributes(String[] attrNames) {
+		List<String> bindableAttributes = new ArrayList<String>();
+		for (String attrName : attrNames) {
+			if (existAttributeInLayer(attrName)) {
+				bindableAttributes.add(attrName);
+			}
+		}
+		return bindableAttributes;
+	}
+
+	private boolean existAttributeInLayer(String attrName) {
+		return (getSelectedVectorLayer().getAttribute(attrName) != null);
+	}
+
+	private void lodaDataFromURL(String url) {
+		String URL_BASE = GWT.getHostPageBaseURL() + "gwtOpenLayersProxy";
+		try {
+			autoMessageBox.show();
+			RestClient.create(URLFileRestService.class, URL_BASE,
+					new RemoteCallback<String>() {
+						@Override
+						public void callback(String response) {
+							parseCsvData(response);
+							autoMessageBox.hide();
+						}
+					}, new RestErrorCallback() {
+						@Override
+						public boolean error(Request message,
+								Throwable throwable) {
+							autoMessageBox.hide();
+
+							showAlert("Error"
+									+ UIMessages.INSTANCE.unexpectedError());
+							return false;
+						}
+					}, Response.SC_OK).getContent(url);
+		} catch (Exception e) {
+			autoMessageBox.hide();
+			showAlert("Error loading data..." + e.getMessage());
+		}
 	}
 
 	private void addOkDialogListener() {
@@ -171,32 +245,21 @@ public class JoinDataTool extends LayerTool {
 								String selectedAttribute = joinDataDialog
 										.getAttributeCombo().getValue();
 
-								if (existAttributeInLayer(selectedAttribute)) {
+								addAttributesToLayer(joinDataDialog
+										.getAttributeCombo().getStore()
+										.getAll());
 
-									addAttributesToLayer(joinDataDialog
-											.getAttributeCombo().getStore()
-											.getAll());
+								addValuesToLayer(selectedAttribute);
 
-									addValuesToLayer(selectedAttribute);
+								layerManagerWidget.setSelectedLayer(
+										LayerManagerWidget.VECTOR_TAB,
+										getSelectedVectorLayer());
 
-									layerManagerWidget.setSelectedLayer(
-											LayerManagerWidget.VECTOR_TAB,
-											getSelectedVectorLayer());
+								autoMessageBox.hide();
+								joinDataDialog.hide();
 
-									autoMessageBox.hide();
-									joinDataDialog.hide();
-								} else {
-									autoMessageBox.hide();
-									showAlert(UIMessages.INSTANCE
-											.joinAttributeNotExist(selectedAttribute));
-								}
 							}
 
-							private boolean existAttributeInLayer(
-									String attrName) {
-								return (getSelectedVectorLayer().getAttribute(
-										attrName) != null);
-							}
 						});
 					}
 				});
@@ -238,5 +301,4 @@ public class JoinDataTool extends LayerTool {
 				UIMessages.INSTANCE.warning(), errorMsg);
 		messageBox.show();
 	}
-
 }

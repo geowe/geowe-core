@@ -6,6 +6,10 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 ## [Unreleased]
 ### Added
 
+## [1.4.14]Beta - 2017-02-16
+### Added
+- Added GeoJSONCSS color theming support
+
 
 ## [1.4.13]Beta - 2017-02-16
 ### Added

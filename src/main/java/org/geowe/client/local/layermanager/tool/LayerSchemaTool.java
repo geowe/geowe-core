@@ -67,12 +67,9 @@ public class LayerSchemaTool extends LayerTool {
 
 	@Override
 	public void onClick() {
-		Layer layer = getSelectedLayer();
-		
-		if(layer instanceof VectorLayer) {
-			featureSchemaDialog.setVectorLayer((VectorLayer) layer);
-			featureSchemaDialog.show();			
-		}		
+		VectorLayer layer = getSelectedVectorLayer();
+		featureSchemaDialog.setVectorLayer(layer);
+		featureSchemaDialog.show();	
 	}
 	
 	@Override

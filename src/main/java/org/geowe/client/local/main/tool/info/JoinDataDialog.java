@@ -60,6 +60,7 @@ public class JoinDataDialog extends Dialog {
 	private TextField urlTextField;
 	private SimpleComboBox<String> attributeCombo;
 	private TextButton loadFileButton;
+	private FileUploadField file;
 
 	public JoinDataDialog() {
 		super();
@@ -88,8 +89,9 @@ public class JoinDataDialog extends Dialog {
 	
 	private Widget createPanel() {
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setSpacing(2);
+		vPanel.setSpacing(1);
 		vPanel.add(createTabPanel());
+		vPanel.add(loadFileButton);
 		vPanel.add(new FieldLabel(attributeCombo, UIMessages.INSTANCE
 				.bindableAttribute()));
 		return vPanel;
@@ -98,30 +100,23 @@ public class JoinDataDialog extends Dialog {
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
 		
-		tabPanel.setPixelSize(400, 200);
-		tabPanel.getElement().setId("tabPanel");
-		
+		tabPanel.setPixelSize(400, 80);
 		tabPanel.add(uploadPanel, UIMessages.INSTANCE.file());
 		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());		
 						
 		return tabPanel;
 	}
 
-	
-
 	private FormPanel createFilePanel() {
 		VerticalLayoutContainer layoutContainer = new VerticalLayoutContainer();
 
-		FileUploadField file = new FileUploadField();
+		file = new FileUploadField();
 		file.setName(UIMessages.INSTANCE.gdidFileUploadFieldText());
 		file.setAllowBlank(false);
 
 		layoutContainer.add(new FieldLabel(file, UIMessages.INSTANCE.file()),
 				new VerticalLayoutData(-18, -1));
 		layoutContainer.add(new Label(UIMessages.INSTANCE.maxFileSizeText()),
-				new VerticalLayoutData(-18, -1));
-
-		layoutContainer.add(new FieldLabel(loadFileButton),
 				new VerticalLayoutData(-18, -1));
 
 		uploadPanel = new FormPanel();
@@ -136,19 +131,16 @@ public class JoinDataDialog extends Dialog {
 	private VerticalPanel getURLPanel() {
 		final VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setWidth("400px");
-		vPanel.setSpacing(3);
 
 		vPanel.add(new Label(UIMessages.INSTANCE.messageURLPanel()));
 
 		urlTextField = new TextField();
 		urlTextField.setBorders(true);
 		urlTextField.setEmptyText("http://");
-		urlTextField.setWidth(400);
+		urlTextField.setWidth(390);
 		urlTextField.setAllowBlank(false);
 		vPanel.add(urlTextField);
 
-		
-		
 		return vPanel;
 	}
 
@@ -182,6 +174,22 @@ public class JoinDataDialog extends Dialog {
 
 	public TextButton getLoadFileButton() {
 		return loadFileButton;
+	}
+
+	public String getActiveTab() {
+		return tabPanel.getConfig(tabPanel.getActiveWidget()).getText();
+	}
+
+	public String getUrl() {
+		return this.urlTextField.getText();
+	}
+
+	public boolean isFileFieldCorrectFilled() {
+		return file.isValid();
+	}
+
+	public boolean isUrlFieldCorrectFilled() {
+		return urlTextField.isValid();
 	}
 
 }

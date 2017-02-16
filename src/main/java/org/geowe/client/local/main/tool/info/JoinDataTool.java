@@ -23,6 +23,7 @@
 package org.geowe.client.local.main.tool.info;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -43,6 +44,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
+import org.slf4j.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -67,6 +69,8 @@ import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitComplet
 public class JoinDataTool extends LayerTool {
 
 	@Inject
+	private Logger logger;
+	@Inject
 	private ClientTaskManager taskManager;
 	@Inject
 	private LayerManagerWidget layerManagerWidget;
@@ -76,6 +80,7 @@ public class JoinDataTool extends LayerTool {
 	private ProgressBarDialog autoMessageBox;
 
 	protected List<CsvItem> csvItems;
+	private String[] attrNames;
 
 	@Inject
 	public JoinDataTool(LayerManagerWidget layerManagerWidget, GeoMap geoMap) {
@@ -176,7 +181,7 @@ public class JoinDataTool extends LayerTool {
 
 	private void parseCsvData(final String csvData) {
 		CSV csv = new CSV();
-		String[] attrNames = csv.readAttributeNames(csvData);
+		attrNames = csv.readAttributeNames(csvData);
 
 		joinDataDialog.getAttributeCombo().getStore().clear();
 		joinDataDialog.getAttributeCombo().getStore()
@@ -245,9 +250,7 @@ public class JoinDataTool extends LayerTool {
 								String selectedAttribute = joinDataDialog
 										.getAttributeCombo().getValue();
 
-								addAttributesToLayer(joinDataDialog
-										.getAttributeCombo().getStore()
-										.getAll());
+								addAttributesToLayer(Arrays.asList(attrNames));
 
 								addValuesToLayer(selectedAttribute);
 
@@ -266,9 +269,15 @@ public class JoinDataTool extends LayerTool {
 	}
 
 	private void addAttributesToLayer(List<String> attrNames) {
+		logger.info("**Attributes to add: " + attrNames);
 		for (String attrName : attrNames) {
+			logger.info("Try to add: " + attrName);
 			if (getSelectedVectorLayer().getAttribute(attrName) == null) {
+				logger.info("Adding attribute: " + attrName);
 				getSelectedVectorLayer().addAttribute(attrName, false);
+				logger.info("Added attribute: " + attrName);
+			} else {
+				logger.info("FAIL to add attribute: " + attrName);
 			}
 		}
 	}
@@ -301,4 +310,5 @@ public class JoinDataTool extends LayerTool {
 				UIMessages.INSTANCE.warning(), errorMsg);
 		messageBox.show();
 	}
+
 }

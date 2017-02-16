@@ -24,7 +24,10 @@ package org.geowe.client.local.layermanager.tool.create;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.model.vector.VectorLayer;
@@ -35,6 +38,7 @@ import org.gwtopenmaps.openlayers.client.geometry.Geometry;
 import org.gwtopenmaps.openlayers.client.geometry.Point;
 import org.gwtopenmaps.openlayers.client.util.Attributes;
 
+
 /**
  * Write CSV from VectorFeature and read CSV to VectorFeature.<br>
  * First line indicates the attribute names. <br>
@@ -42,11 +46,17 @@ import org.gwtopenmaps.openlayers.client.util.Attributes;
  * geoCSV (Point option): last two column must be X and Y. <br>
  * 
  * @author rafa@geowe.org
+ * @since 15-02-2017 Added support for alphanumeric csv. First line indicates
+ *        the attribute names. <br>
  */
 public class CSV {
-	private final String projection;
+	private String projection;
 	private final String CSV_SEPARATOR = ";";
 	private final String GEOM_COLUMN_NAME = "WKT";
+
+	public CSV() {
+		super();
+	}
 
 	public CSV(String projection) {
 		super();
@@ -151,5 +161,64 @@ public class CSV {
 
 	private boolean isCsvLineValid(String[] csvAttrName, String[] csvFeature) {
 		return csvAttrName.length == csvFeature.length;
+	}
+
+	public String[] readAttributeNames(String data) {
+		String[] csvLines = data.split("\n");
+
+		String[] csvAttrName = csvLines[0].split(CSV_SEPARATOR);
+		return csvAttrName;
+	}
+
+	public List<CsvItem> getItems(String data) {
+		List<CsvItem> items = new ArrayList<CsvItem>();
+		String[] csvLines = data.split("\n");
+		String[] csvAttrNames = csvLines[0].split(CSV_SEPARATOR);
+		for (int i = 1; i < csvLines.length; i++) {
+			String[] csvItem = csvLines[i].split(CSV_SEPARATOR);
+
+			if (isCsvLineValid(csvAttrNames, csvItem)) {
+				items.add(getCsvItem(csvAttrNames, csvItem));
+			}
+		}
+
+		return items;
+	}
+
+	private CsvItem getCsvItem(String[] csvAttrNames, String[] csvItem) {
+		CsvItem item = new CsvItem();
+		for (int i = 0; i < csvAttrNames.length; i++) {
+			item.addAttribute(csvAttrNames[i], csvItem[i]);
+		}
+
+		return item;
+	}
+
+	/**
+	 * Representa un elemento extraido del csv.
+	 * 
+	 * @author rafa@geowe.org
+	 *
+	 */
+	public class CsvItem {
+		private Map<String, String> attributes = new HashMap<String, String>();
+
+		public void addAttribute(String attrName, String attrValue) {
+			attributes.put(attrName, attrValue);
+		}
+
+		public String getValue(String attrName) {
+			return attributes.get(attrName);
+		}
+
+		public Set<String> getAttributeNames() {
+			return attributes.keySet();
+		}
+
+		@Override
+		public String toString() {
+			return "CsvItem [attributes=" + attributes + "]";
+		}
+
 	}
 }

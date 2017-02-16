@@ -5,7 +5,12 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
-- GeoJson CSS: feature level Style
+
+
+## [1.4.13]Beta - 2017-02-16
+### Added
+- Added GeoJSONCSS icon support
+
 
 ## [1.4.12]Beta - 2017-02-16
 ### Added

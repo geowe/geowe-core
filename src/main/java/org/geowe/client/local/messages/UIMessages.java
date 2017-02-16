@@ -854,4 +854,14 @@ public interface UIMessages extends Messages {
 	String projectDate();
 	
 	String infoProjectToolTipText();
+	
+	String joinData();
+
+	String joinAttributeNotExist(String selectedAttribute);
+
+	String joinDialogHeadingText();
+
+	String bindableAttribute();
+
+	String loadFile();
 }

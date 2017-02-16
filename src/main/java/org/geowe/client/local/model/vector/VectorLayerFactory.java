@@ -182,40 +182,14 @@ public final class VectorLayerFactory {
 		VectorLayer vector = createVectorLayer(layerConfig);
 		
 		VectorStyleDef vectorStyleDef = geoJSONCSSReader.getLayerStyle(layerConfig.getGeoDataString());
-		/*ProjectLayerStyle layerStyle = LeafletStyle.getStyle(layerConfig.getGeoDataString());
-		if(layerStyle != null) {
 		
-			VectorStyleDef vectorStyleDef = vector.getVectorStyle();
-																	
-			String fillColor = layerStyle.getFillColor();
-			if(!fillColor.isEmpty()) {		
-				vectorStyleDef.getFill().setNormalColor(fillColor);
-			}
-			
-			String strokeColor = layerStyle.getStrokeColor();
-			if(!strokeColor.isEmpty()) {		
-				vectorStyleDef.getLine().setNormalColor(strokeColor);
-			}
-			
-			Double fillOpacity = layerStyle.getFillOpacity();
-			if(fillOpacity != null) {		
-				vectorStyleDef.getFill().setOpacity(fillOpacity);
-			}
-			
-			Double strokeWidth = layerStyle.getStrokeWidth();
-			if(strokeWidth != null) {		
-				vectorStyleDef.getLine().setThickness((int) Math.floor(strokeWidth));
-			}*/
 		if(vectorStyleDef != null) {												
 			vector.setVectorStyle(vectorStyleDef);
 		
-		}
-		
+		}		
 		
 		return vector;
-	}
-	
-	
+	}		
 
 	public static VectorLayer createWktVectorLayer(VectorLayerConfig layerConfig) {
 		WKT wktReader = new WKT();

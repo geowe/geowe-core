@@ -110,44 +110,63 @@ public class GeoJSONCSS extends VectorFormat {
 	}
 	
 	public VectorStyleDef getLayerStyle(String vectorFormatString) {
-		JSObject out = FormatImpl.read(getJSObject(), vectorFormatString);
 		VectorFeatureStyleDef def = null;
-		
-		JSObject styleObject = out.getProperty(STYLE_NAME);
-			if (styleObject != null) {
-												
-				def = getStyleDef(styleObject);
-			}
+		final JSONValue jsonValue = JSONParser.parseLenient(vectorFormatString);
+		final JSONObject geoJSONCssObject = jsonValue.isObject();
 
+		if (geoJSONCssObject.containsKey(GeoJSONCSS.STYLE_NAME)) {
+
+			JSONObject styleObject = geoJSONCssObject
+					.get(GeoJSONCSS.STYLE_NAME).isObject();
+			
+			JSObject styleJSObject = styleObject.getJavaScriptObject().cast();
+			
+			def = getStyleDef(styleJSObject);
+		}
+		
 		return def;
 	}
 	
 	public VectorFeatureStyleDef getStyleDef(JSObject styleObject) {
 		VectorFeatureStyleDef def = new VectorFeatureStyleDef();
 		
-		String fillColor = styleObject.getPropertyAsString(LeafletStyle.FILL_COLOR_NAME);
-		Double fillOpacity = styleObject.getPropertyAsDouble(LeafletStyle.FILL_OPACITY_NAME);
-		String strokeColor = styleObject.getPropertyAsString(LeafletStyle.STROKE_COLOR_NAME);
-		Double strokeWidth = styleObject.getPropertyAsDouble(LeafletStyle.STROKE_WIDTH_NAME);
+		if(styleObject.hasProperty(LeafletStyle.FILL_COLOR_NAME)) {
+			String fillColor = styleObject.getPropertyAsString(LeafletStyle.FILL_COLOR_NAME);
+			def.getFill().setNormalColor(fillColor);
+		}
 		
-		def.getFill().setNormalColor(fillColor);
-		def.getFill().setOpacity(fillOpacity);
-		def.getLine().setNormalColor(strokeColor);
-		def.getLine().setThickness(strokeWidth.intValue());
+		if(styleObject.hasProperty(LeafletStyle.FILL_OPACITY_NAME)) {
+			Double fillOpacity = styleObject.getPropertyAsDouble(LeafletStyle.FILL_OPACITY_NAME);
+			def.getFill().setOpacity(fillOpacity);
+		}
+		
+		if(styleObject.hasProperty(LeafletStyle.STROKE_COLOR_NAME)) {
+			String strokeColor = styleObject.getPropertyAsString(LeafletStyle.STROKE_COLOR_NAME);
+			def.getLine().setNormalColor(strokeColor);
+		}
+		
+		if(styleObject.hasProperty(LeafletStyle.STROKE_WIDTH_NAME)) {
+			Double strokeWidth = styleObject.getPropertyAsDouble(LeafletStyle.STROKE_WIDTH_NAME);
+			def.getLine().setThickness(strokeWidth.intValue());
+		}				
 		
 		JSObject iconObject = styleObject.getProperty(LeafletStyle.ICON_NAME);
 		if(iconObject != null) {
-			String iconUrl = iconObject.getPropertyAsString(LeafletStyle.ICON_URL_NAME);
 			
-			JsArrayInteger iconSize = iconObject.getProperty(LeafletStyle.ICON_SIZE_NAME).cast();
+			if(iconObject.hasProperty(LeafletStyle.ICON_URL_NAME)) {
+				String iconUrl = iconObject.getPropertyAsString(LeafletStyle.ICON_URL_NAME);
+				def.getPoint().setExternalGraphic(iconUrl);
+			}
 			
-			int iconWidth = iconSize.get(0);
-			int iconHeight = iconSize.get(1);
-			
-			def.getPoint().setExternalGraphic(iconUrl);
-			def.getPoint().setGraphicWidth(iconWidth);
-			def.getPoint().setGraphicHeight(iconHeight);
-			
+			if(iconObject.hasProperty(LeafletStyle.ICON_SIZE_NAME)) {
+				JsArrayInteger iconSize = iconObject.getProperty(LeafletStyle.ICON_SIZE_NAME).cast();
+				
+				int iconWidth = iconSize.get(0);
+				int iconHeight = iconSize.get(1);				
+				
+				def.getPoint().setGraphicWidth(iconWidth);
+				def.getPoint().setGraphicHeight(iconHeight);
+			}									
 		}
 		
 		return def;

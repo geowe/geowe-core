@@ -72,8 +72,7 @@ public class JoinDataTool extends LayerTool {
 	private Logger logger;
 	@Inject
 	private ClientTaskManager taskManager;
-	@Inject
-	private LayerManagerWidget layerManagerWidget;
+
 	@Inject
 	private JoinDataDialog joinDataDialog;
 
@@ -187,7 +186,7 @@ public class JoinDataTool extends LayerTool {
 		joinDataDialog.getAttributeCombo().getStore()
 				.addAll(getBindableAttributes(attrNames));
 		joinDataDialog.getAttributeCombo().enable();
-		joinDataDialog.getAttributeCombo().setVisible(true);
+		joinDataDialog.showComboPanel();
 		csvItems = csv.getItems(csvData);
 	}
 

@@ -191,5 +191,4 @@ public class JoinDataDialog extends Dialog {
 	public boolean isUrlFieldCorrectFilled() {
 		return urlTextField.isValid();
 	}
-
 }

@@ -44,7 +44,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestClient;
 import org.jboss.errai.enterprise.client.jaxrs.api.RestErrorCallback;
-import org.slf4j.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -69,11 +68,8 @@ import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitComplet
 public class JoinDataTool extends LayerTool {
 
 	@Inject
-	private Logger logger;
-	@Inject
 	private ClientTaskManager taskManager;
-	@Inject
-	private LayerManagerWidget layerManagerWidget;
+
 	@Inject
 	private JoinDataDialog joinDataDialog;
 
@@ -111,7 +107,6 @@ public class JoinDataTool extends LayerTool {
 		joinDataDialog.init();
 		joinDataDialog.show();
 	}
-
 
 	private void addLoadButtonListener() {
 		joinDataDialog.getLoadFileButton().addSelectHandler(
@@ -184,11 +179,18 @@ public class JoinDataTool extends LayerTool {
 		attrNames = csv.readAttributeNames(csvData);
 
 		joinDataDialog.getAttributeCombo().getStore().clear();
-		joinDataDialog.getAttributeCombo().getStore()
-				.addAll(getBindableAttributes(attrNames));
-		joinDataDialog.getAttributeCombo().enable();
-		joinDataDialog.getAttributeCombo().setVisible(true);
-		csvItems = csv.getItems(csvData);
+
+		List<String> bindableAttributes = getBindableAttributes(attrNames);
+		if (bindableAttributes.size() == 0) {
+			showAlert(UIMessages.INSTANCE.joinAttributeNotExist());
+		} else {
+			joinDataDialog.getAttributeCombo().getStore()
+					.addAll(bindableAttributes);
+
+			joinDataDialog.getAttributeCombo().enable();
+			joinDataDialog.showComboPanel();
+			csvItems = csv.getItems(csvData);
+		}
 	}
 
 	private List<String> getBindableAttributes(String[] attrNames) {
@@ -269,15 +271,9 @@ public class JoinDataTool extends LayerTool {
 	}
 
 	private void addAttributesToLayer(List<String> attrNames) {
-		logger.info("**Attributes to add: " + attrNames);
 		for (String attrName : attrNames) {
-			logger.info("Try to add: " + attrName);
 			if (getSelectedVectorLayer().getAttribute(attrName) == null) {
-				logger.info("Adding attribute: " + attrName);
 				getSelectedVectorLayer().addAttribute(attrName, false);
-				logger.info("Added attribute: " + attrName);
-			} else {
-				logger.info("FAIL to add attribute: " + attrName);
 			}
 		}
 	}

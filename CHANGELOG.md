@@ -14,6 +14,8 @@ version deployed for testing [map.geowe.org](http://map.geowe.org).
 ### Added
 - Added GeoJSONCSS color theming support
 
+### Fixed
+- issue [#308](https://github.com/geowe/geowe-core/issues/308)
 
 ## [1.4.13]Beta - 2017-02-16
 ### Added

@@ -336,9 +336,6 @@ public interface ImageProvider extends ClientBundle {
 	@Source("images/ic_external_link-16.png")
 	ImageResource externalLink16();
 	
-	@Source("images/ic_sofrito-16.png")
-	ImageResource elsofrito16();
-	
 	@Source("images/ic_validation-24.png")
 	ImageResource validation24();
 	

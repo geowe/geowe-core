@@ -23,11 +23,12 @@
 
 package org.geowe.client.local.model.vector.format;
 
-import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.model.style.LeafletStyle;
 import org.geowe.client.local.model.style.VectorFeatureStyleDef;
 import org.geowe.client.local.model.style.VectorStyleDef;
+import org.geowe.client.local.model.vector.FeatureAttributeDef;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.style.StyleFactory;
 import org.gwtopenmaps.openlayers.client.Style;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 import org.gwtopenmaps.openlayers.client.format.FormatImpl;
@@ -35,6 +36,7 @@ import org.gwtopenmaps.openlayers.client.format.VectorFormat;
 import org.gwtopenmaps.openlayers.client.util.JObjectArray;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -48,12 +50,12 @@ import com.google.gwt.json.client.JSONValue;
  */
 
 public class GeoJSONCSS extends VectorFormat {
-	
+
 	public static final String STYLE_NAME = "style";
 	private VectorLayer layer;
 
 	public void setLayer(VectorLayer layer) {
-		this.layer = layer;		
+		this.layer = layer;
 	}
 
 	protected GeoJSONCSS(JSObject geoJSONFormat) {
@@ -63,28 +65,46 @@ public class GeoJSONCSS extends VectorFormat {
 	public GeoJSONCSS() {
 		this(GeoJSONCSSImpl.create());
 	}
-
-	/**
-	 * Para exportar a formato GeoJSON CSS. Se incluye el atributo "style" a
-	 * nivel de capa
-	 */
+	
 	public String write(VectorFeature[] vectorFeatures) {
+		String json = "";
+		VectorStyleDef vectorStyleDef = layer.getVectorStyle();
 
-		for (VectorFeature vf : vectorFeatures) {
-			Style style = vf.getStyle();
-			if (style != null) {
-				VectorFeatureStyleDef def = new VectorFeatureStyleDef(vf, layer);
-				vf.getJSObject().setProperty("style", LeafletStyle.getFeatureStyle(def));
+		if (vectorStyleDef.isColorThemingEnabled()) {
+
+			FeatureAttributeDef attributeDef = vectorStyleDef.getColorThemingAttribute();
+			String attributeName = attributeDef.getName();
+
+			for (VectorFeature vf : vectorFeatures) {
+				String value = vf.getAttributes().getAttributeAsString(attributeName);
+				String color = StyleFactory.stringToColour(value);
+				vectorStyleDef.getFill().setNormalColor(color);
+				vectorStyleDef.getLine().setNormalColor(color);
+				vf.getJSObject().setProperty(STYLE_NAME, LeafletStyle.getStyle(vectorStyleDef));
 			}
+			
+			json = super.write(vectorFeatures);
+			
+		} else {
+			for (VectorFeature vf : vectorFeatures) {
+				Style style = vf.getStyle();
+				if (style != null) {
+					VectorFeatureStyleDef def = new VectorFeatureStyleDef(vf, layer);
+					vf.getJSObject().setProperty(STYLE_NAME, LeafletStyle.getStyle(def));
+				}
+			}
+
+			String geojson = super.write(vectorFeatures);
+
+			final JSONValue jsonValue = JSONParser.parseLenient(geojson);
+			final JSONObject geoJSONCssObject = jsonValue.isObject();
+
+			geoJSONCssObject.put(STYLE_NAME, new JSONObject(LeafletStyle.getStyle(vectorStyleDef)));
+
+			json = geoJSONCssObject.toString();
 		}
-
-		String geojson = super.write(vectorFeatures);
-
-		final JSONValue jsonValue = JSONParser.parseLenient(geojson);
-		final JSONObject geoJSONCssObject = jsonValue.isObject();
-
-		geoJSONCssObject.put(STYLE_NAME, LeafletStyle.getStyle(getStyleLayer(layer)));
-		return geoJSONCssObject.toString();
+		
+		return json;
 	}
 
 	public VectorFeature[] read(String vectorFormatString) {
@@ -96,18 +116,9 @@ public class GeoJSONCSS extends VectorFormat {
 
 			VectorFeature vf = VectorFeature.narrowToVectorFeature(jObjectArray.get(i));
 
-			JSObject styleObject = jObjectArray.get(i).getProperty("style");
+			JSObject styleObject = jObjectArray.get(i).getProperty(STYLE_NAME);
 			if (styleObject != null) {
-				String fillColor = styleObject.getPropertyAsString(LeafletStyle.FILL_COLOR_NAME);
-				Double fillOpacity = styleObject.getPropertyAsDouble(LeafletStyle.FILL_OPACITY_NAME);
-				String strokeColor = styleObject.getPropertyAsString(LeafletStyle.STROKE_COLOR_NAME);
-				Double strokeWidth = styleObject.getPropertyAsDouble(LeafletStyle.STROKE_WIDTH_NAME);
-
-				VectorFeatureStyleDef def = new VectorFeatureStyleDef();
-				def.getFill().setNormalColor(fillColor);
-				def.getFill().setOpacity(fillOpacity);
-				def.getLine().setNormalColor(strokeColor);
-				def.getLine().setThickness(strokeWidth.intValue());
+				VectorFeatureStyleDef def = getStyleDef(styleObject);
 				vf.setStyle(def.toStyle(vf));
 			}
 
@@ -116,15 +127,65 @@ public class GeoJSONCSS extends VectorFormat {
 
 		return vfs;
 	}
-	
-	private ProjectLayerStyle getStyleLayer(VectorLayer vector) {
+
+	public VectorStyleDef getLayerStyle(String vectorFormatString) {
+		VectorFeatureStyleDef def = null;
 		
-		VectorStyleDef vectorStyleDef = vector.getVectorStyle();
-		String fillColor = vectorStyleDef.getFill().getNormalColor();
-		Double fillOpacity = vectorStyleDef.getFill().getOpacity(); 
-		String strokeColor = vectorStyleDef.getLine().getNormalColor();
-		Double strokeWidth = new Double(vectorStyleDef.getLine().getThickness());
-		
-		return new ProjectLayerStyle(fillColor, fillOpacity, strokeColor, strokeWidth);
+		final JSONValue jsonValue = JSONParser.parseLenient(vectorFormatString);
+		final JSONObject geoJSONCssObject = jsonValue.isObject();
+
+		if (geoJSONCssObject.containsKey(GeoJSONCSS.STYLE_NAME)) {
+
+			JSONObject styleObject = geoJSONCssObject.get(GeoJSONCSS.STYLE_NAME).isObject();
+			JSObject styleJSObject = styleObject.getJavaScriptObject().cast();
+			def = getStyleDef(styleJSObject);
+		}
+
+		return def;
+	}
+
+	public VectorFeatureStyleDef getStyleDef(JSObject styleObject) {
+		VectorFeatureStyleDef def = new VectorFeatureStyleDef();
+
+		if (styleObject.hasProperty(LeafletStyle.FILL_COLOR_NAME)) {
+			String fillColor = styleObject.getPropertyAsString(LeafletStyle.FILL_COLOR_NAME);
+			def.getFill().setNormalColor(fillColor);
+		}
+
+		if (styleObject.hasProperty(LeafletStyle.FILL_OPACITY_NAME)) {
+			Double fillOpacity = styleObject.getPropertyAsDouble(LeafletStyle.FILL_OPACITY_NAME);
+			def.getFill().setOpacity(fillOpacity);
+		}
+
+		if (styleObject.hasProperty(LeafletStyle.STROKE_COLOR_NAME)) {
+			String strokeColor = styleObject.getPropertyAsString(LeafletStyle.STROKE_COLOR_NAME);
+			def.getLine().setNormalColor(strokeColor);
+		}
+
+		if (styleObject.hasProperty(LeafletStyle.STROKE_WIDTH_NAME)) {
+			Double strokeWidth = styleObject.getPropertyAsDouble(LeafletStyle.STROKE_WIDTH_NAME);
+			def.getLine().setThickness(strokeWidth.intValue());
+		}
+
+		JSObject iconObject = styleObject.getProperty(LeafletStyle.ICON_NAME);
+		if (iconObject != null) {
+
+			if (iconObject.hasProperty(LeafletStyle.ICON_URL_NAME)) {
+				String iconUrl = iconObject.getPropertyAsString(LeafletStyle.ICON_URL_NAME);
+				def.getPoint().setExternalGraphic(iconUrl);
+			}
+
+			if (iconObject.hasProperty(LeafletStyle.ICON_SIZE_NAME)) {
+				JsArrayInteger iconSize = iconObject.getProperty(LeafletStyle.ICON_SIZE_NAME).cast();
+
+				int iconWidth = iconSize.get(0);
+				int iconHeight = iconSize.get(1);
+
+				def.getPoint().setGraphicWidth(iconWidth);
+				def.getPoint().setGraphicHeight(iconHeight);
+			}
+		}
+
+		return def;
 	}
 }

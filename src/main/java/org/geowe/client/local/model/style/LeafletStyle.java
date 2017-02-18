@@ -27,6 +27,7 @@ import org.geowe.client.local.main.tool.project.ProjectLayerStyle;
 import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.gwtopenmaps.openlayers.client.util.JSObject;
 
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -49,24 +50,14 @@ public class LeafletStyle {
 	public static final String STROKE_COLOR_NAME = "color";
 	public static final String STROKE_WIDTH_NAME = "weight";
 	public static final String STROKE_OPACITY_NAME = "opacity";
-
-	public static JSONObject getStyle(ProjectLayerStyle style) {
-
-		JSONObject styleObject = new JSONObject();
-		styleObject.put(FILL_NAME, JSONBoolean.getInstance(true));
-		styleObject.put(FILL_COLOR_NAME, new JSONString(style.getFillColor()));
-		styleObject.put(FILL_OPACITY_NAME,
-				new JSONNumber(style.getFillOpacity())); // opacidad de color de relleno
-		styleObject.put(STROKE_WIDTH_NAME,
-				new JSONNumber(style.getStrokeWidth())); // stroke-width
-		styleObject.put(STROKE_COLOR_NAME,
-				new JSONString(style.getStrokeColor()));// stroke-color
-		styleObject.put(STROKE_OPACITY_NAME, new JSONNumber(1)); // stroke
-																	// opacity
-
-		return styleObject;
-	}
-
+	
+	public static final String RADIUS_NAME = "radius";
+	public static final Integer RADIUS_VALUE = 5;
+	
+	public static final String ICON_NAME = "icon";
+	public static final String ICON_URL_NAME = "iconUrl";
+	public static final String ICON_SIZE_NAME = "iconSize";
+	
 	public static ProjectLayerStyle getStyle(String geoJSONCSS) {
 		ProjectLayerStyle style = null;
 		final JSONValue jsonValue = JSONParser.parseLenient(geoJSONCSS);
@@ -93,21 +84,40 @@ public class LeafletStyle {
 	}
 	
 	
-	public static JSObject getFeatureStyle(VectorFeatureStyleDef def) {
+	public static JSObject getStyle(VectorStyleDef def) {
 
 		String fillColor = def.getFill().getNormalColor();
 		Double fillOpacity = def.getFill().getOpacity();
 		String strokeColor = def.getLine().getNormalColor();
 		Double strokeWidth = new Double(def.getLine().getThickness());
 		
-		JSObject object = JSObject.createJSObject();
-		object.setProperty(FILL_NAME, true);
-		object.setProperty(FILL_COLOR_NAME, fillColor);
-		object.setProperty(FILL_OPACITY_NAME, fillOpacity);
-		object.setProperty(STROKE_COLOR_NAME, strokeColor);
-		object.setProperty(STROKE_WIDTH_NAME, strokeWidth);
+		JSObject styleObject = JSObject.createJSObject();
+		styleObject.setProperty(FILL_NAME, true);
+		styleObject.setProperty(FILL_COLOR_NAME, fillColor);
+		styleObject.setProperty(FILL_OPACITY_NAME, fillOpacity);
+		styleObject.setProperty(STROKE_COLOR_NAME, strokeColor);
+		styleObject.setProperty(STROKE_WIDTH_NAME, strokeWidth);
+		styleObject.setProperty(RADIUS_NAME, RADIUS_VALUE);
 		
-		return object;
+		
+		//icon
+		String iconUrl = def.getPoint().getExternalGraphic();
+		if (iconUrl != null) {
+			JSObject iconObject = JSObject.createJSObject();
+			iconObject.setProperty(ICON_URL_NAME, iconUrl);
+			JsArrayInteger iconSize = JSObject.createArray().cast();
+			
+			iconSize.push(def.getPoint().getGraphicWidth());
+			iconSize.push(def.getPoint().getGraphicHeight());
+			
+			JSObject iconSizeObject = iconSize.cast();
+			
+			iconObject.setProperty(ICON_SIZE_NAME, iconSizeObject);	
+			
+			styleObject.setProperty(ICON_NAME, iconObject);
+		}
+						
+		return styleObject;
 	}
 
 	private static String getStringValue(JSONObject styleObject, String key) {

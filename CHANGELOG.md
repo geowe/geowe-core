@@ -5,7 +5,22 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ## [Unreleased]
 ### Added
-- GeoJson CSS: feature level Style
+- Improve performance
+- More tools
+
+
+## [1.4.14]Beta - 2017-02-16
+version deployed for testing [map.geowe.org](http://map.geowe.org).
+### Added
+- Added GeoJSONCSS color theming support
+
+### Fixed
+- issue [#308](https://github.com/geowe/geowe-core/issues/308)
+
+## [1.4.13]Beta - 2017-02-16
+### Added
+- Added GeoJSONCSS icon support
+
 
 ## [1.4.12]Beta - 2017-02-16
 ### Added
@@ -36,7 +51,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#303](https://github.com/geowe/geowe-core/issues/303)
 
 ## [1.4.8]Beta - 2017-02-10
-version deployed for testing [map.geowe.org](http://map.geowe.org) 
+version deployed for testing [map.geowe.org](http://map.geowe.org). No longer available 
 ### Added
 - Feature level Style
 - Load GeoWE Project from URL

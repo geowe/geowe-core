@@ -12,6 +12,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ### Fixed
+- issue [#322](https://github.com/geowe/geowe-core/issues/322)
 - issue [#323](https://github.com/geowe/geowe-core/issues/323)
 - issue [#324](https://github.com/geowe/geowe-core/issues/324)
 

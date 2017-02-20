@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+	<script src="jquery-3.1.1.min.js"></script>	
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+	<script src="leaflet.geojsoncss.js"></script>
+
+ <style>
+  #map { 
+  widh: 50px;
+  height: 600px; }
+ </style>
+ 
+ </head>
+  <body>
+   <div id="map"></div>
+ <script>
+$.ajaxSetup({ dataType: 'json' });
+ var map = L.map('map', {
+			center: [37.46580149640209, -4.7490781775541],		
+			zoom: 7,
+			zoomControl: true,
+			attributionControl: true
+		});
+
+
+ function addLayer(geojson, zoomToLayer) {
+	 
+	var json = JSON.parse(geojson);
+	console.log(json);
+ 	var layer = L.geoJson.css(json).addTo(map);
+ 	if(zoomToLayer) {
+ 		map.fitBounds(layer);
+ 	}
+ }
+ 
+ 
+L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+    maxZoom: 7
+}).addTo(map);
+
+L.control.scale().addTo(map);
+
+
+ </script>
+ </body> 
+ </html>

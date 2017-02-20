@@ -8,6 +8,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.4.15]Beta - 2017-02-17
+
+
+### Fixed
+- issue [#323](https://github.com/geowe/geowe-core/issues/323)
+- issue [#324](https://github.com/geowe/geowe-core/issues/324)
+
 
 ## [1.4.14]Beta - 2017-02-16
 version deployed for testing [map.geowe.org](http://map.geowe.org).

@@ -864,4 +864,6 @@ public interface UIMessages extends Messages {
 	String bindableAttribute();
 
 	String loadFile();
+
+	String joinAttributeMustSelect();
 }

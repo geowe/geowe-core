@@ -245,24 +245,27 @@ public class JoinDataTool extends LayerTool {
 
 							@Override
 							public void run() {
-								autoMessageBox = new ProgressBarDialog(false,
-										UIMessages.INSTANCE.processing());
-								autoMessageBox.center();
-								autoMessageBox.show();
-								String selectedAttribute = joinDataDialog
-										.getAttributeCombo().getValue();
+								if (joinDataDialog.getAttributeCombo().getValue() == null) {
+									showAlert(UIMessages.INSTANCE.joinAttributeMustSelect());
+								}else{
+									autoMessageBox = new ProgressBarDialog(false,
+											UIMessages.INSTANCE.processing());
+									autoMessageBox.center();
+									autoMessageBox.show();
+									String selectedAttribute = joinDataDialog
+											.getAttributeCombo().getValue();
 
-								addAttributesToLayer(Arrays.asList(attrNames));
+									addAttributesToLayer(Arrays.asList(attrNames));
 
-								addValuesToLayer(selectedAttribute);
+									addValuesToLayer(selectedAttribute);
 
-								layerManagerWidget.setSelectedLayer(
-										LayerManagerWidget.VECTOR_TAB,
-										getSelectedVectorLayer());
+									layerManagerWidget.setSelectedLayer(
+											LayerManagerWidget.VECTOR_TAB,
+											getSelectedVectorLayer());
 
-								autoMessageBox.hide();
-								joinDataDialog.hide();
-
+									autoMessageBox.hide();
+									joinDataDialog.hide();									
+								}
 							}
 
 						});

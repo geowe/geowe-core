@@ -81,7 +81,7 @@ public class SimpleThemingVerticalLegend extends VerticalLegend {
 	private Map<String, String> createAttributeColorMap() {
 		Map<String, String> attrColorMap = new HashMap<String, String>();
 		for (VectorFeature feature : selectedLayer.getFeatures()) {
-			String attrValue = feature.getAttributes().getAttributeAsString(
+			String attrValue = "" +feature.getAttributes().getAttributeAsString(
 					attributeName);
 			attrColorMap.put(attrValue, StyleFactory.stringToColour(attrValue));
 		}

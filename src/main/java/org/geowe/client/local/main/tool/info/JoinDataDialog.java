@@ -27,10 +27,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.messages.UIMessages;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.resources.ThemeStyles;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
@@ -61,6 +63,7 @@ public class JoinDataDialog extends Dialog {
 	private SimpleComboBox<String> attributeCombo;
 	private TextButton loadFileButton;
 	private FileUploadField file;
+	private HorizontalPanel comboPanel;
 
 	public JoinDataDialog() {
 		super();
@@ -77,13 +80,14 @@ public class JoinDataDialog extends Dialog {
 
 	public void init() {
 		attributeCombo.clear();
-		attributeCombo.setVisible(false);
+		comboPanel.setVisible(false);
 	}
 	
 	@PostConstruct
 	private void initialize() {
 		createFilePanel();
 		createAttributeComboBox();
+		getComboPanel();
 		add(createPanel());
 	}
 	
@@ -92,8 +96,7 @@ public class JoinDataDialog extends Dialog {
 		vPanel.setSpacing(1);
 		vPanel.add(createTabPanel());
 		vPanel.add(loadFileButton);
-		vPanel.add(new FieldLabel(attributeCombo, UIMessages.INSTANCE
-				.bindableAttribute()));
+		vPanel.add(comboPanel);
 		return vPanel;
 	}
 	
@@ -153,7 +156,7 @@ public class JoinDataDialog extends Dialog {
 					}
 				});
 		attributeCombo.setEnabled(false);
-		attributeCombo.setVisible(false);
+
 		attributeCombo.setTypeAhead(true);
 		attributeCombo.setEmptyText(UIMessages.INSTANCE
 				.asdAttributeComboEmptyText());
@@ -161,6 +164,17 @@ public class JoinDataDialog extends Dialog {
 		attributeCombo.setForceSelection(true);
 		attributeCombo.setEditable(false);
 		attributeCombo.enableEvents();
+	}
+
+	private void getComboPanel() {
+		comboPanel = new HorizontalPanel();
+		comboPanel.setWidth("380px");
+		comboPanel.addStyleName(ThemeStyles.get().style().borderBottom());
+		comboPanel.addStyleName(ThemeStyles.get().style().borderTop());
+		comboPanel.setSpacing(5);
+		comboPanel.setVisible(false);
+		comboPanel.add(new Label(UIMessages.INSTANCE.bindableAttribute()));
+		comboPanel.add(attributeCombo);
 	}
 
 
@@ -190,5 +204,9 @@ public class JoinDataDialog extends Dialog {
 
 	public boolean isUrlFieldCorrectFilled() {
 		return urlTextField.isValid();
+	}
+
+	public void showComboPanel() {
+		comboPanel.setVisible(true);
 	}
 }

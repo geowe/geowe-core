@@ -59,7 +59,7 @@ public abstract class VectorFeatureSearcher implements Searcher {
 	}
 
 	private String getAttributeValue(VectorFeature vector, String attributeName) {
-		return vector.getAttributes().getAttributeAsString(attributeName);
+		return "" +vector.getAttributes().getAttributeAsString(attributeName);
 	}
 
 	public abstract boolean hasBeenFound(String string, String valueToSearch,

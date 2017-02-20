@@ -857,11 +857,13 @@ public interface UIMessages extends Messages {
 	
 	String joinData();
 
-	String joinAttributeNotExist(String selectedAttribute);
+	String joinAttributeNotExist();
 
 	String joinDialogHeadingText();
 
 	String bindableAttribute();
 
 	String loadFile();
+
+	String joinAttributeMustSelect();
 }

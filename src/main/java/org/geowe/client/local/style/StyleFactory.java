@@ -169,7 +169,7 @@ public final class StyleFactory {
 								return fillColor;
 							}
 
-							var themingValue = feature.attributes[colorThemingAttribute];
+							var themingValue = "" + feature.attributes[colorThemingAttribute];
 
 							return @org.geowe.client.local.style.StyleFactory::stringToColour(Ljava/lang/String;)(themingValue);
 						}

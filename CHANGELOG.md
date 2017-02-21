@@ -8,7 +8,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
-## [1.4.16]Beta - 2017-02-17
+## [1.4.16]Beta - 2017-02-21
 ### Added
 - Grid-level layer data editing
 

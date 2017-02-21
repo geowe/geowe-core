@@ -8,6 +8,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.4.17]Beta - 2017-02-21
+### Added
+- Join data. custom csv separator and layer attribute.
+
+### Fixed
+- issue [#327](https://github.com/geowe/geowe-core/issues/327)
+
 ## [1.4.16]Beta - 2017-02-21
 ### Added
 - Grid-level layer data editing

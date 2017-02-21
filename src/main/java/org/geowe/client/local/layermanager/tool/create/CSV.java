@@ -163,19 +163,19 @@ public class CSV {
 		return csvAttrName.length == csvFeature.length;
 	}
 
-	public String[] readAttributeNames(String data) {
+	public String[] readAttributeNames(String data, String separator) {
 		String[] csvLines = data.split("\n");
 
-		String[] csvAttrName = csvLines[0].split(CSV_SEPARATOR);
+		String[] csvAttrName = csvLines[0].split(separator);
 		return csvAttrName;
 	}
 
-	public List<CsvItem> getItems(String data) {
+	public List<CsvItem> getItems(String data, String separator) {
 		List<CsvItem> items = new ArrayList<CsvItem>();
 		String[] csvLines = data.split("\n");
-		String[] csvAttrNames = csvLines[0].split(CSV_SEPARATOR);
+		String[] csvAttrNames = csvLines[0].split(separator);
 		for (int i = 1; i < csvLines.length; i++) {
-			String[] csvItem = csvLines[i].split(CSV_SEPARATOR);
+			String[] csvItem = csvLines[i].split(separator);
 
 			if (isCsvLineValid(csvAttrNames, csvItem)) {
 				items.add(getCsvItem(csvAttrNames, csvItem));

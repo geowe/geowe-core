@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -46,7 +47,9 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 public class FeatureGrid extends Grid<VectorFeature> {
 	public static final int DEFAULT_WIDTH = 430;
 	public static final int DEFAULT_HEIGHT = 200;
-
+	
+	private boolean enableCellRender;
+	
 	public FeatureGrid(int width, int height) {
 		super(
 				new ListStore<VectorFeature>(
@@ -60,8 +63,9 @@ public class FeatureGrid extends Grid<VectorFeature> {
 				new ColumnModel<VectorFeature>(
 						new ArrayList<ColumnConfig<VectorFeature, ?>>())
 				);
-		
-		this.setBorders(true);						
+				
+		this.setBorders(true);
+		this.setAllowTextSelection(true);
 		this.getView().setStripeRows(true);
 		this.getView().setColumnLines(true);		
 		this.setColumnReordering(true);					
@@ -69,12 +73,22 @@ public class FeatureGrid extends Grid<VectorFeature> {
 		
 		this.setWidth(width);
 		this.setHeight(height);	
+		
+		this.setEnableCellRender(false);
 	}
 	
 	public FeatureGrid() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	
+	public boolean isEnableCellRender() {
+		return enableCellRender;
+	}
+
+	public void setEnableCellRender(boolean enableCellRender) {
+		this.enableCellRender = enableCellRender;
+	}
+
 	/**
 	 * Reconstruye la tabla completa en base a los atributos de las
 	 * features que se reciben como parámetro.
@@ -82,7 +96,7 @@ public class FeatureGrid extends Grid<VectorFeature> {
 	 */
 	public void rebuild(List<VectorFeature> features) {
 		update(features);
-		this.reconfigure(this.getStore(), createColumnList(features));
+		this.reconfigure(this.getStore(), createColumnList(features));		
 	}
 	
 	/**
@@ -136,11 +150,15 @@ public class FeatureGrid extends Grid<VectorFeature> {
 					ColumnConfig<VectorFeature, String> attributeColumn = new ColumnConfig<VectorFeature, String>(
 							attributeProvider, 100, attributeName);
 					attributeColumn.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+					if(isEnableCellRender()) {
+						attributeColumn.setCell(new FeatureGridCellRenderer());
+					}					
+					
 					columns.add(attributeColumn);
 				}
 			}					
 		}
-		
+			
 		return new ColumnModel<VectorFeature>(columns);
 	}
 	
@@ -162,7 +180,8 @@ public class FeatureGrid extends Grid<VectorFeature> {
 	    }
 
 	    @Override
-	    public void setValue(VectorFeature object, String value) {
+	    public void setValue(VectorFeature feature, String value) {
+	    	feature.getAttributes().setAttribute(attributeName, value);
 	    }
 
 	    @Override

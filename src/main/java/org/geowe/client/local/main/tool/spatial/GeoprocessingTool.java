@@ -66,6 +66,7 @@ public class GeoprocessingTool extends ButtonTool {
 	private MessageDialogBuilder messageDialogBuilder;
 	@Inject
 	private GeometryValidator geometryValidator;
+	
 	private static final int LAYER_1 = 1;
 	private static final int LAYER_2 = 2;
 

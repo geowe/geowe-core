@@ -26,7 +26,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.messages.UIMessages;
+import org.geowe.client.local.ui.FeatureAttributeComboBox;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -56,57 +59,74 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 @ApplicationScoped
 public class JoinDataDialog extends Dialog {
 
+	private static final String DEFAULT_CSV_CHARACTER_SEPARATOR = ",";
 	private PlainTabPanel tabPanel;
 	private FormPanel uploadPanel;
-	
+
 	private TextField urlTextField;
-	private SimpleComboBox<String> attributeCombo;
+	private SimpleComboBox<String> csvAttributeCombo;
 	private TextButton loadFileButton;
 	private FileUploadField file;
 	private HorizontalPanel comboPanel;
+	private HorizontalPanel separatorPanel;
+	private TextField separatorTextField;
+	private FeatureAttributeComboBox layerAttributeCombo;
+	private HorizontalPanel layerAttributeComboPanel;
 
 	public JoinDataDialog() {
 		super();
 		setHeadingText(UIMessages.INSTANCE.joinDialogHeadingText());
-		setSize("420px", "280px");
+		setSize("420px", "320px");
 		setResizable(true);
 		setHideOnButtonClick(false);
 		setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CLOSE);
 		setBodyStyleName("pad-text");
-		loadFileButton = new TextButton(UIMessages.INSTANCE.loadFile());
 
 		initialize();
 	}
 
 	public void init() {
-		attributeCombo.clear();
-		comboPanel.setVisible(false);
+		csvAttributeCombo.clear();
+		layerAttributeCombo.clear();
+		hidePanels();
 	}
-	
+
 	@PostConstruct
 	private void initialize() {
 		createFilePanel();
-		createAttributeComboBox();
-		getComboPanel();
+		createCSVAttributeComboBox();
+		getCSVComboPanel();
+		createSeparatorPanel();
+		createLoadFileButton();
+		createAttributeCombo();
+		createLayerAttributeComboPanel();
 		add(createPanel());
 	}
-	
+
 	private Widget createPanel() {
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setSpacing(1);
+		vPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_JUSTIFY);
+
 		vPanel.add(createTabPanel());
+		vPanel.add(separatorPanel);
 		vPanel.add(loadFileButton);
 		vPanel.add(comboPanel);
+		vPanel.add(layerAttributeComboPanel);
+
 		return vPanel;
 	}
-	
+
+	private void createLoadFileButton() {
+		loadFileButton = new TextButton(UIMessages.INSTANCE.loadFile());
+		loadFileButton.setWidth("100%");
+	}
+
 	private PlainTabPanel createTabPanel() {
 		tabPanel = new PlainTabPanel();
-		
 		tabPanel.setPixelSize(400, 80);
 		tabPanel.add(uploadPanel, UIMessages.INSTANCE.file());
-		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());		
-						
+		tabPanel.add(getURLPanel(), UIMessages.INSTANCE.url());
+
 		return tabPanel;
 	}
 
@@ -130,10 +150,10 @@ public class JoinDataDialog extends Dialog {
 
 		return uploadPanel;
 	}
-	
+
 	private VerticalPanel getURLPanel() {
 		final VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setWidth("400px");
+		vPanel.setWidth("100%");
 
 		vPanel.add(new Label(UIMessages.INSTANCE.messageURLPanel()));
 
@@ -147,39 +167,70 @@ public class JoinDataDialog extends Dialog {
 		return vPanel;
 	}
 
-	private void createAttributeComboBox() {
-		attributeCombo = new SimpleComboBox<String>(
+	private void createCSVAttributeComboBox() {
+		csvAttributeCombo = new SimpleComboBox<String>(
 				new LabelProvider<String>() {
 					@Override
 					public String getLabel(String item) {
 						return item;
 					}
 				});
-		attributeCombo.setEnabled(false);
-
-		attributeCombo.setTypeAhead(true);
-		attributeCombo.setEmptyText(UIMessages.INSTANCE
+		csvAttributeCombo.setEnabled(false);
+		csvAttributeCombo.setWidth("200px");
+		csvAttributeCombo.setTypeAhead(true);
+		csvAttributeCombo.setEmptyText(UIMessages.INSTANCE
 				.asdAttributeComboEmptyText());
-		attributeCombo.setTriggerAction(TriggerAction.ALL);
-		attributeCombo.setForceSelection(true);
-		attributeCombo.setEditable(false);
-		attributeCombo.enableEvents();
+		csvAttributeCombo.setTriggerAction(TriggerAction.ALL);
+		csvAttributeCombo.setForceSelection(true);
+		csvAttributeCombo.setEditable(false);
+		csvAttributeCombo.enableEvents();
 	}
 
-	private void getComboPanel() {
+	private void getCSVComboPanel() {
 		comboPanel = new HorizontalPanel();
-		comboPanel.setWidth("380px");
-		comboPanel.addStyleName(ThemeStyles.get().style().borderBottom());
+		comboPanel.setWidth("100%");
 		comboPanel.addStyleName(ThemeStyles.get().style().borderTop());
 		comboPanel.setSpacing(5);
 		comboPanel.setVisible(false);
 		comboPanel.add(new Label(UIMessages.INSTANCE.bindableAttribute()));
-		comboPanel.add(attributeCombo);
+		comboPanel.add(csvAttributeCombo);
 	}
 
+	private void createSeparatorPanel() {
+		separatorPanel = new HorizontalPanel();
+		separatorPanel.setSpacing(1);
+		separatorPanel.setWidth("100%");
+		separatorPanel.addStyleName(ThemeStyles.get().style().borderTop());
+		separatorPanel.addStyleName(ThemeStyles.get().style().borderBottom());
 
-	public SimpleComboBox<String> getAttributeCombo() {
-		return attributeCombo;
+		separatorPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		separatorPanel.add(new Label("Separator (default ,)"));
+		separatorTextField = new TextField();
+		separatorTextField.setText(DEFAULT_CSV_CHARACTER_SEPARATOR);
+		separatorTextField.setWidth(30);
+
+		separatorPanel.add(separatorTextField);
+	}
+
+	private void createLayerAttributeComboPanel() {
+		layerAttributeComboPanel = new HorizontalPanel();
+		layerAttributeComboPanel.setWidth("100%");
+		layerAttributeComboPanel.addStyleName(ThemeStyles.get().style()
+				.borderBottom());
+		layerAttributeComboPanel.setSpacing(5);
+		layerAttributeComboPanel.setVisible(false);
+		layerAttributeComboPanel.add(new Label(UIMessages.INSTANCE
+				.layerSchemaToolText()));
+		layerAttributeComboPanel.add(layerAttributeCombo);
+
+	}
+
+	private void createAttributeCombo() {
+		layerAttributeCombo = new FeatureAttributeComboBox("200px");
+	}
+
+	public SimpleComboBox<String> getCsvAttributeCombo() {
+		return csvAttributeCombo;
 	}
 
 	public FormPanel getUploadFormPanel() {
@@ -206,7 +257,22 @@ public class JoinDataDialog extends Dialog {
 		return urlTextField.isValid();
 	}
 
-	public void showComboPanel() {
+	public void showPanels() {
 		comboPanel.setVisible(true);
+		layerAttributeComboPanel.setVisible(true);
 	}
+
+	public void hidePanels() {
+		comboPanel.setVisible(false);
+		layerAttributeComboPanel.setVisible(false);
+	}
+
+	public String getSeparator() {
+		return separatorTextField.getText();
+	}
+
+	public FeatureAttributeComboBox getLayerAttributeCombo() {
+		return layerAttributeCombo;
+	}
+
 }

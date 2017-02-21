@@ -24,6 +24,7 @@ package org.geowe.client.local.main.tool.info;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,6 +38,9 @@ import org.geowe.client.local.model.vector.VectorLayer;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Show info for a Feature
@@ -57,6 +61,32 @@ public class SingleFeatureInfoTool extends LayerTool implements FeatureTool {
 			GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
 	}
+	
+	@PostConstruct
+	private void initialize() {	
+		addFinishEditingListener();
+	}
+	
+	/**
+	 * Issue #321
+	 * 
+	 * Añade un listener al dialogo de edición/visualización de features
+	 * para, al finalizar y confirmar la edición, que se refresque la capa 
+	 * seleccionada y con ello todos los dialogos que muestran información 
+	 * sobre la misma
+	 */
+	private void addFinishEditingListener() {
+		infoDialog.getButton(PredefinedButton.OK).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(final SelectEvent event) {
+						layerManagerWidget.setSelectedLayer(
+								LayerManagerWidget.VECTOR_TAB,
+								getSelectedVectorLayer());
+					}
+				});			
+	}
+	
 
 	@Override
 	public VectorFeature getSelectedFeature() {
@@ -98,7 +128,6 @@ public class SingleFeatureInfoTool extends LayerTool implements FeatureTool {
 	@Override
 	public void setSelectedLayer(VectorLayer layer) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

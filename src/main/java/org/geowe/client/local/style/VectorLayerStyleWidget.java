@@ -123,7 +123,7 @@ public class VectorLayerStyleWidget implements IsWidget,
 		labelStyleTab = new LabelStyleTab();
 		vertexStyleTab = new VertexStyleTab();
 		colorThemingStyleTab = new ColorThemingStyleTab();
-
+		
 		tabPanel.add(colorStyleTab, UIMessages.INSTANCE.vlsLineAndColor());
 		tabPanel.add(labelStyleTab, UIMessages.INSTANCE.vlswLabelAttribute());
 		tabPanel.add(vertexStyleTab, UIMessages.INSTANCE.vlswVertexStyle());
@@ -175,6 +175,25 @@ public class VectorLayerStyleWidget implements IsWidget,
 		}			
 		
 		panel.setHeadingText(title);
+	}
+	
+	public void setActiveTab(int tabIndex) {
+		switch(tabIndex) {
+			case 0:
+				tabPanel.setActiveWidget(colorStyleTab);
+				break;
+			case 1:
+				tabPanel.setActiveWidget(labelStyleTab);
+				break;
+			case 2:
+				tabPanel.setActiveWidget(vertexStyleTab);
+				break;
+			case 3:
+				tabPanel.setActiveWidget(colorThemingStyleTab);
+				break;
+			default:
+				tabPanel.setActiveWidget(colorStyleTab);
+		}		
 	}
 
 	public String getFillColor() {

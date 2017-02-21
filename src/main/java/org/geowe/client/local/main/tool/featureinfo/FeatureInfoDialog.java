@@ -28,18 +28,14 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.geowe.client.local.main.AnchorBuilder;
 import org.geowe.client.local.main.tool.help.HelpMessages;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.ui.FeatureGridCellRenderer;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
 
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.resources.ThemeStyles;
 import com.sencha.gxt.core.client.util.Margins;
@@ -110,7 +106,7 @@ public class FeatureInfoDialog extends Dialog {
 		final ColumnConfig<FeatureAttributeBean, String> valueCol = new ColumnConfig<FeatureAttributeBean, String>(
 				props.attributeValue(), 200, UIMessages.INSTANCE.fidValueCol());
 
-		valueCol.setCell(createCellRender());
+		valueCol.setCell(new FeatureGridCellRenderer());
 
 		final List<ColumnConfig<FeatureAttributeBean, ?>> columns = new ArrayList<ColumnConfig<FeatureAttributeBean, ?>>();
 		columns.add(nameCol);
@@ -181,36 +177,6 @@ public class FeatureInfoDialog extends Dialog {
 				.featureInfoDialogContent());
 		helpToolTip.setCloseable(true);
 		tButton.setToolTipConfig(helpToolTip);
-	}
-
-	private AbstractCell<String> createCellRender() {
-		return new AbstractCell<String>() {
-			@Override
-			public void render(final Context context, final String value, final SafeHtmlBuilder sb) {
-				if (value != null) {
-					if (value.startsWith("http")) {
-						final Anchor anchor = new AnchorBuilder()
-								.setText(value)
-								.setHref(value)
-								.setTitle(UIMessages.INSTANCE.openInNewWindow())
-								.build();
-						sb.appendHtmlConstant(anchor.getElement().getString());
-					} else if (value.startsWith("img:")) {
-						final String url = value.replace("img:", "");
-						final Image image = new Image(url);
-						image.setSize("48px", "48px");
-						final Anchor anchor = new AnchorBuilder()
-								.setHref(url)
-								.setTitle(UIMessages.INSTANCE.openInNewWindow())
-								.setImage(image).build();
-
-						sb.appendHtmlConstant(anchor.getElement().getString());
-					} else {
-						sb.appendHtmlConstant(value);
-					}
-				}
-			}
-		};
 	}
 
 	private List<FeatureAttributeBean> getElements(final VectorFeature vectorFeature) {

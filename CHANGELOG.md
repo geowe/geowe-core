@@ -9,6 +9,15 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - More tools
 
 ## [1.4.15]Beta - 2017-02-17
+### Added
+- Grid-level layer data editing
+
+### Fixed
+- issue [#224](https://github.com/geowe/geowe-core/issues/224)
+- issue [#321](https://github.com/geowe/geowe-core/issues/321)
+- issue [#325](https://github.com/geowe/geowe-core/issues/325)
+
+## [1.4.15]Beta - 2017-02-17
 
 
 ### Fixed

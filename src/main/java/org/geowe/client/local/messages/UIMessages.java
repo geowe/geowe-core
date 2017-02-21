@@ -233,6 +233,11 @@ public interface UIMessages extends Messages {
 	String lidElementsCountLabel();
 
 	String lidFeaturesListLabel();
+	
+	//LayerEditDialog
+	String lidHeadText();
+	
+	String layerEditToolText();
 
 	// AttributeSearchDialog
 	String asdTitle();

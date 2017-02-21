@@ -95,7 +95,12 @@ public class ChangeStyleTool extends ButtonTool {
 			vectorLayerStyleWidget.setSelectedLayer((VectorLayer) layer);
 			vectorLayerStyleWidget.asWidget().getElement().<FxElement> cast()
 					.fadeToggle();
-			vectorLayerStyleWidget.asWidget().setVisible(true);			
+			vectorLayerStyleWidget.asWidget().setVisible(true);
+			
+			if(layer.getSelectedFeatures() != null 
+					&& layer.getSelectedFeatures().length > 0) {
+				vectorLayerStyleWidget.setActiveTab(0);
+			}
 		}
 	}
 

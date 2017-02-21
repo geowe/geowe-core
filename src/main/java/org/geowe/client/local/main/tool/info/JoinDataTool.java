@@ -22,7 +22,6 @@
  */
 package org.geowe.client.local.main.tool.info;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class JoinDataTool extends LayerTool {
 	private ProgressBarDialog autoMessageBox;
 
 	protected List<CsvItem> csvItems;
-	private String[] attrNames;
+	private String[] csvAttrNames;
 
 	@Inject
 	public JoinDataTool(LayerManagerWidget layerManagerWidget, GeoMap geoMap) {
@@ -176,35 +175,25 @@ public class JoinDataTool extends LayerTool {
 
 	private void parseCsvData(final String csvData) {
 		CSV csv = new CSV();
-		attrNames = csv.readAttributeNames(csvData);
+		csvAttrNames = csv.readAttributeNames(csvData,
+				joinDataDialog.getSeparator());
 
-		joinDataDialog.getAttributeCombo().getStore().clear();
+		joinDataDialog.getCsvAttributeCombo().getStore().clear();
 
-		List<String> bindableAttributes = getBindableAttributes(attrNames);
+		List<String> bindableAttributes = Arrays.asList(csvAttrNames);
 		if (bindableAttributes.size() == 0) {
 			showAlert(UIMessages.INSTANCE.joinAttributeNotExist());
 		} else {
-			joinDataDialog.getAttributeCombo().getStore()
+			joinDataDialog.getCsvAttributeCombo().getStore()
 					.addAll(bindableAttributes);
 
-			joinDataDialog.getAttributeCombo().enable();
-			joinDataDialog.showComboPanel();
-			csvItems = csv.getItems(csvData);
-		}
-	}
+			joinDataDialog.getCsvAttributeCombo().enable();
 
-	private List<String> getBindableAttributes(String[] attrNames) {
-		List<String> bindableAttributes = new ArrayList<String>();
-		for (String attrName : attrNames) {
-			if (existAttributeInLayer(attrName)) {
-				bindableAttributes.add(attrName);
-			}
+			joinDataDialog.getLayerAttributeCombo().loadValues(
+					getSelectedVectorLayer());
+			joinDataDialog.showPanels();
+			csvItems = csv.getItems(csvData, joinDataDialog.getSeparator());
 		}
-		return bindableAttributes;
-	}
-
-	private boolean existAttributeInLayer(String attrName) {
-		return (getSelectedVectorLayer().getAttribute(attrName) != null);
 	}
 
 	private void lodaDataFromURL(String url) {
@@ -245,19 +234,27 @@ public class JoinDataTool extends LayerTool {
 
 							@Override
 							public void run() {
-								if (joinDataDialog.getAttributeCombo().getValue() == null) {
+								if (joinDataDialog.getCsvAttributeCombo()
+										.getValue() == null
+										|| joinDataDialog
+												.getLayerAttributeCombo()
+												.getValue() == null) {
 									showAlert(UIMessages.INSTANCE.joinAttributeMustSelect());
 								}else{
 									autoMessageBox = new ProgressBarDialog(false,
 											UIMessages.INSTANCE.processing());
 									autoMessageBox.center();
 									autoMessageBox.show();
-									String selectedAttribute = joinDataDialog
-											.getAttributeCombo().getValue();
+									String selectedCsvAttribute = joinDataDialog
+											.getCsvAttributeCombo().getValue();
+									String selectedLayerAttribute = joinDataDialog
+											.getLayerAttributeCombo()
+											.getValue().getName();
 
-									addAttributesToLayer(Arrays.asList(attrNames));
+									addAttributesToLayer(selectedCsvAttribute);
 
-									addValuesToLayer(selectedAttribute);
+									addValuesToLayer(selectedCsvAttribute,
+											selectedLayerAttribute);
 
 									layerManagerWidget.setSelectedLayer(
 											LayerManagerWidget.VECTOR_TAB,
@@ -273,34 +270,40 @@ public class JoinDataTool extends LayerTool {
 				});
 	}
 
-	private void addAttributesToLayer(List<String> attrNames) {
-		for (String attrName : attrNames) {
-			if (getSelectedVectorLayer().getAttribute(attrName) == null) {
+	private void addAttributesToLayer(String bindableAttr) {
+		for (String attrName : csvAttrNames) {
+			if (!attrName.equals(bindableAttr)
+					&& getSelectedVectorLayer().getAttribute(attrName) == null) {
 				getSelectedVectorLayer().addAttribute(attrName, false);
 			}
 		}
 	}
 
-	private void addValuesToLayer(String attrNameId) {
+	private void addValuesToLayer(String csvAttrToBind, String layerAttrToBind) {
 		for (CsvItem csvItem : csvItems) {
-			addAttributesToFeatures(attrNameId, csvItem);
+			addAttributesToFeatures(csvAttrToBind, layerAttrToBind, csvItem);
 		}
 	}
 
-	private void addAttributesToFeatures(String attrNameId, CsvItem csvItem) {
+	private void addAttributesToFeatures(String csvAttrToBind,
+			String layerAttrToBind, CsvItem csvItem) {
 		for (VectorFeature feature : getSelectedVectorLayer().getFeatures()) {
-			if (csvItem.getValue(attrNameId).equals(
-					feature.getAttributes().getAttributeAsString(attrNameId))) {
-				addAttributesToFeature(csvItem, feature);
+			if (csvItem.getValue(csvAttrToBind).equals(""
+							+ feature.getAttributes().getAttributeAsString(
+									layerAttrToBind))) {
+				addAttributesToFeature(csvItem, feature, csvAttrToBind);
 				break;
 			}
 		}
 	}
 
-	private void addAttributesToFeature(CsvItem csvItem, VectorFeature feature) {
+	private void addAttributesToFeature(CsvItem csvItem, VectorFeature feature,
+			String csvAttrToBind) {
 		for (String attrName : csvItem.getAttributeNames()) {
-			feature.getAttributes().setAttribute(attrName,
-					csvItem.getValue(attrName));
+			if (!csvAttrToBind.equals(attrName)) {
+				feature.getAttributes().setAttribute(attrName,
+						csvItem.getValue(attrName));
+			}
 		}
 	}
 

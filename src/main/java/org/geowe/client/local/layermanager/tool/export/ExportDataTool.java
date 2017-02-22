@@ -109,67 +109,9 @@ public class ExportDataTool extends LayerTool implements
 		super(layerTreeWidget, geoMap);
 	}
 	
-	private native void addGeojsonLayer(String geojson, boolean zoomToLayer) /*-{
-				
-		var f = $wnd.frames["geowe-viewer"];		
-    	f.contentWindow.addLayer(geojson, zoomToLayer);
-    	
-	}-*/;
 	
-	
-	
-
 	@PostConstruct
 	private void configureDownloadButton() {
-
-		exportDataDialog.getViewerButton().addSelectHandler(
-				new SelectHandler() {
-					@Override
-					public void onSelect(SelectEvent event) {
-						
-						
-						//URL_BASE +
-						//final Frame frame = new Frame( "http://www.geowe.org/geowe-viewer/leaflet.html");
-						final Frame frame = new Frame( "viewer/leaflet.html");
-						frame.getElement().setId("geowe-viewer");
-						frame.setTitle("Viewer");						
-						frame.setWidth("500px");
-						frame.setHeight("500px");
-						
-						frame.setVisible(true);
-						RootPanel.get().add(frame);
-						
-						TextButton viewerButton = new TextButton("Test");
-						
-						viewerButton.addSelectHandler(
-								new SelectHandler() {
-									@Override
-									public void onSelect(SelectEvent event) {
-										
-										GeoJSONCSS format = new GeoJSONCSS();
-										VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
-										((GeoJSONCSS) format).setLayer(selectedLayer);
-										String geojson = format.write(getTransformedFeatures(selectedLayer, "WGS84"));
-										addGeojsonLayer(geojson, true);
-										
-									}
-								});
-						
-						Dialog d = new Dialog();
-						d.add(frame);
-						d.setHeadingText("GeoWE Viewer!");
-						//d.setWidget(new HTML(LeafletViewerDataProvider.INSTANCE.mapViewer().getText()));
-						//d.setBodyStyle("fontWeight:bold;padding:13px;");
-						d.setPixelSize(500, 500);
-						d.setHideOnButtonClick(true);
-						d.setPredefinedButtons(PredefinedButton.CLOSE);
-						
-						d.getButtonBar().add(viewerButton);
-
-						d.show();
-												
-					}
-				});
 
 		exportDataDialog.getDownloadFileButton().addSelectHandler(
 				new SelectHandler() {
@@ -457,7 +399,7 @@ public class ExportDataTool extends LayerTool implements
 		messageBox.show();
 	}
 
-	private VectorFeature[] getTransformedFeatures(Vector layer, String epsg) {
+	public VectorFeature[] getTransformedFeatures(Vector layer, String epsg) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
 		if (layer.getFeatures() != null) {
 			for (VectorFeature feature : layer.getFeatures()) {

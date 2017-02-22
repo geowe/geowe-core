@@ -49,7 +49,7 @@ public class ExportDataDialog extends Dialog {
 
 	private TextButton downloadFileButton;
 	private TextButton gitHubButton;
-	private TextButton viewerButton;
+	
 	private VectorFormatComboBox vectorFormatCombo;
 	private ProjectionComboBox epsgCombo;
 
@@ -79,11 +79,7 @@ public class ExportDataDialog extends Dialog {
 		setHeadingText(UIMessages.INSTANCE
 				.exportDataToolDialogTitle(vectorLayer.getName()));
 		epsgCombo.setValue(vectorLayer.getProjection().getProjectionCode());
-	}
-
-	public TextButton getViewerButton() {
-		return viewerButton;
-	}
+	}	
 	
 	public TextButton getDownloadFileButton() {
 		return downloadFileButton;
@@ -111,14 +107,6 @@ public class ExportDataDialog extends Dialog {
 		epsgCombo = new ProjectionComboBox(comboWidth);
 		
 		
-		
-		viewerButton = new TextButton(
-				UIMessages.INSTANCE.downloadfileText());
-		viewerButton.setIcon(ImageProvider.INSTANCE.download32());
-		viewerButton.setIconAlign(IconAlign.TOP);
-		
-		
-
 		downloadFileButton = new TextButton(
 				UIMessages.INSTANCE.downloadfileText());
 		downloadFileButton.setIcon(ImageProvider.INSTANCE.download32());
@@ -139,8 +127,7 @@ public class ExportDataDialog extends Dialog {
 		vPanel.add(epsgCombo);
 
 		horizontalGroup.add(vPanel);
-				
-		horizontalGroup.add(viewerButton);
+						
 		horizontalGroup.add(downloadFileButton);
 		horizontalGroup.add(gitHubButton);
 		

@@ -25,42 +25,24 @@ package org.geowe.client.local.ui;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
-import com.sencha.gxt.data.shared.LabelProvider;
-import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
-
 /**
  * Componente gráfico reutilizable que representa una lista desplegable
  * con tamaños de fuente. Por defecto se cargar con los tamaños
  * soportados en GeoWE.
  * 
- * @author Atanasio Muñoz
+ * @author Atanasio Muñoz (ata@geowe.org)
  *
  */
-public class FontSizeComboBox extends SimpleComboBox<Integer> {
+public class FontSizeComboBox extends IntegerValueComboBox {
 	private static final List<Integer> fontSizes = Arrays.asList(
 			8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36);
 	
 	public FontSizeComboBox(String width) {
-		super(new LabelProvider<Integer>() {
-			@Override
-			public String getLabel(Integer item) {
-				return Integer.toString(item);
-			}			
-		});
-		
-		setWidth(width);
-		setTypeAhead(true);	
-		setTriggerAction(TriggerAction.ALL);			
-		setForceSelection(true);
-		setEditable(false);
-		enableEvents();		
-		
-		add(fontSizes);		
+		super(width);
+		setFontSizes(fontSizes);		
 	}
 	
 	public void setFontSizes(List<Integer> sizes) {
-		getStore().clear();
-		add(sizes);
+		setValues(sizes);
 	}
 }

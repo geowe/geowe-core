@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -102,7 +103,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		this.setPredefinedButtons(PredefinedButton.CLOSE);
 		this.setPixelSize(560, 500);
 		this.setModal(false);
-		this.setResizable(false);
+		
+		this.setButtonAlign(BoxLayoutPack.CENTER);		
 		this.setHideOnButtonClick(true);
 	}
 
@@ -110,6 +112,12 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	private void initialize() {
 		add(createPanel());
 		deleteFeatureListenerManager.addDeleteFeatureListener(this);
+		/**
+		 * Es necesario mostrar durante un instante el diálogo para que
+		 * la configuración del tamaño y del grid se realice correctamente
+		 */
+		this.show();
+		this.hide();
 	}
 
 	private Widget createPanel() {
@@ -119,7 +127,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 		vPanel.setSpacing(5);
 		vPanel.add(createTopPanel());
 		vPanel.add(createBottomPanel());
-
+				
 		return vPanel;
 	}
 
@@ -212,6 +220,8 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 					}
 				});
 				
+		layerInfoToolBar.setAllTools();
+		
 		VerticalLayoutContainer gridContainer = new VerticalLayoutContainer();
 		gridContainer.setWidth(500);
 		gridContainer.setHeight(200);
@@ -224,7 +234,7 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 	}
 		
 	public void setSelectedLayer(VectorLayer layer) {
-		selectedLayer = layer;
+		selectedLayer = layer;		
 		updateData();
 	}
 	
@@ -264,11 +274,9 @@ public class LayerInfoDialog extends Dialog implements DeleteFeatureListener,
 
 	@Override
 	public void onDeleteFeature(VectorFeature feature) {
-
-		if (selectedLayer != null) {
-			updateData();
-		}
-		numElementsField.setText(Integer.toString(featureGrid.getStore().size()));
+		layerManagerWidget.setSelectedLayer(
+				LayerManagerWidget.VECTOR_TAB,
+				selectedLayer);
 	}
 
 	@Override

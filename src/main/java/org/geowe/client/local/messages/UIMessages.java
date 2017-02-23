@@ -877,4 +877,10 @@ public interface UIMessages extends Messages {
 	String loadFile();
 
 	String joinAttributeMustSelect();
+	
+	String separator(String defaultValue);
+
+	String errorPoint();
+
+	String validatedLayerName();
 }

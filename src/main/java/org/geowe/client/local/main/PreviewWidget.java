@@ -23,6 +23,7 @@
 package org.geowe.client.local.main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,6 +38,7 @@ import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.VectorLayer;
 import org.geowe.client.local.model.vector.format.GeoJSONCSS;
+import org.geowe.client.local.ui.IntegerValueComboBox;
 import org.gwtopenmaps.openlayers.client.control.SelectFeature;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
@@ -50,6 +52,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -61,7 +64,9 @@ import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutP
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.HtmlEditor;
+import com.sencha.gxt.widget.core.client.form.TextArea;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * Represents the status bar
@@ -70,25 +75,28 @@ import com.sencha.gxt.widget.core.client.form.FieldLabel;
  *
  */
 @ApplicationScoped
-public class PreviewWidget extends Dialog implements 
+public class PreviewWidget extends Dialog implements
 		ChangeSelectedLayerListener, AddLayerListener, RemoveLayerListener {
-	
 
 	@Inject
 	private LayerManagerWidget layerManagerWidget;
-
 	@Inject
 	private GeoMap geoMap;
-	
 	@Inject
 	private ExportDataTool exportDataTool;
-
 	private Vector selectedLayer;
 	private List<Layer> vectorLayers;
-
 	private ComboBox<VectorLayerInfo> layerCombo;
 	private ListStore<VectorLayerInfo> layerStore;
-	
+	private TextField titleField;
+	private TextArea descriptionField;
+	private TextButton addLayerButton;
+	private TextButton printButton;
+	private TextButton applyButton;
+	//private TextButton zoomButton;
+	private IntegerValueComboBox zoomPageComboBox;
+	private static Integer zoom[] = { 25, 50, 75, 100 };
+	private HtmlEditor htmlEditor;
 
 	public PreviewWidget() {
 		super();
@@ -98,115 +106,167 @@ public class PreviewWidget extends Dialog implements
 		getBody().addClassName("pad-text");
 		setHideOnButtonClick(true);
 		setResizable(false);
-		setPixelSize(900, 600);
-		setHeadingText("GeoWE Viewer!");
+		setPixelSize(850, 600);
+		setHeadingText("Preview");
 		add(createPanel());
-		
+		addHandler();
 	}
-	
-	
-	
+
 	public Widget createPanel() {
-		TextButton addButton = new TextButton("Add");
-		TextButton printButton = new TextButton("Print");
-		
-		getButtonBar().add(addButton);
+		addLayerButton = new TextButton("AddLayer");
+		printButton = new TextButton("Print");
+		applyButton = new TextButton("Apply");
+
 		getButtonBar().add(printButton);
-			
-			initializeLayerCombo();
-			
-			
-			
-			
-			
-			HorizontalPanel hPanel = new HorizontalPanel();
-			hPanel.setSpacing(5);			
-			hPanel.add(createFrame());			
-			
-			
-			VerticalPanel vPanel = new VerticalPanel();
-			vPanel.add(new FieldLabel(layerCombo, UIMessages.INSTANCE
-					.sbSelectLayerLabel()));
-			
-			
-			
-			hPanel.add(vPanel);
-			
-						
-			addButton.addSelectHandler(
-					new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {
-							
-							GeoJSONCSS format = new GeoJSONCSS();
-							VectorLayer selectedLayer = (VectorLayer)layerCombo.getValue().getLayer();
-							((GeoJSONCSS) format).setLayer(selectedLayer);
-							String geojson = format.write(exportDataTool.getTransformedFeatures(selectedLayer, "WGS84"));
-							addGeojsonLayer(geojson, true);
-							
-						}
-					});
-			
-			printButton.addSelectHandler(
-					new SelectHandler() {
-						@Override
-						public void onSelect(SelectEvent event) {														
-							print();							
-						}
-					});
-			
-			
+
+		initializeLayerCombo();
+
+		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.setSpacing(5);
+		hPanel.add(createFrame());
+
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setSpacing(5);
+
+		zoomPageComboBox = new IntegerValueComboBox("180px");
+		zoomPageComboBox.setValues(Arrays.asList(zoom));
+
+		vPanel.add(new Label("Zoom level"));
+		vPanel.add(zoomPageComboBox);
+		//vPanel.add(zoomButton);
+
+		vPanel.add(new Label(UIMessages.INSTANCE.sbSelectLayerLabel()));
+		vPanel.add(layerCombo);
+		vPanel.add(addLayerButton);
+
+		titleField = new TextField();
+		titleField.setEnabled(true);
+		titleField.setWidth("280px");
+
+		vPanel.add(new Label(UIMessages.INSTANCE.projectTitle()));
+		vPanel.add(titleField);
+
+		descriptionField = new TextArea();
+		descriptionField.setEnabled(true);
+		descriptionField.setWidth("280px");
+		descriptionField.setHeight("200px");
+
+		vPanel.add(new Label(UIMessages.INSTANCE.projectDescription()));
+		htmlEditor = new HtmlEditor();
 		
-			return hPanel;
+		htmlEditor.setEnabled(true);
+		htmlEditor.setWidth("280px");
+		htmlEditor.setHeight("200px");
+		
+		vPanel.add(htmlEditor);
+		
+		vPanel.add(applyButton);
+		hPanel.add(vPanel);
+
+		return hPanel;
 	}
-	
-	
-	
+
+	private void addHandler() {
+		addLayerButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+
+				GeoJSONCSS format = new GeoJSONCSS();
+				VectorLayer selectedLayer = (VectorLayer) layerCombo.getValue()
+						.getLayer();
+				((GeoJSONCSS) format).setLayer(selectedLayer);
+				String geojson = format.write(exportDataTool
+						.getTransformedFeatures(selectedLayer, "WGS84"));
+				addGeojsonLayer(geojson, true);
+
+			}
+		});
+
+		printButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				zoomToPage(100);
+				print();
+			}
+		});
+
+		applyButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				apply(titleField.getText(), htmlEditor.getValue());
+			}
+		});		
+
+		zoomPageComboBox.addSelectionHandler(new SelectionHandler<Integer>() {
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				zoomPageComboBox.setValue(event.getSelectedItem(), true);
+			}
+		});
+
+		zoomPageComboBox
+				.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<Integer> event) {
+						zoomToPage(event.getValue());
+					}
+				});
+
+	}
+
 	private native void addGeojsonLayer(String geojson, boolean zoomToLayer) /*-{
-		var f = $wnd.frames["geowe-viewer"];		
+		var f = $wnd.frames["geowe-viewer"];
 		f.contentWindow.addLayer(geojson, zoomToLayer);
-		
+
 	}-*/;
-	
+
 	private native void print() /*-{
-		var f = $wnd.frames["geowe-viewer"];		
+		var f = $wnd.frames["geowe-viewer"];
 		f.contentWindow.print();
-		
+
 	}-*/;
-	
-	private native int getWidth() /*-{
-	var f = $wnd.frames["geowe-viewer"];
-	aler("Ancho: " + f.contentWindow.width);		
-	return f.contentWindow.width;
-	
-}-*/;
-	
-	
+
+	private native void apply(String title, String description) /*-{
+		var f = $wnd.frames["geowe-viewer"];
+		f.contentWindow.apply(title, description);
+
+	}-*/;
+
+	private native String getPageWidth() /*-{
+		var f = $wnd.frames["geowe-viewer"];
+		return f.contentWindow.getPageWidth() + "px";
+
+	}-*/;
+
+	private native void zoomToPage(int zoom) /*-{
+		var f = $wnd.frames["geowe-viewer"];
+		f.contentWindow.applyZoom(zoom);
+
+	}-*/;
+
 	private Frame createFrame() {
-		final Frame frame = new Frame( "viewer/leaflet.html");
+		final Frame frame = new Frame("viewer/leaflet.html");
 		frame.getElement().setId("geowe-viewer");
-		frame.setTitle("Viewer");						
+		frame.setTitle("Viewer");
 		frame.setWidth("500px");
 		frame.setHeight("500px");
 		frame.getElement().getStyle().setBackgroundColor("gray");
-		
+
 		frame.setVisible(true);
 		RootPanel.get().add(frame);
-		
+
 		frame.addLoadHandler(new LoadHandler() {
-		    
 
 			@Override
 			public void onLoad(LoadEvent event) {
-				//habilitar botones
 				frame.getElement().getStyle().setBackgroundColor("white");
-				
-				frame.setWidth("" + getWidth());
+				zoomPageComboBox.setValue(75);
+				zoomToPage(75);
+				// frame.setWidth(getPageWidth());
 			}
 
 		});
-		
-		
+
 		return frame;
 	}
 
@@ -234,7 +294,8 @@ public class PreviewWidget extends Dialog implements
 			}
 		});
 
-		layerCombo.addValueChangeHandler(new ValueChangeHandler<VectorLayerInfo>() {
+		layerCombo
+				.addValueChangeHandler(new ValueChangeHandler<VectorLayerInfo>() {
 					@Override
 					public void onValueChange(
 							ValueChangeEvent<VectorLayerInfo> event) {
@@ -251,7 +312,6 @@ public class PreviewWidget extends Dialog implements
 				});
 	}
 
-	
 	@Override
 	public void onChange(Vector layer) {
 		setSelectedLayer(layer);
@@ -273,8 +333,6 @@ public class PreviewWidget extends Dialog implements
 		layerCombo.setValue(null);
 	}
 
-	
-
 	public void setVectorLayers(List<Layer> vectorLayers) {
 		this.vectorLayers = vectorLayers;
 		updateStatusInfo();
@@ -283,19 +341,19 @@ public class PreviewWidget extends Dialog implements
 	public void setSelectedLayer(Vector selectedLayer) {
 		this.selectedLayer = selectedLayer;
 		updateStatusInfo();
-		
+
 	}
-	
+
 	public void showHidePreview() {
 		if (isVisible()) {
-			//widget.getElement().<FxElement> cast().slideOut(Direction.UP);
+			// widget.getElement().<FxElement> cast().slideOut(Direction.UP);
 			hide();
 		} else {
 			show();
-			//widget.getElement().<FxElement> cast().slideIn(Direction.DOWN);
+			// widget.getElement().<FxElement> cast().slideIn(Direction.DOWN);
 		}
 	}
-	
+
 	private void updateStatusInfo() {
 		if (vectorLayers != null) {
 			List<VectorLayerInfo> vectors = new ArrayList<VectorLayerInfo>();
@@ -313,5 +371,5 @@ public class PreviewWidget extends Dialog implements
 			layerCombo.setValue(new VectorLayerInfo(selectedLayer));
 		}
 	}
-	
+
 }

@@ -89,22 +89,27 @@ h4 {
 	font-weight: normal;
 	font-family: 'Orienta', sans-serif;
 }
+
+.zoom25 { zoom: 0.25; -moz-transform: scale(0.25); }
+.zoom50 { zoom: 0.5; -moz-transform: scale(0.5); }
+.zoom75 { zoom: 0.75; -moz-transform: scale(0.75); }
+.zoom100 { zoom:1; -moz-transform: scale(1); }
+
 </style>
 
 </head>
 <body>
 
 	<div class="book">
-		<div class="page">
+		<div id="page" class="page">
 			<div class="subpage">
-				<h1>GeoWE Report</h1>
-				<div id="map"></div>
-				<h4>Descripción</h4>
+				<div id="title"><h1>Title</h1></div>				
+				<div id="map"></div>				
+				<div id="description"><h4>Description</h4></div>
 			</div>
 		</div>
 
 	</div>
-
 
 
 	<script>
@@ -116,6 +121,19 @@ h4 {
 			if (zoomToLayer) {
 				map.fitBounds(layer.getBounds());
 			}
+		}
+		
+		function apply(title, description) {
+			document.getElementById("title").innerHTML = "<h1>" + title + "</h1>";
+			document.getElementById("description").innerHTML = "<h4>" + description + "</h4>";
+		}
+		
+		function getPageWidth() {
+		    return document.getElementById("page").offsetWidth;
+		}
+		
+		function applyZoom(zoom) {		   
+		    document.body.className = 'zoom' + zoom;		    
 		}
 
 		$.ajaxSetup({

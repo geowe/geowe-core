@@ -31,6 +31,7 @@ import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.operation.valid.RepeatedPointTester;
 
@@ -43,9 +44,13 @@ import com.vividsolutions.jts.operation.valid.RepeatedPointTester;
 
 public class GeometryValidator extends AbstractJTSService {
 
+
 	private static final long serialVersionUID = -7898968493113039699L;
 	private final RepeatedPointTester repeatedPointTester = new RepeatedPointTester();
 	private final CoordinateUtil topologyUtil = new CoordinateUtil();
+
+	private List<String> errorCoordinates = new ArrayList<String>();
+
 	private static final double MIN_SEGMENT_LENGTH = 0.001;
 	private static final double MIN_POLYGON_AREA = 0.001;
 
@@ -108,7 +113,8 @@ public class GeometryValidator extends AbstractJTSService {
 		}
 
 		if (!validateMinSegmentLength(geom)) {
-			messages.add("Error en validación mínima de longitud de segmento");
+			messages.add("Error en validación mínima de longitud de segmento. Coordenadas");
+			result.setErrorsPoints(errorCoordinates);
 		}
 
 
@@ -142,6 +148,10 @@ public class GeometryValidator extends AbstractJTSService {
 
 				if (!validateMinSegmentLength(coordinates[i - 1],
 						coordinates[i])) {
+
+					GeometryFactory geomFactory = new GeometryFactory();
+					errorCoordinates.add(geomFactory
+							.createPoint(coordinates[i]).toText());
 					isValid = false;
 				}
 			}

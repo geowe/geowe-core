@@ -158,11 +158,11 @@ public class JoinDataTool extends LayerTool {
 				label.setInnerHTML(event.getResults());
 
 				final String csvData = label.getInnerText();
-				if (!hasError(csvData)) {
+				if (hasError(csvData)) {
+					showAlert("Error: " + csvData);
+				} else {
 					parseCsvData(csvData);
 					autoMessageBox.hide();
-				} else {
-					showAlert("Error: " + csvData);
 				}
 			}
 
@@ -174,14 +174,14 @@ public class JoinDataTool extends LayerTool {
 	}
 
 	private void parseCsvData(final String csvData) {
-		CSV csv = new CSV();
+		final CSV csv = new CSV();
 		csvAttrNames = csv.readAttributeNames(csvData,
 				joinDataDialog.getSeparator());
 
 		joinDataDialog.getCsvAttributeCombo().getStore().clear();
 
-		List<String> bindableAttributes = Arrays.asList(csvAttrNames);
-		if (bindableAttributes.size() == 0) {
+		final List<String> bindableAttributes = Arrays.asList(csvAttrNames);
+		if (bindableAttributes.isEmpty()) {
 			showAlert(UIMessages.INSTANCE.joinAttributeNotExist());
 		} else {
 			joinDataDialog.getCsvAttributeCombo().getStore()
@@ -196,11 +196,11 @@ public class JoinDataTool extends LayerTool {
 		}
 	}
 
-	private void lodaDataFromURL(String url) {
-		String URL_BASE = GWT.getHostPageBaseURL() + "gwtOpenLayersProxy";
+	private void lodaDataFromURL(final String url) {
+		final String urlBase = GWT.getHostPageBaseURL() + "gwtOpenLayersProxy";
 		try {
 			autoMessageBox.show();
-			RestClient.create(URLFileRestService.class, URL_BASE,
+			RestClient.create(URLFileRestService.class, urlBase,
 					new RemoteCallback<String>() {
 						@Override
 						public void callback(String response) {
@@ -245,9 +245,9 @@ public class JoinDataTool extends LayerTool {
 											UIMessages.INSTANCE.processing());
 									autoMessageBox.center();
 									autoMessageBox.show();
-									String selectedCsvAttribute = joinDataDialog
+									final String selectedCsvAttribute = joinDataDialog
 											.getCsvAttributeCombo().getValue();
-									String selectedLayerAttribute = joinDataDialog
+									final String selectedLayerAttribute = joinDataDialog
 											.getLayerAttributeCombo()
 											.getValue().getName();
 
@@ -307,8 +307,9 @@ public class JoinDataTool extends LayerTool {
 		}
 	}
 
+
 	private void showAlert(final String errorMsg) {
-		AlertMessageBox messageBox = new AlertMessageBox(
+		final AlertMessageBox messageBox = new AlertMessageBox(
 				UIMessages.INSTANCE.warning(), errorMsg);
 		messageBox.show();
 	}

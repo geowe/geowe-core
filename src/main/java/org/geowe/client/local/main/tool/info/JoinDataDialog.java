@@ -35,8 +35,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.Style.Direction;
 import com.sencha.gxt.core.client.resources.ThemeStyles;
 import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.PlainTabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -59,7 +61,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 @ApplicationScoped
 public class JoinDataDialog extends Dialog {
 
-	private static final String DEFAULT_CSV_CHARACTER_SEPARATOR = ",";
+	private static final String DEFAULT_CSV_SEPARATOR = ",";
 	private PlainTabPanel tabPanel;
 	private FormPanel uploadPanel;
 
@@ -76,8 +78,9 @@ public class JoinDataDialog extends Dialog {
 	public JoinDataDialog() {
 		super();
 		setHeadingText(UIMessages.INSTANCE.joinDialogHeadingText());
-		setSize("420px", "320px");
-		setResizable(true);
+		setSize("420px", "340px");
+		setModal(true);
+		setClosable(true);
 		setHideOnButtonClick(false);
 		setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CLOSE);
 		setBodyStyleName("pad-text");
@@ -88,6 +91,8 @@ public class JoinDataDialog extends Dialog {
 	public void init() {
 		csvAttributeCombo.clear();
 		layerAttributeCombo.clear();
+		file.clear();
+		separatorTextField.setText(DEFAULT_CSV_SEPARATOR);
 		hidePanels();
 	}
 
@@ -104,7 +109,7 @@ public class JoinDataDialog extends Dialog {
 	}
 
 	private Widget createPanel() {
-		VerticalPanel vPanel = new VerticalPanel();
+		final VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_JUSTIFY);
 
 		vPanel.add(createTabPanel());
@@ -131,7 +136,7 @@ public class JoinDataDialog extends Dialog {
 	}
 
 	private FormPanel createFilePanel() {
-		VerticalLayoutContainer layoutContainer = new VerticalLayoutContainer();
+		final VerticalLayoutContainer layoutContainer = new VerticalLayoutContainer();
 
 		file = new FileUploadField();
 		file.setName(UIMessages.INSTANCE.gdidFileUploadFieldText());
@@ -202,11 +207,13 @@ public class JoinDataDialog extends Dialog {
 		separatorPanel.setWidth("100%");
 		separatorPanel.addStyleName(ThemeStyles.get().style().borderTop());
 		separatorPanel.addStyleName(ThemeStyles.get().style().borderBottom());
-
+		separatorPanel
+				.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		separatorPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		separatorPanel.add(new Label("Separator (default ,)"));
+		separatorPanel.add(new Label(UIMessages.INSTANCE
+				.separator(DEFAULT_CSV_SEPARATOR)));
 		separatorTextField = new TextField();
-		separatorTextField.setText(DEFAULT_CSV_CHARACTER_SEPARATOR);
+		separatorTextField.setText(DEFAULT_CSV_SEPARATOR);
 		separatorTextField.setWidth(30);
 
 		separatorPanel.add(separatorTextField);
@@ -259,7 +266,12 @@ public class JoinDataDialog extends Dialog {
 
 	public void showPanels() {
 		comboPanel.setVisible(true);
+		comboPanel.asWidget().getElement().<FxElement> cast()
+				.slideIn(Direction.UP);
 		layerAttributeComboPanel.setVisible(true);
+		layerAttributeComboPanel.asWidget().getElement().<FxElement> cast()
+				.slideIn(Direction.UP);
+
 	}
 
 	public void hidePanels() {

@@ -238,6 +238,12 @@ public interface UIMessages extends Messages {
 	String lidHeadText();
 	
 	String layerEditToolText();
+	
+	String lidWarningDialogHeadText();
+	
+	String lidWarningDialogBodytText();
+	
+	String lidElementesPerPage();
 
 	// AttributeSearchDialog
 	String asdTitle();

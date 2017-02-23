@@ -8,6 +8,14 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.4.18]Beta - 2017-02-23
+### Added
+- Enhanced layer data editing dialog, including paging and tools
+- Added new UI components: PageSizeComboBox and IntegerValueComboBox
+
+### Fixed
+- issue [#329](https://github.com/geowe/geowe-core/issues/329)
+
 ## [1.4.17]Beta - 2017-02-21
 ### Added
 - Join data. custom csv separator and layer attribute.

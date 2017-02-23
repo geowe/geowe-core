@@ -30,6 +30,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
+import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 
 /**
  * Componente gráfico que representa una tabla editable con todos los datos
@@ -45,11 +46,15 @@ public class EditingFeatureGrid extends GridInlineEditing<VectorFeature> {
 		super(new FeatureGrid(width, height));				
 	}
 	
+	public EditingFeatureGrid(PagingToolBar pagingToolBar) {
+		super(new PagingFeatureGrid(pagingToolBar));
+	}
+	
 	public EditingFeatureGrid() {
 		super(new FeatureGrid());			
 	}	
-	
-	public FeatureGrid getFeatureGrid() {
+		
+	public FeatureGrid getFeatureGrid() {		
 		return (FeatureGrid) this.getEditableGrid();
 	}
 
@@ -106,7 +111,7 @@ public class EditingFeatureGrid extends GridInlineEditing<VectorFeature> {
 	 * aplicandolos a las Features afectadas
 	 */
 	public void commitChanges() {
-		getFeatureGrid().getStore().commitChanges();
+		getFeatureGrid().getStore().commitChanges();	
 	}
 	
 	/**
@@ -115,6 +120,14 @@ public class EditingFeatureGrid extends GridInlineEditing<VectorFeature> {
 	 */
 	public void rejectChanges() {
 		getFeatureGrid().getStore().rejectChanges();
+	}
+	
+	/**
+	 * Activa el auto-commit para que los cambios realizados se 
+	 * apliquen directamente al finalizar cada edición
+	 */
+	public void setAutoCommit(boolean autoCommit) {
+		getFeatureGrid().getStore().setAutoCommit(autoCommit);
 	}
 	
 	public void setEnableCellRender(boolean enableCellRender) {

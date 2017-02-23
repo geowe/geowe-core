@@ -23,6 +23,7 @@
 package org.geowe.client.local.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
@@ -71,12 +72,17 @@ public class PagingFeatureGrid extends FeatureGrid {
 	public void rebuild(List<VectorFeature> features) {		
 		this.update(features);
 		this.reconfigure(this.getStore(), createColumnList(features));
-	}	
+	}
+
+	@Override
+	public void rebuild(VectorFeature[] vectorFeatures) {
+		this.rebuild(Arrays.asList(vectorFeatures));
+	}
 	
 	@Override
 	public void update(List<VectorFeature> features) {
 		proxy.setData(features);
-		toolBar.refresh();
+		toolBar.refresh();		
 	}
 	
 	@Override

@@ -67,7 +67,7 @@ public class EditLayerDataTool extends LayerTool {
 
 	@PostConstruct
 	private void initialize() {
-		addFinishEditingListener();
+		addFinishEditingListeners();
 	}	
 	
 	/**
@@ -75,7 +75,7 @@ public class EditLayerDataTool extends LayerTool {
 	 * para que, al confirmar la edición, se refresque la capa seleccionada 
 	 * y con ello todos los dialogos que muestran información sobre la misma
 	 */
-	private void addFinishEditingListener() {
+	private void addFinishEditingListeners() {
 		layerEditDialog.getButton(PredefinedButton.OK).addSelectHandler(
 				new SelectHandler() {
 					@Override
@@ -84,7 +84,17 @@ public class EditLayerDataTool extends LayerTool {
 								LayerManagerWidget.VECTOR_TAB,
 								getSelectedVectorLayer());
 					}
-				});			
+				});	
+		
+		layerEditDialog.getButton(PredefinedButton.CANCEL).addSelectHandler(
+				new SelectHandler() {
+					@Override
+					public void onSelect(final SelectEvent event) {
+						layerManagerWidget.setSelectedLayer(
+								LayerManagerWidget.VECTOR_TAB,
+								getSelectedVectorLayer());
+					}
+				});		
 	}
 	
 	@Override

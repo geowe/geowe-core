@@ -32,19 +32,27 @@ import javax.inject.Inject;
 
 import org.geowe.client.local.main.tool.search.ExportCSVLayerTool;
 
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 
 @ApplicationScoped
 public class LayerInfoToolBar extends ContentPanel {
+	public static final int ZOOM_TOOL = 1;
+	public static final int SELECT_TOOL = 2;
+	public static final int DELETE_TOOL = 3;
+	public static final int INFO_TOOL = 4;
+	public static final int EXPORT_TOOL = 5;
 	
 	@Inject
-	private ZoomToVectorFeatureTool zoomToVectorFeatureTool;
+	@New
+	private ZoomToVectorFeatureTool zoomToVectorFeatureTool;	
+	@Inject
+	@New
+	private SelectVectorFeatureTool selectVectorFeatureTool;
 	@Inject
 	private SingleFeatureInfoTool singleFeatureInfoTool;
-	@Inject
-	private SelectVectorFeatureTool selectVectorFeatureTool;
 	@Inject
 	private DeleteVectorFeatureTool deleteVectorFeatureTool;
 	@Inject
@@ -64,19 +72,38 @@ public class LayerInfoToolBar extends ContentPanel {
 		tools = new ArrayList<FeatureTool>();
 		verticalGroup = new VerticalPanel();		
 		verticalGroup.setSpacing(3);
+		verticalGroup.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 	}
 	
 	@PostConstruct
 	private void initialize(){		
-		addTool(zoomToVectorFeatureTool);
-		addTool(selectVectorFeatureTool);
-		addTool(deleteVectorFeatureTool);
-		addTool(singleFeatureInfoTool);
-		addTool(exportCSVLayerTool);
-		
-
 		setWidget(verticalGroup);
 	}		
+	
+	public void setAllTools() {
+		setTools(ZOOM_TOOL, SELECT_TOOL, DELETE_TOOL, INFO_TOOL, EXPORT_TOOL);
+	}
+	
+	public void setTools(int... toolIDs) {
+		for(int toolID : toolIDs) {
+			switch(toolID) {
+				case ZOOM_TOOL:
+					addTool(zoomToVectorFeatureTool);
+					break;
+				case SELECT_TOOL:
+					addTool(selectVectorFeatureTool);
+					break;
+				case DELETE_TOOL:
+					addTool(deleteVectorFeatureTool);
+					break;
+				case INFO_TOOL:
+					addTool(singleFeatureInfoTool);
+					break;
+				case EXPORT_TOOL:
+					addTool(exportCSVLayerTool);
+			}
+		}
+	}
 	
 	@Override
 	public void addTool(Widget tool) {

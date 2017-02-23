@@ -238,6 +238,12 @@ public interface UIMessages extends Messages {
 	String lidHeadText();
 	
 	String layerEditToolText();
+	
+	String lidWarningDialogHeadText();
+	
+	String lidWarningDialogBodytText();
+	
+	String lidElementesPerPage();
 
 	// AttributeSearchDialog
 	String asdTitle();
@@ -871,4 +877,10 @@ public interface UIMessages extends Messages {
 	String loadFile();
 
 	String joinAttributeMustSelect();
+	
+	String separator(String defaultValue);
+
+	String errorPoint();
+
+	String validatedLayerName();
 }

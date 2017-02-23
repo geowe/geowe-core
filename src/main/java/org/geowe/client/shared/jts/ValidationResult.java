@@ -34,9 +34,12 @@ import java.util.List;
 
 public class ValidationResult implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7735794223243375575L;
+
 	private String wkt;
 	private List<String> messages;
+	private List<String> ErrorsPoints;
+	
 	public String getWkt() {
 		return wkt;
 	}
@@ -48,5 +51,52 @@ public class ValidationResult implements Serializable {
 	}
 	public void setMessages(final List<String> messages) {
 		this.messages = messages;
-	}		
+	}
+
+	public List<String> getErrorsPoints() {
+		return ErrorsPoints;
+	}
+
+	public void setErrorsPoints(List<String> errorsPoints) {
+		this.ErrorsPoints = errorsPoints;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((ErrorsPoints == null) ? 0 : ErrorsPoints.hashCode());
+		result = prime * result
+				+ ((messages == null) ? 0 : messages.hashCode());
+		result = prime * result + ((wkt == null) ? 0 : wkt.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ValidationResult other = (ValidationResult) obj;
+		if (ErrorsPoints == null) {
+			if (other.ErrorsPoints != null)
+				return false;
+		} else if (!ErrorsPoints.equals(other.ErrorsPoints))
+			return false;
+		if (messages == null) {
+			if (other.messages != null)
+				return false;
+		} else if (!messages.equals(other.messages))
+			return false;
+		if (wkt == null) {
+			if (other.wkt != null)
+				return false;
+		} else if (!wkt.equals(other.wkt))
+			return false;
+		return true;
+	}
 }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link rel="stylesheet" href="css/leaflet-map-template.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+<script src="lib/jquery-3.1.1.min.js"></script>
+<script src="lib/leaflet.geojsoncss.js"></script>
+</head>
+<body>
+
+	<div class="book">
+		<div id="page" class="page">
+			<div class="subpage">
+				<div id="title">
+					<h1>Title</h1>
+				</div>
+				<div id="map"></div>
+				<div id="description">
+					<h4>Description</h4>
+				</div>
+			</div>
+			 <span class="footer">Powered by GeoWE</span>
+		</div>
+
+	</div>
+
+	<script>
+		function addLayer(geojson, zoomToLayer) {
+
+			var json = JSON.parse(geojson);
+
+			var layer = L.geoJson.css(json).addTo(map);
+			if (zoomToLayer) {
+				map.fitBounds(layer.getBounds());
+			}
+		}
+
+		function apply(title, description) {
+			document.getElementById("title").innerHTML = "<h1>" + title
+					+ "</h1>";
+			document.getElementById("description").innerHTML = "<h4>"
+					+ description + "</h4>";
+		}
+
+		function getPageWidth() {
+			return document.getElementById("page").offsetWidth;
+		}
+
+		function applyZoom(zoom) {
+			document.body.className = 'zoom' + zoom;
+		}
+
+		$.ajaxSetup({
+			dataType : 'json'
+		});
+		var map = L.map('map', {
+			center : [ 37.46580149640209, -4.7490781775541 ],
+			zoom : 5,
+			zoomControl : false,
+			attributionControl : true
+		});
+
+		L
+				.tileLayer(
+						'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+						{
+							attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+							maxZoom : 18
+						}).addTo(map);
+
+		L.control.scale().addTo(map);
+	</script>
+</body>
+</html>

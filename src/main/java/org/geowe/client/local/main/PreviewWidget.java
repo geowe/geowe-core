@@ -93,10 +93,12 @@ public class PreviewWidget extends Dialog implements
 	private TextButton addLayerButton;
 	private TextButton printButton;
 	private TextButton applyButton;
-	//private TextButton zoomButton;
 	private IntegerValueComboBox zoomPageComboBox;
-	private static Integer zoom[] = { 25, 50, 75, 100 };
+	private static Integer zoomLevel[] = { 25, 50, 75, 100 };
 	private HtmlEditor htmlEditor;
+	private static final String DEFAULT_PROJECTION ="WGS84";
+	private static final String DEFAULT_FRAME_NAME = "geowe-viewer";
+	private static final String DEFAULT_TEMPLATE_PATH = "preview/leaflet-map-template.html";
 
 	public PreviewWidget() {
 		super();
@@ -107,15 +109,15 @@ public class PreviewWidget extends Dialog implements
 		setHideOnButtonClick(true);
 		setResizable(false);
 		setPixelSize(850, 600);
-		setHeadingText("Preview");
+		setHeadingText(UIMessages.INSTANCE.previewTitle());
 		add(createPanel());
 		addHandler();
 	}
 
 	public Widget createPanel() {
-		addLayerButton = new TextButton("AddLayer");
-		printButton = new TextButton("Print");
-		applyButton = new TextButton("Apply");
+		addLayerButton = new TextButton(UIMessages.INSTANCE.previewAddLayer());
+		printButton = new TextButton(UIMessages.INSTANCE.previewPrint());
+		applyButton = new TextButton(UIMessages.INSTANCE.previewApply());
 
 		getButtonBar().add(printButton);
 
@@ -129,12 +131,11 @@ public class PreviewWidget extends Dialog implements
 		vPanel.setSpacing(5);
 
 		zoomPageComboBox = new IntegerValueComboBox("180px");
-		zoomPageComboBox.setValues(Arrays.asList(zoom));
+		zoomPageComboBox.setValues(Arrays.asList(zoomLevel));
 
-		vPanel.add(new Label("Zoom level"));
+		vPanel.add(new Label(UIMessages.INSTANCE.previewZoomLevel()));
 		vPanel.add(zoomPageComboBox);
-		//vPanel.add(zoomButton);
-
+		
 		vPanel.add(new Label(UIMessages.INSTANCE.sbSelectLayerLabel()));
 		vPanel.add(layerCombo);
 		vPanel.add(addLayerButton);
@@ -158,8 +159,7 @@ public class PreviewWidget extends Dialog implements
 		htmlEditor.setWidth("280px");
 		htmlEditor.setHeight("200px");
 		
-		vPanel.add(htmlEditor);
-		
+		vPanel.add(htmlEditor);		
 		vPanel.add(applyButton);
 		hPanel.add(vPanel);
 
@@ -176,8 +176,8 @@ public class PreviewWidget extends Dialog implements
 						.getLayer();
 				((GeoJSONCSS) format).setLayer(selectedLayer);
 				String geojson = format.write(exportDataTool
-						.getTransformedFeatures(selectedLayer, "WGS84"));
-				addGeojsonLayer(geojson, true);
+						.getTransformedFeatures(selectedLayer, DEFAULT_PROJECTION));
+				addGeojsonLayer(geojson, true, DEFAULT_FRAME_NAME);
 
 			}
 		});
@@ -185,15 +185,15 @@ public class PreviewWidget extends Dialog implements
 		printButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				zoomToPage(100);
-				print();
+				zoomToPage(100, DEFAULT_FRAME_NAME);
+				print(DEFAULT_FRAME_NAME);
 			}
 		});
 
 		applyButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-				apply(titleField.getText(), htmlEditor.getValue());
+				apply(titleField.getText(), htmlEditor.getValue(), DEFAULT_FRAME_NAME);
 			}
 		});		
 
@@ -208,46 +208,46 @@ public class PreviewWidget extends Dialog implements
 				.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<Integer> event) {
-						zoomToPage(event.getValue());
+						zoomToPage(event.getValue(), DEFAULT_FRAME_NAME);
 					}
 				});
 
 	}
 
-	private native void addGeojsonLayer(String geojson, boolean zoomToLayer) /*-{
-		var f = $wnd.frames["geowe-viewer"];
+	private native void addGeojsonLayer(String geojson, boolean zoomToLayer, String frameName) /*-{
+		var f = $wnd.frames[frameName];
 		f.contentWindow.addLayer(geojson, zoomToLayer);
 
 	}-*/;
 
-	private native void print() /*-{
-		var f = $wnd.frames["geowe-viewer"];
+	private native void print(String frameName) /*-{
+		var f = $wnd.frames[frameName];
 		f.contentWindow.print();
 
 	}-*/;
 
-	private native void apply(String title, String description) /*-{
-		var f = $wnd.frames["geowe-viewer"];
+	private native void apply(String title, String description, String frameName) /*-{
+		var f = $wnd.frames[frameName];
 		f.contentWindow.apply(title, description);
 
 	}-*/;
 
-	private native String getPageWidth() /*-{
-		var f = $wnd.frames["geowe-viewer"];
+	private native String getPageWidth(String frameName) /*-{
+		var f = $wnd.frames[frameName];
 		return f.contentWindow.getPageWidth() + "px";
 
 	}-*/;
 
-	private native void zoomToPage(int zoom) /*-{
-		var f = $wnd.frames["geowe-viewer"];
+	private native void zoomToPage(int zoom, String frameName) /*-{
+		var f = $wnd.frames[frameName];
 		f.contentWindow.applyZoom(zoom);
 
 	}-*/;
 
 	private Frame createFrame() {
-		final Frame frame = new Frame("viewer/leaflet.html");
-		frame.getElement().setId("geowe-viewer");
-		frame.setTitle("Viewer");
+		final Frame frame = new Frame(DEFAULT_TEMPLATE_PATH);
+		frame.getElement().setId(DEFAULT_FRAME_NAME);
+		frame.setTitle(UIMessages.INSTANCE.previewTitle());
 		frame.setWidth("500px");
 		frame.setHeight("500px");
 		frame.getElement().getStyle().setBackgroundColor("gray");
@@ -261,8 +261,6 @@ public class PreviewWidget extends Dialog implements
 			public void onLoad(LoadEvent event) {
 				frame.getElement().getStyle().setBackgroundColor("white");
 				zoomPageComboBox.setValue(75);
-				zoomToPage(75);
-				// frame.setWidth(getPageWidth());
 			}
 
 		});
@@ -324,12 +322,7 @@ public class PreviewWidget extends Dialog implements
 
 	@Override
 	public void onRemoveLayer(List<Layer> allVectorLayers) {
-		setVectorLayers(allVectorLayers);
-		/*
-		 * Puesto que al eliminar una capa, ninguna de las restantes queda
-		 * seleccionada en el LayerManager, se limpia la capa seleccionada de la
-		 * combo de capas
-		 */
+		setVectorLayers(allVectorLayers);		
 		layerCombo.setValue(null);
 	}
 
@@ -341,16 +334,13 @@ public class PreviewWidget extends Dialog implements
 	public void setSelectedLayer(Vector selectedLayer) {
 		this.selectedLayer = selectedLayer;
 		updateStatusInfo();
-
 	}
 
 	public void showHidePreview() {
-		if (isVisible()) {
-			// widget.getElement().<FxElement> cast().slideOut(Direction.UP);
+		if (isVisible()) {			
 			hide();
 		} else {
 			show();
-			// widget.getElement().<FxElement> cast().slideIn(Direction.DOWN);
 		}
 	}
 
@@ -371,5 +361,4 @@ public class PreviewWidget extends Dialog implements
 			layerCombo.setValue(new VectorLayerInfo(selectedLayer));
 		}
 	}
-
 }

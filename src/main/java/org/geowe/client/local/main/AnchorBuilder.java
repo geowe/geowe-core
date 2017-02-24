@@ -190,5 +190,5 @@ public class AnchorBuilder {
 				.setImage(new Image(ImageProvider.INSTANCE.twiter()))
 				.setTitle("Twiter").setBottomBorderOnMouseOver(true).build();
 	}
-
+	
 }

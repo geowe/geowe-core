@@ -8,6 +8,13 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.5]Beta - 2017-02-24
+### Added
+- Preview and print tool
+
+### Fixed
+- issue [#333](https://github.com/geowe/geowe-core/issues/333)
+
 ## [1.4.18]Beta - 2017-02-23
 ### Added
 - Enhanced layer data editing dialog, including paging and tools

@@ -883,4 +883,14 @@ public interface UIMessages extends Messages {
 	String errorPoint();
 
 	String validatedLayerName();
+	
+	String previewTitle();
+	
+	String previewAddLayer();
+	
+	String previewPrint();
+	
+	String previewApply();
+	
+	String previewZoomLevel();
 }

@@ -42,6 +42,7 @@ import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubCreateFileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.GitHubUpdateFileExporter;
 import org.geowe.client.local.main.map.GeoMap;
+import org.geowe.client.local.main.tool.project.URLProjectLoader;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
@@ -59,9 +60,14 @@ import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
 import org.slf4j.Logger;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
@@ -96,18 +102,21 @@ public class ExportDataTool extends LayerTool implements
 	private GitHubRepositoryListDialog repositoryListDialog;
 	private Exporter exporter;
 	private FileParameter fileParameter;
+	private static final String URL_BASE = GWT.getHostPageBaseURL()+ "gwtOpenLayersProxy?targetURL=";
 
 	@Inject
 	public ExportDataTool(LayerManagerWidget layerTreeWidget, GeoMap geoMap) {
 		super(layerTreeWidget, geoMap);
 	}
-
+	
+	
 	@PostConstruct
 	private void configureDownloadButton() {
+
 		exportDataDialog.getDownloadFileButton().addSelectHandler(
 				new SelectHandler() {
 					@Override
-					public void onSelect(SelectEvent event) {						
+					public void onSelect(SelectEvent event) {
 						exporter = new FileExporter();
 						fileParameter = new FileParameter();
 						fileParameter.setFileName(getFileName());
@@ -116,8 +125,10 @@ public class ExportDataTool extends LayerTool implements
 						if (isSelectedFeatures()) {
 							confirmDownloadSelected();
 						} else {
-							
-							fileParameter.setContent(getContent(exportDataDialog.getVectorLayer()));							
+
+							fileParameter
+									.setContent(getContent(exportDataDialog
+											.getVectorLayer()));
 							export();
 						}
 					}
@@ -262,7 +273,7 @@ public class ExportDataTool extends LayerTool implements
 	private boolean isSelectedFeatures() {
 		boolean isSelected = false;
 		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
-		
+
 		if (isLayerToExportValid(selectedLayer)) {
 
 			final VectorFeature[] selectedFeatures = selectedLayer
@@ -303,7 +314,7 @@ public class ExportDataTool extends LayerTool implements
 	private String getFileName() {
 
 		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
-				
+
 		return selectedLayer.getName();
 	}
 
@@ -334,19 +345,19 @@ public class ExportDataTool extends LayerTool implements
 		} else if (vectorFormat.getId() == VectorFormat.CSV_FORMAT.getId()) {
 			content = new CSV(exportDataDialog.getSelectedEpsg())
 					.write(selectedLayer);
-		}
-		else if (vectorFormat.getId() == VectorFormat.GEOJSON_CSS_FORMAT.getId()) {
+		} else if (vectorFormat.getId() == VectorFormat.GEOJSON_CSS_FORMAT
+				.getId()) {
 			format = new GeoJSONCSS();
-			((GeoJSONCSS)format).setLayer(selectedLayer);					
-		} 
+			((GeoJSONCSS) format).setLayer(selectedLayer);
+		}
 
 		if (content.isEmpty()) {
-			content = format.write(getTransformedFeatures(selectedLayer));
+			content = format.write(getTransformedFeatures(selectedLayer, exportDataDialog.getSelectedEpsg()));
 		}
 
 		return content;
 	}
-	
+
 	private VectorLayer getLayerWithSelectedFeature() {
 		final VectorLayer selectedLayer = exportDataDialog.getVectorLayer();
 		final FeatureSchema schema = selectedLayer.getSchema();
@@ -380,22 +391,22 @@ public class ExportDataTool extends LayerTool implements
 				new SelectHandler() {
 					@Override
 					public void onSelect(SelectEvent event) {
-						fileParameter
-								.setContent(getContent(exportDataDialog.getVectorLayer()));
+						fileParameter.setContent(getContent(exportDataDialog
+								.getVectorLayer()));
 						export();
 					}
 				});
 		messageBox.show();
 	}
 
-	private VectorFeature[] getTransformedFeatures(Vector layer) {
+	public VectorFeature[] getTransformedFeatures(Vector layer, String epsg) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
 		if (layer.getFeatures() != null) {
 			for (VectorFeature feature : layer.getFeatures()) {
 				VectorFeature featureToExport = feature.clone();
 				featureToExport.getGeometry().transform(
 						new Projection(geoMap.getMap().getProjection()),
-						new Projection(exportDataDialog.getSelectedEpsg()));
+						new Projection(epsg));
 				transformedFeatures.add(featureToExport);
 			}
 		}

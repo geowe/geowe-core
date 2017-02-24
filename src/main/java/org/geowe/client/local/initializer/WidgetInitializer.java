@@ -29,6 +29,7 @@ import org.geowe.client.local.layermanager.LayerTree;
 import org.geowe.client.local.main.BasicToolBar;
 import org.geowe.client.local.main.GeocodingPanelWidget;
 import org.geowe.client.local.main.MenuPanelWidget;
+import org.geowe.client.local.main.PreviewWidget;
 import org.geowe.client.local.main.StatusPanelWidget;
 import org.geowe.client.local.style.VectorLayerStyleWidget;
 import org.jboss.errai.ioc.client.api.builtin.RootPanelProvider;
@@ -53,6 +54,9 @@ public class WidgetInitializer {
 	private StatusPanelWidget statusPanelWidget;
 	
 	@Inject 
+	private PreviewWidget previewWidget;
+	
+	@Inject 
 	private BasicToolBar basicToolBar;	
 	
 	@Inject 
@@ -65,12 +69,16 @@ public class WidgetInitializer {
 		rootPanelProvider.get().add(basicToolBar);
 		rootPanelProvider.get().add(geocodingPanelWidget);
 		rootPanelProvider.get().add(statusPanelWidget);
+		//rootPanelProvider.get().add(previewWidget);
+		
 		
 		iniLayerTree(LayerManagerWidget.RASTER_TAB);
 		iniLayerTree(LayerManagerWidget.VECTOR_TAB);
 		
 		layerManagerWidget.updateStatusBar();		
 		statusPanelWidget.setVectorLayers(layerManagerWidget.
+				getLayerTree(LayerManagerWidget.VECTOR_TAB).getLayers());
+		previewWidget.setVectorLayers(layerManagerWidget.
 				getLayerTree(LayerManagerWidget.VECTOR_TAB).getLayers());
 	}
 

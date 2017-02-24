@@ -26,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.layermanager.tool.export.ExportDataTool;
+import org.geowe.client.local.main.PreviewWidget;
 import org.geowe.client.local.main.StatusPanelWidget;
 import org.geowe.client.local.main.map.GeoMap;
 import org.geowe.client.local.main.tool.edition.CopyElementTool;
@@ -100,6 +101,9 @@ public class EventListenerInitializer {
 	private ExportLayerTool exportLayerTool;
 	@Inject
 	private SaveProjectTool saveProjectTool;
+	@Inject
+	private PreviewWidget previewWidget;
+	
 
 	public void initialize() {
 
@@ -138,6 +142,8 @@ public class EventListenerInitializer {
 		layerManagerWidget.addChangeLayerListener(saveLayerTool);
 		layerManagerWidget.addChangeLayerListener(exportLayerTool);
 		layerManagerWidget.addChangeLayerListener(saveProjectTool);		
+		layerManagerWidget.addChangeLayerListener(previewWidget);
+		
 	}
 	
 	private void addChangeSelectedWMSLayerListener() {
@@ -148,9 +154,11 @@ public class EventListenerInitializer {
 		layerManagerWidget.addRemoveLayerListener(stateBarWidget);
 		layerManagerWidget.addRemoveLayerListener(layerInfoDialog);
 		layerManagerWidget.addRemoveLayerListener(rasterInfoDialog);
+		layerManagerWidget.addRemoveLayerListener(previewWidget);
 	}
 
 	private void addAddLayerListener() {
 		layerManagerWidget.addAddLayerListener(stateBarWidget);
+		layerManagerWidget.addAddLayerListener(previewWidget);
 	}
 }

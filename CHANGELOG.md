@@ -8,6 +8,15 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.5]Beta - 2017-02-24
+version deployed for testing [map.geowe.org](http://map.geowe.org).
+### Added
+- Preview and print tool
+- Updated SIGPAC layers (2017)
+
+### Fixed
+- issue [#333](https://github.com/geowe/geowe-core/issues/333)
+
 ## [1.4.18]Beta - 2017-02-23
 ### Added
 - Enhanced layer data editing dialog, including paging and tools
@@ -15,6 +24,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 ### Fixed
 - issue [#329](https://github.com/geowe/geowe-core/issues/329)
+- issue [#133](https://github.com/geowe/geowe-core/issues/133)
 
 ## [1.4.17]Beta - 2017-02-21
 ### Added
@@ -32,8 +42,8 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#321](https://github.com/geowe/geowe-core/issues/321)
 - issue [#325](https://github.com/geowe/geowe-core/issues/325)
 
-## [1.4.15]Beta - 2017-02-17
 
+## [1.4.15]Beta - 2017-02-17
 
 ### Fixed
 - issue [#322](https://github.com/geowe/geowe-core/issues/322)
@@ -42,7 +52,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 
 
 ## [1.4.14]Beta - 2017-02-16
-version deployed for testing [map.geowe.org](http://map.geowe.org).
+version deployed for testing [map.geowe.org](http://map.geowe.org). No longer available
 ### Added
 - Added GeoJSONCSS color theming support
 

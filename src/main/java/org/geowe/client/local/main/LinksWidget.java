@@ -55,13 +55,18 @@ public class LinksWidget implements IsWidget {
 
 	@Inject
 	private StatusPanelWidget statusPanelWidget;
+	
+	@Inject
+	private PreviewWidget previewWidget;
+	
 	@Inject
 	private LayerManagerWidget layerManager;
 
 	@Override
 	public Widget asWidget() {
 		if (widget == null) {
-			String width="320px";
+			//String width="320px";
+			String width="370px";
 			String height="50px";
 			widget = new HorizontalLayoutContainer();
 			widget.getElement().getStyle().setPosition(Position.ABSOLUTE);
@@ -89,6 +94,7 @@ public class LinksWidget implements IsWidget {
 	private void setDefaultLinks() {
 		AnchorBuilder abuilder = new AnchorBuilder();
 		
+		hp.add(createPreviewDialogAnchor());
 		hp.add(abuilder.getGeoWEWebLink());
 		hp.add(abuilder.getGooglePlusLink());
 		hp.add(abuilder.getFaceBookLink());
@@ -105,7 +111,23 @@ public class LinksWidget implements IsWidget {
 	public void removeAllLinks(){
 		hp.clear();
 	}
+	
+	
 
+	private TextButton createPreviewDialogAnchor() {
+		TextButton showButton = new TextButton();
+		showButton.setIcon(ImageProvider.INSTANCE.printLogo());
+		showButton.setTitle("Preview");
+		showButton.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				showHidePreviewDialog();
+			}
+		});
+
+		return showButton;
+	}
+	
 	private TextButton createStatusPanelAnchor() {
 		TextButton showButton = new TextButton();
 		showButton.setIcon(ImageProvider.INSTANCE.info24());
@@ -143,5 +165,9 @@ public class LinksWidget implements IsWidget {
 
 	private void showHideStatusBar() {
 		statusPanelWidget.showHideStatusBar();
+	}
+	
+	private void showHidePreviewDialog() {
+		previewWidget.showHidePreview();
 	}
 }

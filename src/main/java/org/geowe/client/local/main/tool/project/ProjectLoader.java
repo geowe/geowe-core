@@ -83,7 +83,7 @@ public class ProjectLoader {
 		try {
 			layerConfig = new VectorLayerConfig();
 			layerConfig.setEpsg("WGS84");
-			layerConfig.setGeoDataFormat(VectorLayerDef.GEOJSON);
+			layerConfig.setGeoDataFormat(VectorLayerDef.GEOJSON_CSS);
 			layerConfig.setLayerName(projectLayer.getName());
 			layerConfig.setGeoDataString(projectLayer.getContent());
 

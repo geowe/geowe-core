@@ -38,6 +38,7 @@ import org.geowe.client.local.main.tool.ButtonTool;
 import org.geowe.client.local.messages.UIMessages;
 import org.geowe.client.local.model.style.VectorStyleDef;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.model.vector.format.GeoJSONCSS;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.Projection;
@@ -149,7 +150,7 @@ public class SaveProjectTool extends ButtonTool {
 	}	
 
 	private String getContentAsGeoJSON(Vector vectorLayer) {
-		org.gwtopenmaps.openlayers.client.format.VectorFormat format = new GeoJSON();
+		org.gwtopenmaps.openlayers.client.format.VectorFormat format = new GeoJSONCSS();
 
 		return format.write(getTransformedFeatures(vectorLayer));
 	}

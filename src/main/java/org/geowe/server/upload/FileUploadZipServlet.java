@@ -51,6 +51,9 @@ public class FileUploadZipServlet extends HttpServlet {
 	private static final long MAX_FILE_SIZE = 1024 * 1024 * 2; // 2MB
 	private static final Logger LOG = LoggerFactory
 			.getLogger(FileUploadZipServlet.class.getName());
+	private static final String PRJ_FILE_NAME = "geowe-project.prj";
+	private static final String EMPTY = "empty";
+	private static final String BAD_FORMAT = "bad format";
 
 	@Override
 	public void doPost(final HttpServletRequest request,
@@ -71,9 +74,21 @@ public class FileUploadZipServlet extends HttpServlet {
 
 				ZipFile zipFile = createZipFile(item);
 
-				final String content = readZipFile(zipFile);				
-				response.setStatus(HttpStatus.SC_OK);
-				response.getWriter().printf(content);
+				final String content = readZipFile(zipFile);
+
+				if (EMPTY.equals(content)) {
+					response.setStatus(HttpStatus.SC_NO_CONTENT);
+					response.getWriter().printf(
+							HttpStatus.SC_NO_CONTENT + ":" + content);
+				} else if (BAD_FORMAT.equals(content)) {
+					response.setStatus(HttpStatus.SC_NOT_ACCEPTABLE);
+					response.getWriter().printf(
+							HttpStatus.SC_NOT_ACCEPTABLE + ":" + content);
+				} else {
+					response.setStatus(HttpStatus.SC_OK);
+					response.getWriter().printf(content);
+				}
+
 			}
 		} catch (SizeLimitExceededException e) {
 			response.setStatus(HttpStatus.SC_REQUEST_TOO_LONG);
@@ -113,22 +128,29 @@ public class FileUploadZipServlet extends HttpServlet {
 	}
 
 	private String readZipFile(ZipFile zipFile) {
-		String content = "empty";
+		String content = EMPTY;
 
 		try {
 
 			Enumeration<?> enu = zipFile.entries();
-			while (enu.hasMoreElements()) {
+			if (enu.hasMoreElements()) {
 				ZipEntry zipEntry = (ZipEntry) enu.nextElement();
+				if (zipEntry.isDirectory()) {
+					content = BAD_FORMAT;
+				} else if (!(zipEntry.getName().equals(PRJ_FILE_NAME))) {
+					content = BAD_FORMAT;
+				} else {
+					InputStream is = zipFile.getInputStream(zipEntry);
+					content = new java.util.Scanner(is).useDelimiter("\\A")
+							.next();
+				}
 
-//				String name = zipEntry.getName();
-//				long size = zipEntry.getSize();
-//				long compressedSize = zipEntry.getCompressedSize();
-//				LOG.info("name: " + name + " | size: " + size
-//						+ " | compressed size: " + compressedSize);
+				// String name = zipEntry.getName();
+				// long size = zipEntry.getSize();
+				// long compressedSize = zipEntry.getCompressedSize();
+				// LOG.info("name: " + name + " | size: " + size
+				// + " | compressed size: " + compressedSize);
 
-				InputStream is = zipFile.getInputStream(zipEntry);								
-				content = new java.util.Scanner(is).useDelimiter("\\A").next();
 			}
 			zipFile.close();
 
@@ -139,5 +161,4 @@ public class FileUploadZipServlet extends HttpServlet {
 
 		return content;
 	}
-
 }

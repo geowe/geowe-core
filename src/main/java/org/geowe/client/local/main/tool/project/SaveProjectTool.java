@@ -30,6 +30,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
+import org.geowe.client.local.layermanager.tool.export.ExportDataTool;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;
@@ -43,7 +44,6 @@ import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.gwtopenmaps.openlayers.client.Projection;
 import org.gwtopenmaps.openlayers.client.feature.VectorFeature;
-import org.gwtopenmaps.openlayers.client.format.GeoJSON;
 import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
@@ -81,6 +81,7 @@ public class SaveProjectTool extends ButtonTool {
 	private ProgressBarDialog progressBar;
 	private List<Layer> vectorLayers;
 	private static final String PROJECT_EXTENSION = "gpj";
+	private static final String DEFAULT_EPSG = "WGS84";
 	
 	public SaveProjectTool() {
 		super(UIMessages.INSTANCE.saveProject(), ImageProvider.INSTANCE
@@ -109,12 +110,12 @@ public class SaveProjectTool extends ButtonTool {
 		addDialogListener();		
 	}
 
-	protected void loadProject() {
+	protected void saveProject() {
 		progressBar = new ProgressBarDialog(false,
 				UIMessages.INSTANCE.processing());
 		progressBar.show();
 		
-		Project project = getProyect(vectorLayers);
+		Project project = createProject(vectorLayers);
 						
 		exporter = new FileExporter();
 		fileParameter = new FileParameter();
@@ -129,9 +130,9 @@ public class SaveProjectTool extends ButtonTool {
 		export();
 	}
 
-	private Project getProyect(List<Layer> layers) {
+	private Project createProject(List<Layer> layers) {
 		Project project = saveProjectDialog.getProject();
-		
+				
 		for (Layer layer : layers) {
 			
 			VectorStyleDef vectorStyleDef = ((VectorLayer) layer).getVectorStyle();
@@ -141,21 +142,21 @@ public class SaveProjectTool extends ButtonTool {
 			String strokeColor = vectorStyleDef.getLine().getNormalColor();					
 			Double strokeWidth =  new Double(vectorStyleDef.getLine().getThickness());
 					
-			project.add(layer.getName(), getContentAsGeoJSON((Vector)layer),
-					fillColor, fillOpacity, strokeColor, strokeWidth);
+			project.add(layer.getName(), getContentAsGeoJSONCSS((VectorLayer)layer),
+					fillColor, fillOpacity, strokeColor, strokeWidth);			
 		}
-
+		
 		return project;
 
 	}	
 
-	private String getContentAsGeoJSON(Vector vectorLayer) {
-		org.gwtopenmaps.openlayers.client.format.VectorFormat format = new GeoJSONCSS();
-
-		return format.write(getTransformedFeatures(vectorLayer));
+	private String getContentAsGeoJSONCSS(VectorLayer vectorLayer) {
+		GeoJSONCSS format = new GeoJSONCSS();
+		format.setLayer(vectorLayer);
+		return format.write(getTransformedFeatures(vectorLayer, DEFAULT_EPSG));
 	}
-
-	private VectorFeature[] getTransformedFeatures(Vector vectorLayer) {
+	
+	private VectorFeature[] getTransformedFeatures(Vector vectorLayer, String epsg) {
 		List<VectorFeature> transformedFeatures = new ArrayList<VectorFeature>();
 		if (vectorLayer.getFeatures() != null) {
 //			logger.info("N. features de la Capa: " + layer.getFeatures().length);
@@ -163,14 +164,14 @@ public class SaveProjectTool extends ButtonTool {
 				VectorFeature featureToExport = feature.clone();
 				featureToExport.getGeometry().transform(
 						new Projection(GeoMap.INTERNAL_EPSG),
-						new Projection("WGS84"));
+						new Projection(epsg));
 				transformedFeatures.add(featureToExport);
 			}
 		}
 		VectorFeature[] transArray = new VectorFeature[transformedFeatures
 				.size()];
 		return transformedFeatures.toArray(transArray);
-	}
+}
 
 	private void export() {
 		taskManager.execute(new Runnable() {
@@ -198,7 +199,7 @@ public class SaveProjectTool extends ButtonTool {
 
 							@Override
 							public void run() {
-								loadProject();
+								saveProject();
 							}
 
 						});

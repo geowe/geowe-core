@@ -30,7 +30,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.ImageProvider;
 import org.geowe.client.local.layermanager.LayerManagerWidget;
-import org.geowe.client.local.layermanager.tool.export.ExportDataTool;
 import org.geowe.client.local.layermanager.tool.export.exporter.Exporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileExporter;
 import org.geowe.client.local.layermanager.tool.export.exporter.FileParameter;

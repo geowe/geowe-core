@@ -41,7 +41,7 @@ import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
  *
  */
 public class EditingFeatureGrid extends GridInlineEditing<VectorFeature> {
-
+	
 	public EditingFeatureGrid(int width, int height) {
 		super(new FeatureGrid(width, height));				
 	}
@@ -136,11 +136,11 @@ public class EditingFeatureGrid extends GridInlineEditing<VectorFeature> {
 	
 	private void setGridEditors() {
 		ColumnModel<VectorFeature> columnModel = getFeatureGrid().getColumnModel();
-		
+				
 		for(ColumnConfig<VectorFeature, ?> column : columnModel.getColumns()) {
 			if(!column.isHidden()) {
-				this.addEditor((ColumnConfig<VectorFeature, String>)column, new TextField());
+				this.addEditor((ColumnConfig<VectorFeature, String>)column, new TextField());				
 			}
-		}	
+		}			
 	}	
 }

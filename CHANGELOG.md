@@ -8,6 +8,11 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.5.2]Beta - 2017-03-02
+
+### Fixed
+- issue [#337](https://github.com/geowe/geowe-core/issues/337)
+
 ## [1.5.1]Beta - 2017-03-01
 
 ### Added

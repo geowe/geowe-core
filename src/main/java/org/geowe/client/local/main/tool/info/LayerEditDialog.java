@@ -71,8 +71,7 @@ import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 public class LayerEditDialog extends Dialog {
 	public static final int HORIZONTAL_MARGIN = 50;
 	public static final int ROW_SIZE = 32;
-	public static final int MIN_VISIBLE_ROWS = 15;
-	public static final int MAX_VISIBLE_ROWS = 25;
+	public static final int VISIBLE_ROWS = 15;
 	
 	@Inject
 	@New
@@ -103,15 +102,11 @@ public class LayerEditDialog extends Dialog {
 					this.selectedLayer.getName() : "";
 			boolean changedLayer = !layer.getName().equalsIgnoreCase(previousName);			
 			this.selectedLayer = layer;
-				
-			//TODO No funciona el resize
-			setWidth(computeWidth());
-			setHeight(computeHeight());		
 					
 			VectorFeature[] features = getLayerFeatures();
-			if(changedLayer) {							
-				pageSize.reset(features.length);
-				pageSize.setValue(pageSize.getMaxValue());
+			if(changedLayer) {											
+				pageSize.reset(features.length);								
+				pageSize.setValue(pageSize.getMaxValue());				
 				pagingToolBar.setPageSize(pageSize.getValue());				
 				grid.rebuild(features);
 			} else {
@@ -145,19 +140,12 @@ public class LayerEditDialog extends Dialog {
 		return Window.getClientWidth() - (HORIZONTAL_MARGIN * 2);
 	}
 	
-	private int computeHeight() {
-		if(selectedLayer != null && selectedLayer.getFeatures() != null) {
-			
-			return (selectedLayer.getNumberOfFeatures() > MAX_VISIBLE_ROWS ?
-					MAX_VISIBLE_ROWS : 
-					selectedLayer.getNumberOfFeatures()) *  ROW_SIZE;
-		} else {
-			return MIN_VISIBLE_ROWS * ROW_SIZE;
-		}
+	private int computeHeight() {		
+		return VISIBLE_ROWS * ROW_SIZE;		
 	}
 	
 	private Widget createPanel() {			
-		pagingToolBar = new PagingToolBar(MIN_VISIBLE_ROWS);
+		pagingToolBar = new PagingToolBar(VISIBLE_ROWS);
 		pagingToolBar.setBorders(false);		
 		
 		grid = new EditingFeatureGrid(pagingToolBar);

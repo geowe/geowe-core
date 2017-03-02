@@ -48,7 +48,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 @ApplicationScoped
 public class SaveProjectDialog extends Dialog {
 
-	private static final String PROJECT_VERSION = "1.0.0";
+	private static final String PROJECT_VERSION = "1.1.0";
 	private static final String DEFAULT_PROJECT_NAME = "geowe-project-name";
 	private TextField projectNameField;
 	private TextField projectVersionField;

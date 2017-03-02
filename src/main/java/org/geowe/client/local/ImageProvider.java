@@ -379,4 +379,6 @@ public interface ImageProvider extends ClientBundle {
 	@Source("images/ic_print-24.png")
 	ImageResource printLogo();
 	
+	@Source("images/ic_blue_pin_icon.png")
+	ImageResource mapPointIcon();
 }

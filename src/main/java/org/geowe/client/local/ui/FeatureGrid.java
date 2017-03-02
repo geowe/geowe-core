@@ -174,7 +174,7 @@ public class FeatureGrid extends Grid<VectorFeature> {
 	        if(feature.getAttributes().getAttributeAsString(attributeName) == null) {
 	            return "";
 	        } else {
-	            return feature.getAttributes().getAttributeAsString(attributeName);
+	            return "" + feature.getAttributes().getAttributeAsString(attributeName);
 	        }
 	    }
 

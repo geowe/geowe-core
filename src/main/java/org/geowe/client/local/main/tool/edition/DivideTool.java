@@ -121,7 +121,7 @@ public class DivideTool extends ToggleTool implements DrawTool {
 	private Attributes getNewAttribute(VectorFeature feature) {
 		Attributes attributes = new Attributes();
 		for (String name : feature.getAttributes().getAttributeNames()) {
-			attributes.setAttribute(name, "");
+			attributes.setAttribute(name, "" + feature.getAttributes().getAttributeAsString(name));
 		}
 
 		return attributes;

@@ -9,7 +9,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - More tools
 
 ## [1.5.2]Beta - 2017-03-02
-
+version deployed for testing [map.geowe.org](http://map.geowe.org).
 ### Fixed
 - issue [#337](https://github.com/geowe/geowe-core/issues/337)
 - issue [#340](https://github.com/geowe/geowe-core/issues/340)
@@ -24,7 +24,7 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - issue [#336](https://github.com/geowe/geowe-core/issues/336)
 
 ## [1.5]Beta - 2017-02-24
-version deployed for testing [map.geowe.org](http://map.geowe.org).
+version deployed for testing [map.geowe.org](http://map.geowe.org). No longer available
 ### Added
 - Preview and print tool
 - Updated SIGPAC layers (2017)

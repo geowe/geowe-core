@@ -104,7 +104,9 @@ public class OpenProjectTool extends ButtonTool {
 
 			private boolean hasError(final String contentFile) {
 				return contentFile.startsWith("413")
-						|| contentFile.startsWith("500");
+						|| contentFile.startsWith("500")
+						||  contentFile.startsWith("204")
+						||  contentFile.startsWith("406");
 			}
 
 			

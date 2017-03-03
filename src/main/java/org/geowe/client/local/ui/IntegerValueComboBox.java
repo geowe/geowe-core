@@ -30,7 +30,7 @@ import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 
 /**
  * Componente gráfico reutilizable que representa una lista desplegable
- * con de valores numéricos de tipo entero
+ * de valores numéricos de tipo entero
  * 
  * @author Atanasio Muñoz (ata@geowe.org)
  *

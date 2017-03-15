@@ -22,6 +22,7 @@
  */
 package org.geowe.client.local.main.tool.edition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -148,26 +149,27 @@ public class DivideTool extends ToggleTool implements DrawTool {
 								.narrowToPolygon(lineBufferVectorFeature
 										.getGeometry().getJSObject());
 
-						VectorFeature polygonIntersectedVectorFeature = null;
+						List<VectorFeature> polygonsFeatursIntersected = new ArrayList<VectorFeature>();
 						for (VectorFeature feature : layer.getFeatures()) {
 
 							if (isPolygon(feature.getGeometry())
 									&& lineToPolygon.intersects(feature
 											.getGeometry())) {
-								polygonIntersectedVectorFeature = feature;
-								break;
+								polygonsFeatursIntersected.add(feature);
 							}
 						}
 
-						if (polygonIntersectedVectorFeature == null) {
+						if (polygonsFeatursIntersected.isEmpty()) {
 							lineVectorFeature.destroy();
 							autoMessageBox.hide();
 							showAlert(UIMessages.INSTANCE.noIntersectPolygon());
 							return;
 						}
 
-						applyDivide(lineVectorFeature,
-								polygonIntersectedVectorFeature);
+						for(VectorFeature polygonIntersectedVectorFeature : polygonsFeatursIntersected){
+							applyDivide(lineVectorFeature,
+									polygonIntersectedVectorFeature);	
+						}
 					}
 				});
 	}

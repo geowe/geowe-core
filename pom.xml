@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.geowe</groupId>
 	<artifactId>geowe</artifactId>
-	<version>1.5.2</version>
+	<version>1.5.3</version>
 	<packaging>war</packaging>
 	<properties>
 		<errai.dev.context>${project.artifactId}</errai.dev.context>

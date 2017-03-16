@@ -178,8 +178,12 @@ public class JTSServiceImpl extends AbstractJTSService implements JTSService {
 
 	public List<String> divide(final String wktCorte, final String wktIntersected)
 			throws IllegalArgumentException {
+		if (wktIntersected.startsWith("POLYGON")) {
+			return dividePolygonTool.divide(wktCorte, wktIntersected);
+		} else {
+			return new DivideLineStringTool().divide(wktCorte, wktIntersected);
+		}
 
-		return dividePolygonTool.divide(wktCorte, wktIntersected);
 	}
 
 	@Override

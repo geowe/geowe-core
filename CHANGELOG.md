@@ -8,9 +8,10 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
-## [1.5.3]Beta - 2017-03-15
+## [1.5.3]Beta - 2017-03-16
 ### Added
-- DivideTool allows you to split multiple polygons
+- DivideTool allows you to split multiple polygons and lines.
+- DivideTool allows you to split lines.
 
 ## [1.5.2]Beta - 2017-03-02
 version deployed for testing [map.geowe.org](http://map.geowe.org).

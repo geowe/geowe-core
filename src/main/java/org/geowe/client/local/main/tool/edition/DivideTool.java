@@ -50,6 +50,7 @@ import org.gwtopenmaps.openlayers.client.layer.Layer;
 import org.gwtopenmaps.openlayers.client.layer.Vector;
 import org.gwtopenmaps.openlayers.client.util.Attributes;
 import org.jboss.errai.common.client.api.tasks.ClientTaskManager;
+import org.slf4j.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -65,6 +66,8 @@ import com.sencha.gxt.core.client.Style.Side;
 @ApplicationScoped
 public class DivideTool extends ToggleTool implements DrawTool {
 	private boolean enableEvent = true;
+	@Inject
+	private Logger logger;
 	@Inject
 	private ClientTaskManager taskManager;
 
@@ -122,7 +125,8 @@ public class DivideTool extends ToggleTool implements DrawTool {
 	private Attributes getNewAttribute(VectorFeature feature) {
 		Attributes attributes = new Attributes();
 		for (String name : feature.getAttributes().getAttributeNames()) {
-			attributes.setAttribute(name, "" + feature.getAttributes().getAttributeAsString(name));
+			attributes.setAttribute(name, ""
+					+ feature.getAttributes().getAttributeAsString(name));
 		}
 
 		return attributes;
@@ -132,7 +136,7 @@ public class DivideTool extends ToggleTool implements DrawTool {
 			final VectorFeature lineVectorFeature, final Vector layer) {
 		autoMessageBox.show();
 
-		WKT wktFormat = new WKT();
+		final WKT wktFormat = new WKT();
 		jtsServiceAsync.getBuffer(wktFormat.write(lineVectorFeature), 0.5,
 				new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
@@ -149,37 +153,57 @@ public class DivideTool extends ToggleTool implements DrawTool {
 								.narrowToPolygon(lineBufferVectorFeature
 										.getGeometry().getJSObject());
 
-						List<VectorFeature> polygonsFeatursIntersected = new ArrayList<VectorFeature>();
+						List<VectorFeature> featuresIntersected = new ArrayList<VectorFeature>();
 						for (VectorFeature feature : layer.getFeatures()) {
 
 							if (isPolygon(feature.getGeometry())
 									&& lineToPolygon.intersects(feature
 											.getGeometry())) {
-								polygonsFeatursIntersected.add(feature);
+								featuresIntersected.add(feature);
+							} else if (isLineString(feature.getGeometry())
+									&& lineToPolygon.intersects(feature
+											.getGeometry())) {
+								featuresIntersected.add(feature);
 							}
 						}
 
-						if (polygonsFeatursIntersected.isEmpty()) {
+						if (!featuresIntersected.isEmpty()) {
+							if (featuresIntersected.size() == 1
+									&& (wktFormat.write(
+											featuresIntersected.get(0)).equals(
+											wktFormat.write(lineVectorFeature)))) {
+								lineVectorFeature.destroy();
+								autoMessageBox.hide();
+								showAlert(UIMessages.INSTANCE
+										.noIntersectPolygon());
+
+							} else {
+								for (VectorFeature intersectedVectorFeature : featuresIntersected) {
+									if (!wktFormat.write(
+											intersectedVectorFeature).equals(
+											wktFormat.write(lineVectorFeature))) {
+										applyDivide(lineVectorFeature,
+												intersectedVectorFeature);
+									}
+								}
+							}
+
+						} else {
 							lineVectorFeature.destroy();
 							autoMessageBox.hide();
 							showAlert(UIMessages.INSTANCE.noIntersectPolygon());
-							return;
 						}
 
-						for(VectorFeature polygonIntersectedVectorFeature : polygonsFeatursIntersected){
-							applyDivide(lineVectorFeature,
-									polygonIntersectedVectorFeature);	
-						}
 					}
 				});
 	}
 
 	private void applyDivide(final VectorFeature lineVectorFeature,
-			final VectorFeature polygonIntersectedVectorFeature) {
+			final VectorFeature geometryIntersectedVectorFeature) {
 
 		WKT wktFormat = new WKT();
 		String wktLine = wktFormat.write(lineVectorFeature);
-		String wktPolygon = wktFormat.write(polygonIntersectedVectorFeature);
+		String wktPolygon = wktFormat.write(geometryIntersectedVectorFeature);
 		final Vector vector = (Vector) DivideTool.this.getLayer();
 
 		jtsServiceAsync.divide(wktLine, wktPolygon,
@@ -188,24 +212,26 @@ public class DivideTool extends ToggleTool implements DrawTool {
 					@Override
 					public void onFailure(Throwable caught) {
 						autoMessageBox.hide();
+						lineVectorFeature.destroy();
 						showAlert(caught.getMessage());
 					}
 
-					public void onSuccess(List<String> wktPolygons) {
+					public void onSuccess(List<String> wkts) {
 
 						enableEvent = false;
-						for (String wkt : wktPolygons) {
+						logger.info("Geometrías divididas: " + wkts.size());
+						for (String wkt : wkts) {
 							VectorFeature newVectorFeature = new VectorFeature(
 									Geometry.fromWKT(wkt));
 							newVectorFeature
-									.setAttributes(getNewAttribute(polygonIntersectedVectorFeature));
+									.setAttributes(getNewAttribute(geometryIntersectedVectorFeature));
 
 							vector.addFeature(newVectorFeature);
 						}
 						enableEvent = true;
-						vector.removeFeature(polygonIntersectedVectorFeature);
+						vector.removeFeature(geometryIntersectedVectorFeature);
+						geometryIntersectedVectorFeature.destroy();
 						vector.removeFeature(lineVectorFeature);
-						polygonIntersectedVectorFeature.destroy();
 						lineVectorFeature.destroy();
 						autoMessageBox.hide();
 					}
@@ -216,6 +242,12 @@ public class DivideTool extends ToggleTool implements DrawTool {
 		return geometry
 				.getClassName()
 				.equals(org.gwtopenmaps.openlayers.client.geometry.Geometry.POLYGON_CLASS_NAME);
+	}
+
+	private boolean isLineString(Geometry geometry) {
+		return geometry
+				.getClassName()
+				.equals(org.gwtopenmaps.openlayers.client.geometry.Geometry.LINESTRING_CLASS_NAME);
 	}
 
 	private void showAlert(String errorMsg) {

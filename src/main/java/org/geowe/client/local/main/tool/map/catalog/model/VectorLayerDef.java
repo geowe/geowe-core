@@ -48,7 +48,7 @@ public abstract class VectorLayerDef extends LayerDef{
 	
 	public static final String KML = "KML";
 	public static final String GEOJSON = "GeoJSON";
-	public static final String GEOJSON_CSS = "GeoJSON_CSS";
+	public static final String GEOJSON_CSS = "CSS-GeoJSON";
 	public static final String WKT = "WKT";
 	public static final String GML = "GML";
 	public static final String TOPOJSON = "TopoJSON";

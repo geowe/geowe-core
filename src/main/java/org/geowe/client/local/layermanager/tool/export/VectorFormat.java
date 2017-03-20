@@ -35,7 +35,7 @@ public class VectorFormat {
 			"TopoJSON", "x-topo+json");
 	public static final VectorFormat GPX_FORMAT = new VectorFormat(7, "GPX",
 			"application/gpx+xml");
-	public static final VectorFormat GEOJSON_CSS_FORMAT = new VectorFormat(8, "GeoJSON_CSS",
+	public static final VectorFormat GEOJSON_CSS_FORMAT = new VectorFormat(8, "CSS-GeoJSON",
 			"x-geo+json");
 	
 	private final int id;

@@ -8,13 +8,18 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.5.4]Beta - 2017-03-20
+### Fixed
+- issue [#346](https://github.com/geowe/geowe-core/issues/346)
+
 ## [1.5.3]Beta - 2017-03-16
+version deployed for testing [map.geowe.org](http://map.geowe.org).
 ### Added
 - DivideTool allows you to split multiple polygons and lines.
 - DivideTool allows you to split lines.
 
 ## [1.5.2]Beta - 2017-03-02
-version deployed for testing [map.geowe.org](http://map.geowe.org).
+version deployed for testing [map.geowe.org](http://map.geowe.org). No longer available
 ### Fixed
 - issue [#337](https://github.com/geowe/geowe-core/issues/337)
 - issue [#340](https://github.com/geowe/geowe-core/issues/340)

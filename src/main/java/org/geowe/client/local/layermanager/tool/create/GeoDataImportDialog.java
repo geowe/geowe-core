@@ -366,6 +366,11 @@ public class GeoDataImportDialog extends Dialog {
 
 		if (!url.isEmpty()) {
 			String extension = url.substring(url.lastIndexOf(".") + 1);
+
+			String[] splited = url.split("\\.");
+			if (splited.length > 2 && "css".equals(splited[splited.length - 2])) {
+				extension = "css." + extension;
+			}
 			VectorFormat vectorFormat = VectorFormat.getFromName(extension);
 			vectorFormatCombo.setValue(vectorFormat);
 		}

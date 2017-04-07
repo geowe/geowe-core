@@ -29,8 +29,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.geowe.client.local.layermanager.LayerManagerWidget;
 import org.geowe.client.local.messages.UIMessages;
-import org.geowe.client.local.model.vector.FeatureSchema;
 import org.geowe.client.local.model.vector.VectorLayer;
+import org.geowe.client.local.model.vector.VectorLayerConfig;
+import org.geowe.client.local.model.vector.VectorLayerFactory;
+import org.geowe.client.local.style.VertexStyles;
 import org.geowe.client.local.ui.MessageDialogBuilder;
 import org.geowe.client.local.ui.ProgressBarDialog;
 import org.geowe.client.shared.jts.JTSService;
@@ -45,8 +47,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 /**
- * Geometry Validator representa un validador geométrico y es responsable de la detección de errores topológicos sobre los elementos 
- * de una capa vectorial.
+ * Geometry Validator representa un validador geométrico y es responsable de la
+ * detección de errores topológicos sobre los elementos de una capa vectorial.
  * 
  * @author jose@geowe.org
  *
@@ -60,30 +62,36 @@ public class GeometryValidator {
 	private static final WKT wktFormat = new WKT();
 	private static final String VALIDATED_LAYER_NAME = UIMessages.INSTANCE
 			.validatedLayerName();
-	private final JTSServiceAsync jtsServiceAsync = GWT.create(JTSService.class);
+	private final JTSServiceAsync jtsServiceAsync = GWT
+			.create(JTSService.class);
 
-	public void requestValidate(final VectorLayer layer, final LayerManagerWidget layerManager) {
+	public void requestValidate(final VectorLayer layer,
+			final LayerManagerWidget layerManager) {
 		final List<String> wktLayer = getWKT(layer);
 		requestValidate(wktLayer, layer.getName(), layerManager);
 	}
 
 	public void requestValidate(final String layerName,
-			final LayerManagerWidget layerManager, final VectorFeature... features) {
+			final LayerManagerWidget layerManager,
+			final VectorFeature... features) {
 		final List<String> wktLayer = getWKT(features);
 		requestValidate(wktLayer, layerName, layerManager);
 	}
 
-	public void requestValidate(final String wkt, final String layerName, final LayerManagerWidget layerManager) {
+	public void requestValidate(final String wkt, final String layerName,
+			final LayerManagerWidget layerManager) {
 		final List<String> wktLayer = new ArrayList<String>();
 		wktLayer.add(wkt);
 		requestValidate(wktLayer, layerName, layerManager);
 	}
 
-	public void requestValidate(final List<String> wktLayer, final String layerName, final LayerManagerWidget layerManager) {
+	public void requestValidate(final List<String> wktLayer,
+			final String layerName, final LayerManagerWidget layerManager) {
 
-		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false, UIMessages.INSTANCE.processing());
+		final ProgressBarDialog autoMessageBox = new ProgressBarDialog(false,
+				UIMessages.INSTANCE.processing());
 		autoMessageBox.show();
-		
+
 		jtsServiceAsync.validate(wktLayer,
 				new AsyncCallback<List<ValidationResult>>() {
 
@@ -95,7 +103,8 @@ public class GeometryValidator {
 								"error: invalid geometry").show();
 					}
 
-					public void onSuccess(final List<ValidationResult> wktElements) {
+					public void onSuccess(
+							final List<ValidationResult> wktElements) {
 						autoMessageBox.hide();
 						if (wktElements.isEmpty()) {
 							messageDialogBuilder.createWarning(
@@ -113,18 +122,19 @@ public class GeometryValidator {
 											.msgValidationErrorsDetected(
 													layerName,
 													wktElements.size())).show();
+							final VectorLayer resultLayer = createLayerResult(
+									layerName, wktElements);
+							layerManager.addVector(resultLayer);
+							updateElements(resultLayer, wktElements);
+							updateCoordinateErrors(resultLayer, wktElements);
 						}
 
-						final VectorLayer resultLayer = createLayerResult(
-								layerName, wktElements);
-						layerManager.addVector(resultLayer);
-						updateElements(resultLayer, wktElements);
-						updateCoordinateErrors(resultLayer, wktElements);
 					}
 				});
 	}
 
-	private VectorLayer createLayerResult(final String layerName, final List<ValidationResult> wktElements) {
+	private VectorLayer createLayerResult(final String layerName,
+			final List<ValidationResult> wktElements) {
 
 		final List<String> names = new ArrayList<String>();
 
@@ -139,26 +149,33 @@ public class GeometryValidator {
 			names.add("message" + (i + 1));
 		}
 
-		final FeatureSchema schema = new FeatureSchema(names);
-		final VectorLayer resultLayer = new VectorLayer(VALIDATED_LAYER_NAME + "_" + layerName, schema);
+		VectorLayerConfig layerConfig = new VectorLayerConfig();
+		layerConfig.setLayerName(UIMessages.INSTANCE.validatedLayerName() + "_"
+				+ layerName);
+		final VectorLayer resultLayer = VectorLayerFactory
+				.createEmptyVectorLayer(layerConfig);
+
 		resultLayer.getVectorStyle().getFill().setNormalColor("#FF0000");
 		resultLayer.getVectorStyle().getFill().setOpacity(0.6);
-		resultLayer.getVectorStyle().getPoint().getVertexStyle().setStyleName("cross");
 		resultLayer.getVectorStyle().getLine().setNormalColor("#FF0000");
+		resultLayer.getVectorStyle().getPoint()
+				.setVertexStyle(VertexStyles.getByStyleName("cross"));
 		return resultLayer;
 	}
 
-	private void updateElements(final VectorLayer resultLayer, final List<ValidationResult> wktElements) {
+	private void updateElements(final VectorLayer resultLayer,
+			final List<ValidationResult> wktElements) {
 		for (ValidationResult result : wktElements) {
 			final VectorFeature newVectorFeature = getVectorFeature(result);
 			for (int i = 0; i < result.getMessages().size(); i++) {
-				newVectorFeature.getAttributes().setAttribute("message" + (i + 1), result.getMessages().get(i));
+				newVectorFeature.getAttributes().setAttribute(
+						"message" + (i + 1), result.getMessages().get(i));
 			}
 			resultLayer.addFeature(newVectorFeature);
 		}
 		resultLayer.redraw();
 	}
-	
+
 	private void updateCoordinateErrors(final VectorLayer resultLayer,
 			final List<ValidationResult> validationsResults) {
 
@@ -177,7 +194,6 @@ public class GeometryValidator {
 	private VectorFeature getVectorFeature(final ValidationResult result) {
 		return new VectorFeature(Geometry.fromWKT(result.getWkt()));
 	}
-
 
 	private List<String> getWKT(final VectorLayer layer) {
 		return getWKT(layer.getFeatures());

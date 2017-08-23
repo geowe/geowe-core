@@ -1,4 +1,4 @@
-#geowe-core
+# geowe-core
 GeoWE. GeoData Web Editing [core SIG Web]
 
 ![Screenshot](https://github.com/geowe/geowe-core/blob/master/screenshot.png)
@@ -14,7 +14,7 @@ The **geowe-core** is being developed using the following technologies:
 
 More information available on the [GeoWE Web site](http://www.geowe.org/).
 
-##Features
+## Features
 
 - Advanced geodata editing
 - Geolocation and geocoding support
@@ -29,14 +29,14 @@ More information available on the [GeoWE Web site](http://www.geowe.org/).
 - Geometry validation features
 - Live version: [map.geowe.org](http://map.geowe.org/)
 
-##License
+## License
 
 The **geowe-core** is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html), meaning you can use it free of charge, according with license terms and conditions.
 
-##Configuration
+## Configuration
 In order to use all **GeoWE** features, you must configure following basic params:
 
-####Google Maps config:
+#### Google Maps config:
 To use Google maps, you need to specify yout own Google Maps Api key. Please, [read this carefully] (https://developers.google.com/maps/documentation/javascript/get-api-key).
 
 Append your key to the URL of the script, located on App.html.
@@ -46,7 +46,7 @@ Append your key to the URL of the script, located on App.html.
 	src="//maps.googleapis.com/maps/api/js?libraries=places&key=YOUR_GOOGLE_MAPS_API_KEY"></script>
 
 
-####Bing Maps config:
+#### Bing Maps config:
 To use Bing maps, you need to specify your own Bing maps key. Please, [read this carefully] (https://www.microsoft.com/maps/create-a-bing-maps-key.aspx).
 
 Put your key in BingConstants.properties file, located at: src\main\java\org\geowe\client\local\main\tool\map\catalog\model
@@ -54,7 +54,7 @@ Put your key in BingConstants.properties file, located at: src\main\java\org\geo
 	For example:
 	bingKey = YOUR_BING_MAPS_KEY
 
-####what3words config:
+#### what3words config:
 To use what3words feature, you need to specify your own what3words api key. You must contact [what3words](http://what3words.com) to obtain it.
 
 Put your key in ErraiApp.properties file, located at: src\main\resources
@@ -62,16 +62,16 @@ Put your key in ErraiApp.properties file, located at: src\main\resources
 	For example:
 	w3w.key = YOUR_W3W_API_KEY
 	
-##Build the software
+## Build the software
 In order to compile and build **GeoWE**, the JDK 7 platform is necessary. The project uses maven for building and packaging.
 	
 	mvn clean package
 
-##Deploy
+## Deploy
 Once you compiled the software, the geowe.war file can be deployed on any server/application container, like Apache Tomcat. Our [live demo](http://map.geowe.org) is running on OpenShift, Try it!
 
-##Javadoc
+## Javadoc
 You can see the complete javadoc [here](http://www.geowe.org/source/apidocs). [download](http://www.geowe.org/source/apidocs/geowe-api.rar)
 
-##Dependecies report
+## Dependecies report
 You can see the complete source dependencies [here](http://www.geowe.org/source/dependencies). 

@@ -48,6 +48,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * @since 25/08/2016
  * @author rafa@geowe.org
  * @since 11/10/2016 fix issue 207 19/10/2016 fix issue 217
+ * @author rafa@geowe.org
+ * @since 20/06/2019
+ * incluido estilo en capas WMTS
  */
 @ApplicationScoped
 public class AddRasterLayerTool extends LayerTool {
@@ -134,6 +137,7 @@ public class AddRasterLayerTool extends LayerTool {
 			wmtsLayer.setTileMatrixSet(loadRasterLayerDialog.getTileMatrixSet());
 			wmtsLayer.setName(loadRasterLayerDialog.getLayerNameWMTS());
 			wmtsLayer.setFormat(loadRasterLayerDialog.getFormatWMTS());
+			wmtsLayer.setStyle(loadRasterLayerDialog.getStyle());
 			layerManagerWidget.addRaster(wmtsLayer.getLayer());
 			loadRasterLayerDialog.hide();
 		}		

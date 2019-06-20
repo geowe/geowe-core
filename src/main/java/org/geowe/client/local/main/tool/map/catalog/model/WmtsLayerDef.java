@@ -35,23 +35,34 @@ import org.gwtopenmaps.openlayers.client.layer.WMTSOptions;
  * 
  * @author jose@geowe.org
  * @since 24/08/2016
+ * @author lotor
+ * @since 20/06/2019
+ * incluido estilo
  */
 public class WmtsLayerDef extends WmsLayerDef {	
 	private static final long serialVersionUID = 2330903692450317231L;
 	private String tileMatrixSet;
-	
+	private String style;
+
 	public String getTileMatrixSet() {
 		return tileMatrixSet;
 	}
 	public void setTileMatrixSet(final String tileMatrixSet) {
 		this.tileMatrixSet = tileMatrixSet;
 	}
+
+	public String getStyle(){
+		return this.style == null ? "default" : this.style;
+	}
+	public void setStyle(String style){
+		this.style = style;
+	}
 	
 	@Override
 	public Layer getLayer() {
 		
 		final WMTSOptions wmtsOptions = new WMTSOptions(getUrl(), getLayerName(),
-                "", getTileMatrixSet());
+                getStyle(), getTileMatrixSet());
         	wmtsOptions.setName(getLayerName());
         	wmtsOptions.setIsBaseLayer(Boolean.FALSE);
         	wmtsOptions.setFormat(getFormat());

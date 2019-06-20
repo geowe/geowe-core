@@ -53,8 +53,8 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		recintosSp.setDescription(UICatalogMessages.INSTANCE
 				.enclosuresSigPacDescription());
 		recintosSp
-				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoservergis/wms");
-		recintosSp.setLayerName("dgpa_spa_sigpac:SPAD_RECINTOS_2017");
+				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoserver29/wms");
+		recintosSp.setLayerName("dgpa_spa_sigpac_2019:SPAD_RECINTOS_ACTUAL");
 		recintosSp.setFormat("image/png");
 		recintosSp.setEpsg("EPSG:25830");
 		recintosSp.setIcon(ImageProvider.INSTANCE.sigpac16());
@@ -64,9 +64,9 @@ public class MiscWmsLayerSet extends AbstractLayerSet {
 		parcelasSp.setDescription(UICatalogMessages.INSTANCE
 				.parcelSigPacDescription());
 		parcelasSp
-				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoservergis/wms");
+				.setUrl("http://ws128.juntadeandalucia.es/agriculturaypesca/geoserver29/wms");
 		parcelasSp
-				.setLayerName("dgpa_spa_sigpac:SPAD_PARCELAS_2017");
+				.setLayerName("dgpa_spa_sigpac_2019:SPAD_PARCELAS_ACTUAL");
 		parcelasSp.setFormat("image/png");
 		parcelasSp.setEpsg("EPSG:25830");
 		parcelasSp.setIcon(ImageProvider.INSTANCE.sigpac16());

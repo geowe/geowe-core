@@ -48,6 +48,9 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * @author jose@geowe.org
  * @since 19/10/2016
  * @author rafa@geowe.org fix issue 215
+ * @author rafa@geowe.org
+ * @since 20/06/2019
+ * incluido estilo en capas WMTS
  */
 @ApplicationScoped
 public class LoadRasterLayerDialog extends Dialog {
@@ -65,6 +68,7 @@ public class LoadRasterLayerDialog extends Dialog {
 	private TextField nameWMTSField;
 	private TextField formatWMTSField;
 	private TextField tileMatrixSetField;
+	private TextField styleField;
 
 	private PlainTabPanel tabPanel;
 
@@ -241,6 +245,14 @@ public class LoadRasterLayerDialog extends Dialog {
 		tileMatrixSetField.setWidth(FIELD_WIDTH);
 		panel.add(tileMatrixSetField);
 
+		styleField = new TextField();
+		styleField.setTitle(UIMessages.INSTANCE
+				.vlswHeading());
+		styleField.setAllowBlank(true);
+		styleField.setWidth(FIELD_WIDTH);
+		panel.add(styleField);
+
+
 		return panel;
 	}
 
@@ -298,6 +310,14 @@ public class LoadRasterLayerDialog extends Dialog {
 
 	public void setTileMatrixSetField(String tileMatrixSetField) {
 		this.tileMatrixSetField.setText(tileMatrixSetField);
+	}
+
+	public String getStyle() {
+		return styleField.getText();
+	}
+
+	public void setStyleField(String styleFieldText) {
+		this.styleField.setText(styleFieldText);
 	}
 
 	public boolean isCorrectFilledTMS() {
@@ -439,7 +459,8 @@ public class LoadRasterLayerDialog extends Dialog {
 				.lrasterdLayerNameField("WMTS"));
 		formatWMTSField.setEmptyText("image/png, image/jpg...");
 		tileMatrixSetField.setEmptyText("matrix set identifier");
-
+		styleField.setEmptyText(UIMessages.INSTANCE.vlswHeading());
+		
 		urlWMTSField.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {

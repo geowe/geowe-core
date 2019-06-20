@@ -8,6 +8,12 @@ You can see the previous changelog [here] (http://www.geowe.org/index.php?id=cha
 - Improve performance
 - More tools
 
+## [1.5.6]Beta - 2019-06-20
+### Added
+- Update SigPac layer (2019)
+### Fixed
+- issue [#355](https://github.com/geowe/geowe-core/issues/355)
+
 ## [1.5.5]Beta - 2017-04-07
 ### Fixed
 - issue [#351](https://github.com/geowe/geowe-core/issues/351)

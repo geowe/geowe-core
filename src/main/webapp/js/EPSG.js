@@ -21,3 +21,4 @@ Proj4js.defs["EPSG:3036"] = "+proj=utm +zone=36 +south +ellps=WGS84 +towgs84=0,0
 Proj4js.defs["EPSG:3037"] = "+proj=utm +zone=37 +south +ellps=WGS84 +towgs84=0,0,0,-0,-0,-0,0 +units=m +no_defs";
 //Argentina
 Proj4js.defs["EPSG:22172"] = "+proj=tmerc +lat_0=-90 +lon_0=-69 +k=1 +x_0=2500000 +y_0=0 +ellps=GRS80 +units=m +no_defs";
+Proj4js.defs["EPSG:22176"] = "+proj=tmerc +lat_0=-90 +lon_0=-57 +k=1 +x_0=6500000 +y_0=0 +ellps=GRS80 +units=m +no_defs";
